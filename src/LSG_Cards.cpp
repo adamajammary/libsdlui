@@ -910,7 +910,7 @@ void LSG_Cards::setCardTextures()
 
 	this->destroySurfaces();
 
-	if (this->textOverflow == LSG_TEXT_OVERFLOW_ELLIPSIS)
+	if ((this->textOverflow == LSG_TEXT_OVERFLOW_ELLIPSIS) && !this->ellipsisTexture)
 		this->ellipsisTexture = this->getTexture("...");
 
 	LSG_Cards::cardsLock.unlock();
