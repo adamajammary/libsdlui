@@ -10,10 +10,10 @@ libsdlui is a free cross-platform user interface library using SDL (Simple Direc
 
 Library | Version | License
 ------- | ------- | -------
-[SDL3](https://github.com/libsdl-org/SDL) | [3.4.14](https://github.com/libsdl-org/SDL/releases/download/release-3.4.14/SDL3-3.4.14.tar.gz) | [zlib license](https://github.com/libsdl-org/SDL#Zlib-1-ov-file)
-[SDL3_image](https://github.com/libsdl-org/SDL_image) | [3.4.4](https://github.com/libsdl-org/SDL_image/releases/download/release-3.4.4/SDL3_image-3.4.4.tar.gz) | [zlib license](https://github.com/libsdl-org/SDL_image#Zlib-1-ov-file)
+[SDL3](https://github.com/libsdl-org/SDL) | [3.4.16](https://github.com/libsdl-org/SDL/releases/download/release-3.4.16/SDL3-3.4.16.tar.gz) | [zlib license](https://github.com/libsdl-org/SDL#Zlib-1-ov-file)
+[SDL3_image](https://github.com/libsdl-org/SDL_image) | [3.4.6](https://github.com/libsdl-org/SDL_image/releases/download/release-3.4.6/SDL3_image-3.4.6.tar.gz) | [zlib license](https://github.com/libsdl-org/SDL_image#Zlib-1-ov-file)
 [SDL3_ttf](https://github.com/libsdl-org/SDL_ttf) | [3.2.2](https://github.com/libsdl-org/SDL_ttf/releases/download/release-3.2.2/SDL3_ttf-3.2.2.tar.gz) | [zlib license](https://github.com/libsdl-org/SDL_ttf#Zlib-1-ov-file)
-[libXML2](https://github.com/GNOME/libxml2) | [2.15.3](https://github.com/GNOME/libxml2/archive/refs/tags/v2.15.3.tar.gz) | [MIT License](https://opensource.org/licenses/mit-license.html)
+[libXML2](https://github.com/GNOME/libxml2) | [2.15.4](https://github.com/GNOME/libxml2/archive/refs/tags/v2.15.4.tar.gz) | [MIT License](https://opensource.org/licenses/mit-license.html)
 [DejaVu fonts](https://dejavu-fonts.github.io/) | [2.37](https://sourceforge.net/projects/dejavu/files/dejavu/2.37/dejavu-sans-ttf-2.37.zip) | [DejaVu Fonts license](https://dejavu-fonts.github.io/License.html)
 [Noto CJK fonts](https://github.com/notofonts/noto-cjk) | [2.004](https://github.com/notofonts/noto-cjk/blob/main/Sans/OTC/NotoSansCJK-Regular.ttc) | [SIL Open Font license](https://github.com/notofonts/noto-cjk/blob/main/Sans/LICENSE)
 
