@@ -183,12 +183,13 @@ bool LSG_Window::IsMaximized()
  */
 SDL_Renderer* LSG_Window::Open(const std::string& title, int width, int height)
 {
-	LSG_Window::window = SDL_CreateWindow(
-		title.c_str(),
-		width,
-		height,
-		(SDL_WINDOW_HIGH_PIXEL_DENSITY | SDL_WINDOW_RESIZABLE)
-	);
+	SDL_WindowFlags flags = (SDL_WINDOW_RESIZABLE | SDL_WINDOW_HIGH_PIXEL_DENSITY);
+
+	LSG_Window::window = SDL_CreateWindow(title.c_str(), width, height, flags);
+
+	#if defined _linux || defined _macosx || defined _windows
+		SDL_SetWindowBordered(LSG_Window::window, true);
+	#endif
 
 	if (!LSG_Window::window)
 		throw std::runtime_error(std::format("Failed to create a window: {}", SDL_GetError()));
