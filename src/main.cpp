@@ -107,6 +107,8 @@ static SDL_Renderer* init(const std::string& title, int width, int height)
     #elif defined _macosx
 		SDL_SetHint(SDL_HINT_MAC_CTRL_CLICK_EMULATE_RIGHT_CLICK, "1");
 	#elif defined _linux
+        SDL_SetHint(SDL_HINT_VIDEO_DRIVER, "x11");
+
 		SDL_setenv_unsafe("SDL_VIDEO_X11_LEGACY_FULLSCREEN", "0", 1);
 
 		if (!std::getenv("DISPLAY"))
