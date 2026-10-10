@@ -102,16 +102,18 @@ static SDL_Renderer* init(const std::string& title, int width, int height)
 	if (isRunning)
 		LSG_Quit();
 
-    #if defined _android
-        SDL_SetHint(SDL_HINT_ANDROID_BLOCK_ON_PAUSE, "0");
-    #elif defined _macosx
+	#if defined _android
+		SDL_SetHint(SDL_HINT_ANDROID_BLOCK_ON_PAUSE, "0");
+	#elif defined _macosx
 		SDL_SetHint(SDL_HINT_MAC_CTRL_CLICK_EMULATE_RIGHT_CLICK, "1");
 	#elif defined _linux
         SDL_SetHint(SDL_HINT_VIDEO_DRIVER, "x11");
 
 		SDL_setenv_unsafe("SDL_VIDEO_X11_LEGACY_FULLSCREEN", "0", 1);
 
-		if (!std::getenv("DISPLAY"))
+		auto envDisplay = SDL_getenv("DISPLAY");
+
+		if (!envDisplay || (std::strlen(envDisplay) == 0))
 			SDL_setenv_unsafe("DISPLAY", ":0", 1);
 	#elif defined _windows
 		#if (WINVER >= 0x0605)
@@ -120,9 +122,10 @@ static SDL_Renderer* init(const std::string& title, int width, int height)
 			SetProcessDPIAware();
 		#endif
 	#endif
-	
+
 	SDL_SetHint(SDL_HINT_MOUSE_TOUCH_EVENTS,           "0");
 	SDL_SetHint(SDL_HINT_TOUCH_MOUSE_EVENTS,           "0");
+	SDL_SetHint(SDL_HINT_VIDEO_ALLOW_SCREENSAVER,      "1");
 	SDL_SetHint(SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS, "0");
 
 	if (!SDL_InitSubSystem(SDL_INIT_VIDEO) || !SDL_InitSubSystem(SDL_INIT_EVENTS))

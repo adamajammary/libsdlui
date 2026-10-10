@@ -323,9 +323,6 @@ void LSG_Window::setFilters(const LSG_Strings& filters, GtkFileDialog* dialog)
 
 LSG_Strings LSG_Window::openFiles(bool openFolder, bool allowMultipleSelection, const LSG_Strings& filters)
 {
-	if (std::strlen(std::getenv("DISPLAY")) == 0)
-		SDL_setenv_unsafe("DISPLAY", ":0", 1);
-
 	if (!gtk_init_check())
 		return {};
 
@@ -829,9 +826,6 @@ void LSG_Window::saveFileCB(GObject* source, GAsyncResult* result, gpointer user
 
 std::string LSG_Window::SaveFile(const LSG_Strings& filters)
 {
-	if (std::strlen(std::getenv("DISPLAY")) == 0)
-		SDL_setenv_unsafe("DISPLAY", ":0", 1);
-
 	if (!gtk_init_check())
 		return "";
 
