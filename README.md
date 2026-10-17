@@ -29,7 +29,7 @@ iOS | PhotosUI/PhotosUI.h | [PhotosUI Framework](https://developer.apple.com/doc
 iOS | StoreKit/StoreKit.h | [StoreKit Framework](https://developer.apple.com/documentation/storekit?language=objc)
 iOS | UIKit/UIKit.h | [UIKit Framework](https://developer.apple.com/documentation/uikit?language=objc)
 iOS | UniformTypeIdentifiers/UniformTypeIdentifiers.h | [Uniform Type Identifiers framework](https://developer.apple.com/documentation/uniformtypeidentifiers?language=objc)
-Linux | gtk/gtk.h | [libgtk-3-dev](https://docs.gtk.org/gtk3/)
+Linux | gtk/gtk.h | [libgtk-4-dev](https://docs.gtk.org/gtk4/)
 macOS | AppKit/AppKit.h | [AppKit Framework](https://developer.apple.com/documentation/appkit?language=objc)
 macOS | Foundation/Foundation.h | [Foundation Framework](https://developer.apple.com/documentation/foundation?language=objc)
 macOS | UniformTypeIdentifiers/UniformTypeIdentifiers.h | [Uniform Type Identifiers framework](https://developer.apple.com/documentation/uniformtypeidentifiers?language=objc)
