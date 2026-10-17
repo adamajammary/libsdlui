@@ -10,12 +10,10 @@ libsdlui is a free cross-platform user interface library using SDL (Simple Direc
 
 Library | Version | License
 ------- | ------- | -------
-[SDL2](https://github.com/libsdl-org/SDL) | [2.32.10](https://github.com/libsdl-org/SDL/releases/download/release-2.32.10/SDL2-2.32.10.tar.gz) | [zlib license](https://github.com/libsdl-org/SDL#Zlib-1-ov-file)
-[SDL2_image](https://github.com/libsdl-org/SDL_image) | [2.8.8](https://github.com/libsdl-org/SDL_image/releases/download/release-2.8.8/SDL2_image-2.8.8.tar.gz) | [zlib license](https://github.com/libsdl-org/SDL_image#Zlib-1-ov-file)
-[SDL2_ttf](https://github.com/libsdl-org/SDL_ttf) | [2.24.0](https://github.com/libsdl-org/SDL_ttf/releases/download/release-2.24.0/SDL2_ttf-2.24.0.tar.gz) | [zlib license](https://github.com/libsdl-org/SDL_ttf#Zlib-1-ov-file)
-[libtiff](https://github.com/libsdl-org/libtiff) | [4.7.1](https://github.com/libsdl-org/libtiff/archive/refs/tags/v4.7.1.tar.gz) | [LibTIFF license](https://github.com/libsdl-org/libtiff?tab=License-1-ov-file#readme)
-[libwebp](https://github.com/webmproject/libwebp) | [1.6.0](https://github.com/webmproject/libwebp/archive/refs/tags/v1.6.0.tar.gz) | [BSD-3-Clause license](https://github.com/webmproject/libwebp?tab=BSD-3-Clause-1-ov-file#readme)
-[libXML2](https://github.com/GNOME/libxml2) | [2.15.2](https://github.com/GNOME/libxml2/archive/refs/tags/v2.15.2.tar.gz) | [MIT License](https://opensource.org/licenses/mit-license.html)
+[SDL3](https://github.com/libsdl-org/SDL) | [3.4.18](https://github.com/libsdl-org/SDL/releases/download/release-3.4.18/SDL3-3.4.18.tar.gz) | [zlib license](https://github.com/libsdl-org/SDL#Zlib-1-ov-file)
+[SDL3_image](https://github.com/libsdl-org/SDL_image) | [3.4.8](https://github.com/libsdl-org/SDL_image/releases/download/release-3.4.8/SDL3_image-3.4.8.tar.gz) | [zlib license](https://github.com/libsdl-org/SDL_image#Zlib-1-ov-file)
+[SDL3_ttf](https://github.com/libsdl-org/SDL_ttf) | [3.2.2](https://github.com/libsdl-org/SDL_ttf/releases/download/release-3.2.2/SDL3_ttf-3.2.2.tar.gz) | [zlib license](https://github.com/libsdl-org/SDL_ttf#Zlib-1-ov-file)
+[libXML2](https://github.com/GNOME/libxml2) | [2.15.4](https://github.com/GNOME/libxml2/archive/refs/tags/v2.15.4.tar.gz) | [MIT License](https://opensource.org/licenses/mit-license.html)
 [DejaVu fonts](https://dejavu-fonts.github.io/) | [2.37](https://sourceforge.net/projects/dejavu/files/dejavu/2.37/dejavu-sans-ttf-2.37.zip) | [DejaVu Fonts license](https://dejavu-fonts.github.io/License.html)
 [Noto CJK fonts](https://github.com/notofonts/noto-cjk) | [2.004](https://github.com/notofonts/noto-cjk/blob/main/Sans/OTC/NotoSansCJK-Regular.ttc) | [SIL Open Font license](https://github.com/notofonts/noto-cjk/blob/main/Sans/LICENSE)
 
@@ -31,7 +29,7 @@ iOS | PhotosUI/PhotosUI.h | [PhotosUI Framework](https://developer.apple.com/doc
 iOS | StoreKit/StoreKit.h | [StoreKit Framework](https://developer.apple.com/documentation/storekit?language=objc)
 iOS | UIKit/UIKit.h | [UIKit Framework](https://developer.apple.com/documentation/uikit?language=objc)
 iOS | UniformTypeIdentifiers/UniformTypeIdentifiers.h | [Uniform Type Identifiers framework](https://developer.apple.com/documentation/uniformtypeidentifiers?language=objc)
-Linux | gtk/gtk.h | [libgtk-3-dev](https://docs.gtk.org/gtk3/)
+Linux | gtk/gtk.h | [libgtk-4-dev](https://docs.gtk.org/gtk4/)
 macOS | AppKit/AppKit.h | [AppKit Framework](https://developer.apple.com/documentation/appkit?language=objc)
 macOS | Foundation/Foundation.h | [Foundation Framework](https://developer.apple.com/documentation/foundation?language=objc)
 macOS | UniformTypeIdentifiers/UniformTypeIdentifiers.h | [Uniform Type Identifiers framework](https://developer.apple.com/documentation/uniformtypeidentifiers?language=objc)
@@ -72,7 +70,7 @@ Make sure the correct Android SDK path is set as either
 - an environment variable `ANDROID_HOME=/path/to/ANDROID_SDK` or
 - a local property `sdk.dir=/path/to/ANDROID_SDK` in the **android/local.properties** file
 
-> See [Android SDK Command-Line Tools](https://developer.android.com/tools) and [SDL Android README](https://wiki.libsdl.org/SDL2/README-android) for more details.
+> See [Android SDK Command-Line Tools](https://developer.android.com/tools) and [SDL Android README](https://wiki.libsdl.org/SDL3/README-android) for more details.
 
 ```bash
 cmake .. -G "Unix Makefiles" \
@@ -116,7 +114,7 @@ make
 
 You can get the iOS SDK path with the following command: `xcrun --sdk iphoneos --show-sdk-path`
 
-> See [SDL iOS README](https://wiki.libsdl.org/SDL2/README-ios) for more details.
+> See [SDL iOS README](https://wiki.libsdl.org/SDL3/README-ios) for more details.
 
 ```bash
 /Applications/CMake.app/Contents/bin/cmake .. -G "Xcode" \
@@ -224,9 +222,9 @@ try {
 
 The first step is to run [LSG_Start](#lsg_start) which
 
-- creates a new [SDL_Window](https://wiki.libsdl.org/SDL2/SDL_CreateWindow)
+- creates a new [SDL_Window](https://wiki.libsdl.org/SDL3/SDL_CreateWindow)
 - loads UI components from the XML file
-- creates and returns an [SDL_Renderer](https://wiki.libsdl.org/SDL2/SDL_CreateRenderer)
+- creates and returns an [SDL_Renderer](https://wiki.libsdl.org/SDL3/SDL_CreateRenderer)
 
 ```cpp
 SDL_Renderer* renderer = LSG_Start("ui/main.xml");
@@ -241,26 +239,26 @@ You can call [LSG_IsRunning](#lsg_isrunning) to make sure the library was initia
 - Clears the render buffer
 - Renders UI components (if XML file was loaded)
 - Handles UI related events (like clicking, scrolling, sliding etc.)
-- Returns a list of all [SDL Events](https://wiki.libsdl.org/SDL2/SDL_Event) available
+- Returns a list of all [SDL Events](https://wiki.libsdl.org/SDL3/SDL_Event) available
   - including the ones already handled by the library
-  - custom library events will be available as [SDL_UserEvent](https://wiki.libsdl.org/SDL2/SDL_UserEvent)
+  - custom library events will be available as [SDL_UserEvent](https://wiki.libsdl.org/SDL3/SDL_UserEvent)
 
 ```cpp
 void myapp_handleEvents(const std::vector<SDL_Event>& events)
 {
   for (const SDL_Event& event : events)
   {
-    if ((event.type == SDL_WINDOWEVENT) && (event.window.event == SDL_WINDOWEVENT_CLOSE))
+    if ((event.type == SDL_EVENT_QUIT) || (event.type == SDL_EVENT_WINDOW_CLOSE_REQUESTED))
       LSG_Quit();
-    else if (event.type >= SDL_USEREVENT)
-      myapp_handleUserEvent(event.user);
-    else if (event.type == SDL_KEYUP)
+    else if (event.type == SDL_EVENT_KEY_UP)
       myapp_handleKeyEvent(event.key);
+    else if (event.type >= SDL_EVENT_USER)
+      myapp_handleUserEvent(event.user);
   }
 }
 ```
 
-[SDL_UserEvent](https://wiki.libsdl.org/SDL2/SDL_UserEvent)
+[SDL_UserEvent](https://wiki.libsdl.org/SDL3/SDL_UserEvent)
 
 - The `.code` property will contain the [LSG_EventType](#lsg_eventtype)
 - The `.data1` property will contain the `id` XML-attribute of the UI component that triggered the event
@@ -296,15 +294,15 @@ void myapp_handleUserEvent(const SDL_UserEvent& event)
 
 ## Custom Render
 
-You can also perform custom rendering like [SDL_RenderFillRect](https://wiki.libsdl.org/SDL2/SDL_RenderFillRect) by using the [SDL_Renderer](https://wiki.libsdl.org/SDL2/SDL_CreateRenderer) returned from [LSG_Start](#lsg_start).
+You can also perform custom rendering like [SDL_RenderFillRect](https://wiki.libsdl.org/SDL3/SDL_RenderFillRect) by using the [SDL_Renderer](https://wiki.libsdl.org/SDL3/SDL_CreateRenderer) returned from [LSG_Start](#lsg_start).
 
 > Make sure to render after calling [LSG_Run](#lsg_run) as it will clear anything in the render buffer.
 
 ```cpp
 void myapp_render(SDL_Renderer* renderer)
 {
-    SDL_Size windowSize  = LSG_GetWindowSize();
-    SDL_Rect destination = { ((windowSize.width - 100) / 2), ((windowSize.height - 100) / 2), 100, 100 };
+    SDL_Size  windowSize  = LSG_GetWindowSize();
+    SDL_FRect destination = { (float)((windowSize.width - 100) / 2), (float)((windowSize.height - 100) / 2), 100.0f, 100.0f };
 
     SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
     SDL_SetRenderDrawColor(renderer, 255, 0, 0, 64);
@@ -314,7 +312,7 @@ void myapp_render(SDL_Renderer* renderer)
 
 ## Present
 
-Finally, you can run [LSG_Present](#lsg_present) to swap the background buffer and [present](https://wiki.libsdl.org/SDL2/SDL_RenderPresent) it to the screen.
+Finally, you can run [LSG_Present](#lsg_present) to swap the background buffer and [present](https://wiki.libsdl.org/SDL3/SDL_RenderPresent) it to the screen.
 
 ## Quit
 
@@ -1070,6 +1068,12 @@ struct LSG_TileItem
 using LSG_ExifTags = std::map<uint16_t, std::string>;
 ```
 
+### LSG_OnHoverCallback
+
+```cpp
+using LSG_OnHoverCallback = std::function<std::string()>;
+```
+
 ### LSG_SliderParts
 
 ```cpp
@@ -1428,7 +1432,7 @@ Exceptions
 ### LSG_GetDPIScaled
 
 ```cpp
-int LSG_GetDPIScaled(int value);
+int LSG_GetDPIScaled(int value, bool inverse = false);
 ```
 
 Returns a scaled value relative to the display DPI factor.
@@ -1964,11 +1968,29 @@ Exceptions
 double LSG_GetSliderValue(const std::string& id);
 ```
 
-Returns the value of the slider as a percent between 0 and 1.
+Returns the current value of the slider as a percent between 0 and 1.
 
 Parameters
 
 - **id** \<slider\> component ID
+
+Exceptions
+
+- invalid_argument
+- runtime_error
+
+### LSG_GetSliderValue (mousePosition)
+
+```cpp
+double LSG_GetSliderValue(const std::string& id, const SDL_Point& mousePosition);
+```
+
+Returns the value of the slider as a percent between 0 and 1 relative to mousePosition.
+
+Parameters
+
+- **id** \<slider\> component ID
+- **mousePosition** Mouse cursor position
 
 Exceptions
 
@@ -2539,10 +2561,10 @@ Exceptions
 ### LSG_OpenFile
 
 ```cpp
-std::string LSG_OpenFile(const LSG_Strings& filters = {}); // Android, Linux, macOS and Windows
+std::string LSG_OpenFile(const LSG_Strings& filters = {}); // Linux, macOS and Windows
 ```
 
-> Only supported on Android, Linux, macOS and Windows.
+> Only supported on Linux, macOS and Windows.
 
 Displays an Open File dialog where you can select a single file.
 
@@ -2555,12 +2577,6 @@ Parameters
 Exceptions
 
 - runtime_error
-
-Android
-
-```cpp
-LSG_OpenFile({ "application/*", "audio/*", "image/*", "text/*", "video/*" });
-```
 
 Linux
 
@@ -2605,10 +2621,10 @@ See [LSG_OpenFile](#lsg_openfile) for examples.
 ### LSG_OpenFolder
 
 ```cpp
-std::string LSG_OpenFolder(); // Android, Linux, macOS and Windows
+std::string LSG_OpenFolder(); // Linux, macOS and Windows
 ```
 
-> Only supported on Android, Linux, macOS and Windows.
+> Only supported on Linux, macOS and Windows.
 
 Displays an Open Folder dialog where you can select a single folder.
 
@@ -2634,6 +2650,58 @@ Exceptions
 
 - runtime_error
 
+### LSG_OpenFile (Android)
+
+```cpp
+void LSG_OpenFile(std::function<void(const std::string&)> resultsCallback, const LSG_Strings& filters = {}); // Android
+```
+
+> Only supported on Android.
+
+Displays an Open File dialog where you can select a single file.
+
+Parameters
+
+- **resultsCallback** Callback function with the selected file path, or an empty string if cancelled or denied access.
+- **filters** Optional filter by file type
+
+Exceptions
+
+- runtime_error
+
+```cpp
+LSG_OpenFile([](const std::string& filePath) -> void
+  {
+    // TODO: use filePath
+  },
+  { "application/*", "audio/*", "image/*", "text/*", "video/*" } // optional
+);
+```
+
+### LSG_OpenFolder (Android)
+
+```cpp
+void LSG_OpenFolder(std::function<void(const std::string&)> resultsCallback); // Android
+```
+
+> Only supported on Android.
+
+Displays asynchronously an Open Folder dialog where you can select a single folder.
+
+Parameters
+
+- **resultsCallback** Callback function with the selected folder path, or an empty string if cancelled or denied access.
+
+Exceptions
+
+- runtime_error
+
+```cpp
+LSG_OpenFolder([](const std::string& folderPath) -> void {
+  // TODO: use folderPath
+});
+```
+
 ### LSG_OpenFile (iOS)
 
 ```cpp
@@ -2642,7 +2710,7 @@ void LSG_OpenFile(std::function<void(NSArray<NSURL*>*)> resultsCallback); // iOS
 
 > Only supported on iOS.
 
- Displays asynchronously a Document Picker dialog where you can select a single item file.
+Displays asynchronously a Document Picker dialog where you can select a single item file.
 
 Parameters
 
@@ -2651,8 +2719,6 @@ Parameters
 Exceptions
 
 - runtime_error
-
-iOS
 
 See [Accessing items outside the app's sandbox](https://developer.apple.com/documentation/uikit/providing-access-to-directories?language=objc) for more details.
 
@@ -2751,8 +2817,6 @@ Parameters
 Exceptions
 
 - runtime_error
-
-iOS
 
 See [MPMediaItem](https://developer.apple.com/documentation/mediaplayer/mpmediaitem?language=objc), [valueForProperty:](https://developer.apple.com/documentation/mediaplayer/mpmediaentity/value(forproperty:)?language=objc) and [General media item property keys](https://developer.apple.com/documentation/mediaplayer/general-media-item-property-keys?language=objc) for more details.
 
@@ -3179,10 +3243,10 @@ Exceptions
 ### LSG_SaveFile
 
 ```cpp
-std::string LSG_SaveFile(const LSG_Strings& filters = {}); // Android, Linux, macOS and Windows
+std::string LSG_SaveFile(const LSG_Strings& filters = {}); // Linux, macOS and Windows
 ```
 
-> Only supported on Android, Linux, macOS and Windows.
+> Only supported on Linux, macOS and Windows.
 
 Displays a Save File dialog where you can select a single file.
 
@@ -4271,13 +4335,47 @@ Example
 LSG_SetSize("ButtonIdColorThemeDark", 0.25, 0.75);
 ```
 
+### LSG_SetSliderOnHoverCallback
+
+```cpp
+void LSG_SetSliderOnHoverCallback(const std::string& id, const LSG_OnHoverCallback& callback);
+```
+
+Sets a callback that will be called every time the mouse cursor hovers over the slider.
+
+Parameters
+
+- **id** \<slider\> component ID
+- **callback** Returns a string that will be displayed as a tooltip
+
+Exceptions
+
+- invalid_argument
+- runtime_error
+
+Example
+
+```cpp
+static std::string handleHover() {
+  SDL_Point mousePosition = {};
+  SDL_GetMouseState(&mousePosition.x, &mousePosition.y);
+
+  auto value   = LSG_GetSliderValue("Slider", mousePosition);
+  auto percent = (int)(value * 100.0);
+
+  return std::format("Percent: {}%", percent);
+}
+
+LSG_SetSliderOnHoverCallback("Slider", handleHover);
+```
+
 ### LSG_SetSliderParts
 
 ```cpp
 void LSG_SetSliderParts(const std::string& id, const LSG_SliderParts& parts);
 ```
 
-Sets the slider parts as percentage values with an optional tooltip.
+Sets the slider parts as percentage values with a tooltip.
 
 Parameters
 
@@ -5106,6 +5204,18 @@ std::wstring LSG_TextToWide(const std::string& text);
 ```
 
 Converts standard string to wide string.
+
+Parameters
+
+- **text** Text string
+
+### LSG_TextTrim
+
+```cpp
+std::string LSG_TextTrim(const std::string& text);
+```
+
+Removes whitespaces from beginning and end of text.
 
 Parameters
 

@@ -2,11 +2,26 @@
 
 float         LSG_Window::dpiScale  = 1.0f;
 SDL_Renderer* LSG_Window::renderer  = nullptr;
-SDL_SysWMinfo LSG_Window::sysWmInfo = {};
 SDL_Window*   LSG_Window::window    = nullptr;
+
+#if defined _android
+    std::function<void(const std::string&)> LSG_Window::openCB = nullptr;
+#elif defined _ios
+    UIWindow* LSG_Window::uiWindow = nil;
+#elif defined _linux
+	std::string LSG_Window::path  = "";
+	LSG_Strings LSG_Window::paths = {};
+#endif
 
 void LSG_Window::Close()
 {
+    #if defined _android
+		auto jniEnvironment = LSG_AndroidJNI::GetEnvironment();
+		auto jniActivity    = LSG_AndroidJNI::GetClass(LSG_ConstAndroid::ActivityClassPath, jniEnvironment);
+
+		jniEnvironment->UnregisterNatives(jniActivity);
+    #endif
+
 	if (LSG_Window::renderer) {
 		SDL_DestroyRenderer(LSG_Window::renderer);
 		LSG_Window::renderer = nullptr;
@@ -18,18 +33,11 @@ void LSG_Window::Close()
 	}
 }
 
-#if defined _android
-float LSG_Window::getDPIScale()
+int LSG_Window::GetDPIScaled(int value, bool inverse)
 {
-	float dpi;
-	SDL_GetDisplayDPI(SDL_GetWindowDisplayIndex(LSG_Window::window), &dpi, nullptr, nullptr);
+	if (inverse)
+		return (int)((float)value / LSG_Window::dpiScale);
 
-	return dpi;
-}
-#endif
-
-int LSG_Window::GetDPIScaled(int value)
-{
 	return (int)((float)value * LSG_Window::dpiScale);
 }
 
@@ -61,8 +69,13 @@ SDL_Size LSG_Window::GetMinimumSize()
 
 SDL_Point LSG_Window::GetMousePosition()
 {
-	SDL_Point mousePosition = {};
-	SDL_GetMouseState(&mousePosition.x, &mousePosition.y);
+	if (!SDL_HasMouse())
+		return {};
+
+	float x, y;
+	SDL_GetMouseState(&x, &y);
+
+	SDL_Point mousePosition = { (int)x, (int)y, };
 
 	return mousePosition;
 }
@@ -78,16 +91,16 @@ SDL_Point LSG_Window::GetPosition()
 /**
  * @throws runtime_error
  */
-SDL_Size LSG_Window::GetSize()
+SDL_Size LSG_Window::GetSizeInPixels()
 {
 	auto renderTarget = SDL_GetRenderTarget(LSG_Window::renderer);
 
 	SDL_Size size = {};
 
-	if (SDL_SetRenderTarget(LSG_Window::renderer, nullptr) < 0)
+	if (!SDL_SetRenderTarget(LSG_Window::renderer, nullptr))
 		throw std::runtime_error(std::format("Failed to set render target: {}", SDL_GetError()));
 
-	SDL_GetRendererOutputSize(LSG_Window::renderer, &size.width, &size.height);
+	SDL_GetRenderOutputSize(LSG_Window::renderer, &size.width, &size.height);
 
 	SDL_SetRenderTarget(LSG_Window::renderer, renderTarget);
 
@@ -96,7 +109,10 @@ SDL_Size LSG_Window::GetSize()
 
 SDL_FPoint LSG_Window::GetSizeScale()
 {
-	auto sizeInPixels = LSG_Window::GetSize();
+	if (!LSG_Window::window)
+		return { 1.0f, 1.0f };
+
+	auto sizeInPixels = LSG_Window::GetSizeInPixels();
 
 	SDL_Size size = {};
 	SDL_GetWindowSize(LSG_Window::window, &size.width, &size.height);
@@ -113,6 +129,20 @@ std::string LSG_Window::GetTitle()
 {
 	return SDL_GetWindowTitle(LSG_Window::window);
 }
+
+#if defined _android
+void LSG_Window::InitJNI()
+{
+	JNINativeMethod jniMethods[] = {
+		{ "handleOpenJNI", "(Ljava/lang/String;)V", (void*)&LSG_Window::handleOpenJNI }
+	};
+
+	auto jniEnvironment = LSG_AndroidJNI::GetEnvironment();
+	auto jniActivity    = LSG_AndroidJNI::GetClass(LSG_ConstAndroid::ActivityClassPath, jniEnvironment);
+
+	jniEnvironment->RegisterNatives(jniActivity, jniMethods, 1);
+}
+#endif
 
 /**
  * @throws runtime_error
@@ -155,9 +185,9 @@ SDL_Renderer* LSG_Window::Open(const std::string& title, int width, int height)
 {
 	LSG_Window::window = SDL_CreateWindow(
 		title.c_str(),
-		SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED,
-		width, height,
-		(SDL_WINDOW_ALLOW_HIGHDPI | SDL_WINDOW_RESIZABLE)
+		width,
+		height,
+		(SDL_WINDOW_HIGH_PIXEL_DENSITY | SDL_WINDOW_RESIZABLE)
 	);
 
 	if (!LSG_Window::window)
@@ -168,27 +198,23 @@ SDL_Renderer* LSG_Window::Open(const std::string& title, int width, int height)
 		auto iconSurface = IMG_Load(iconFile.c_str());
 
 		SDL_SetWindowIcon(LSG_Window::window, iconSurface);
-		SDL_FreeSurface(iconSurface);
+		SDL_DestroySurface(iconSurface);
 	#endif
 
-    SDL_VERSION(&LSG_Window::sysWmInfo.version);
-    SDL_GetWindowWMInfo(LSG_Window::window, &LSG_Window::sysWmInfo);
+    #if defined _ios
+		SDL_PropertiesID windowProperties = SDL_GetWindowProperties(LSG_Window::window);
 
-	LSG_Window::renderer = SDL_CreateRenderer(LSG_Window::window, -1, SDL_RENDERER_ACCELERATED);
+		LSG_Window::uiWindow = (__bridge UIWindow*)SDL_GetPointerProperty(
+			windowProperties,
+			SDL_PROP_WINDOW_UIKIT_WINDOW_POINTER,
+			nullptr
+		);
+    #endif
 
-	if (!LSG_Window::renderer)
-		LSG_Window::renderer = SDL_CreateRenderer(LSG_Window::window, -1, SDL_RENDERER_SOFTWARE);
+	LSG_Window::renderer = SDL_CreateRenderer(LSG_Window::window, nullptr);
 
 	if (!LSG_Window::renderer)
 		throw std::runtime_error(std::format("Failed to create a renderer: {}", SDL_GetError()));
-
-	SDL_RendererInfo renderInfo = {};
-
-	if (SDL_GetRendererInfo(LSG_Window::renderer, &renderInfo) < 0)
-		throw std::runtime_error(std::format("Failed to validate renderer: {}", SDL_GetError()));
-
-	if ((renderInfo.flags & SDL_RENDERER_TARGETTEXTURE) < SDL_RENDERER_TARGETTEXTURE)
-		throw std::runtime_error(std::format("The renderer does not support target textures: {}\n", SDL_GetError()));
 
 	LSG_Window::SetDPIScale();
 
@@ -201,7 +227,7 @@ SDL_Renderer* LSG_Window::Open(const std::string& title, int width, int height)
  */
 void LSG_Window::OpenTest()
 {
-	auto surface = SDL_CreateRGBSurfaceWithFormat(0, 800, 600, 24, SDL_PIXELFORMAT_RGB24);
+	auto surface = SDL_CreateSurface(800, 600, SDL_PIXELFORMAT_RGB24);
 
 	if (!surface)
 		throw std::runtime_error(std::format("Failed to create a surface: {}", SDL_GetError()));
@@ -210,75 +236,120 @@ void LSG_Window::OpenTest()
 
 	if (!LSG_Window::renderer)
 		throw std::runtime_error(std::format("Failed to create a renderer: {}", SDL_GetError()));
+
+	LSG_Window::SetDPIScale();
 }
 #endif
 
 #if defined _linux
-LSG_Strings LSG_Window::openFiles(bool openFolder, bool allowMultipleSelection, const LSG_Strings& filters)
+LSG_Strings LSG_Window::getPaths(GFile* file)
 {
-	if (std::strlen(std::getenv("DISPLAY")) == 0)
-		SDL_setenv("DISPLAY", ":0", 1);
-
-	if (!gtk_init_check(0, nullptr))
+	if (!file)
 		return {};
 
-	auto dialog = gtk_file_chooser_dialog_new(
-		(openFolder ? "Select a folder" : "Select a file"),
-		nullptr,
-		(openFolder ? GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER : GTK_FILE_CHOOSER_ACTION_OPEN),
-		"_Cancel",
-		GTK_RESPONSE_CANCEL,
-		"_Open",
-		GTK_RESPONSE_ACCEPT,
-		nullptr
-	);
+	LSG_Strings paths = { std::string(g_file_get_path(file)) };
 
-	if (!filters.empty())
+	g_object_unref(file);
+
+	return paths;
+}
+
+LSG_Strings LSG_Window::getPaths(GListModel* files)
+{
+	if (!files)
+		return {};
+
+	LSG_Strings paths;
+
+	for (auto i = 0; i < g_list_model_get_n_items(files); i++)
+	{
+		auto item = g_list_model_get_object(files, i);
+		auto path = std::string(g_file_get_path(G_FILE(item)));
+
+		paths.push_back(path);
+
+		g_object_unref(item);
+	}
+
+	return paths;
+}
+
+void LSG_Window::openFileCB(GObject* source, GAsyncResult* result, gpointer user_data)
+{
+	auto file = gtk_file_dialog_open_finish(GTK_FILE_DIALOG(source), result, nullptr);
+
+	LSG_Window::paths = LSG_Window::getPaths(file);
+}
+
+void LSG_Window::openFileMultipleCB(GObject* source, GAsyncResult* result, gpointer user_data)
+{
+	auto files = gtk_file_dialog_open_multiple_finish(GTK_FILE_DIALOG(source), result, nullptr);
+
+	LSG_Window::paths = LSG_Window::getPaths(files);
+}
+
+void LSG_Window::openFolderCB(GObject* source, GAsyncResult* result, gpointer user_data)
+{
+	auto folder = gtk_file_dialog_select_folder_finish(GTK_FILE_DIALOG(source), result, nullptr);
+
+	LSG_Window::paths = LSG_Window::getPaths(folder);
+}
+
+void LSG_Window::openFolderMultipleCB(GObject* source, GAsyncResult* result, gpointer user_data)
+{
+	auto folders = gtk_file_dialog_select_multiple_folders_finish(GTK_FILE_DIALOG(source), result, nullptr);
+
+	LSG_Window::paths = LSG_Window::getPaths(folders);
+}
+
+void LSG_Window::setFilters(const LSG_Strings& filters, GtkFileDialog* dialog)
+{
+	if (filters.empty())
+		return;
+
+	auto filterList = g_list_store_new(GTK_TYPE_FILE_FILTER);
+
+	for (const auto& filter : filters)
 	{
 		auto fileFilter = gtk_file_filter_new();
 
-		for (const auto& filter : filters)
-			gtk_file_filter_add_pattern(fileFilter, filter.c_str());
+		gtk_file_filter_add_pattern(fileFilter, filter.c_str());
 
-		gtk_file_chooser_set_filter(GTK_FILE_CHOOSER(dialog), fileFilter);
+		g_list_store_append(filterList, fileFilter);
 	}
 
-	gtk_file_chooser_set_select_multiple(GTK_FILE_CHOOSER(dialog), allowMultipleSelection);
+	gtk_file_dialog_set_filters(dialog, G_LIST_MODEL(filterList));
+}
 
-	LSG_Strings filePaths;
+LSG_Strings LSG_Window::openFiles(bool openFolder, bool allowMultipleSelection, const LSG_Strings& filters)
+{
+	if (!gtk_init_check())
+		return {};
 
-	if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT)
-	{
-		GSList* paths = nullptr;
+	auto dialog = gtk_file_dialog_new();
 
-		for (paths = gtk_file_chooser_get_filenames(GTK_FILE_CHOOSER(dialog)); paths != nullptr; paths = paths->next)
-		{
-			auto selectedPath = (gchar*)paths->data;
+	LSG_Window::setFilters(filters, dialog);
 
-			if (!selectedPath)
-				continue;
+	LSG_Window::paths.clear();
 
-			auto filePath = std::string(selectedPath);
-
-			if (filePath.substr(0, 7) == "file://")
-				filePath = filePath.substr(7);
-
-			if (!filePath.empty())
-				filePaths.push_back(filePath);
-
-			g_free(selectedPath);
-		}
-
-		if (paths)
-			g_slist_free(paths);
+	if (openFolder) {
+		if (allowMultipleSelection)
+			gtk_file_dialog_select_multiple_folders(dialog, nullptr, nullptr, openFolderMultipleCB, nullptr);
+		else
+			gtk_file_dialog_select_folder(dialog, nullptr, nullptr, openFolderCB, nullptr);
+	} else {
+		if (allowMultipleSelection)
+			gtk_file_dialog_open_multiple(dialog, nullptr, nullptr, openFileMultipleCB, nullptr);
+		else
+			gtk_file_dialog_open(dialog, nullptr, nullptr, openFileCB, nullptr);
 	}
 
-	gtk_widget_destroy(GTK_WIDGET(dialog));
+	g_object_unref(dialog);
 
-	while (gtk_events_pending())
-		gtk_main_iteration();
+	while (g_list_model_get_n_items(gtk_window_get_toplevels()) > 0)
+		g_main_context_iteration(nullptr, TRUE);
 
-	return filePaths;
+	return LSG_Window::paths;
 }
 #elif defined _macosx
 LSG_Strings LSG_Window::openFiles(bool openFolder, bool allowMultipleSelection, const LSG_Strings& filters)
@@ -476,7 +547,9 @@ std::vector<std::wstring> LSG_Window::OpenFolders()
 {
 	return LSG_Window::openFolders(true);
 }
-#elif defined _linux || defined _macosx
+#endif
+
+#if defined _linux || defined _macosx
 std::string LSG_Window::OpenFile(const LSG_Strings& filters)
 {
 	auto files = LSG_Window::openFiles(false, false, filters);
@@ -500,67 +573,48 @@ LSG_Strings LSG_Window::OpenFolders()
 {
 	return LSG_Window::openFiles(true, true, {});
 }
-#elif defined _android
-std::string LSG_Window::OpenFile(const LSG_Strings& filters)
+#endif
+
+#if defined _android
+void LSG_Window::handleOpenJNI(JNIEnv* jniEnv, jclass jniClass, jstring jniPath)
 {
-	return LSG_Window::pickFile(filters);
+	LSG_Window::openCB(LSG_AndroidJNI::GetString(jniPath));
 }
 
-std::string LSG_Window::OpenFolder()
+void LSG_Window::OpenFile(std::function<void(const std::string&)> resultsCallback, const LSG_Strings& filters)
 {
-	auto jniEnvironment      = LSG_AndroidJNI::GetEnvironment();
-	auto jniActivity         = LSG_AndroidJNI::GetClass(LSG_ConstAndroid::ActivityClassPath, jniEnvironment);
-	auto jniIsPickingContent = jniEnvironment->GetStaticFieldID(jniActivity,  "IsPickingContent", "Z");
-	auto jniContentPath      = jniEnvironment->GetStaticFieldID(jniActivity,  "ContentPath",      "Ljava/lang/String;");
-	auto jniOpenFolder       = jniEnvironment->GetStaticMethodID(jniActivity, "OpenFolder",       "()V");
+	LSG_Window::openCB = resultsCallback;
+
+	auto jniEnvironment = LSG_AndroidJNI::GetEnvironment();
+	auto jniActivity    = LSG_AndroidJNI::GetClass(LSG_ConstAndroid::ActivityClassPath, jniEnvironment);
+	
+	auto jniOpenFile = jniEnvironment->GetStaticMethodID(jniActivity, "OpenFile", "(Ljava/lang/String;)V");
+
+	auto filter    = LSG_TextJoin(filters, " ");
+	auto jniFilter = jniEnvironment->NewStringUTF(filter.c_str());
+
+	jniEnvironment->CallStaticVoidMethod(jniActivity, jniOpenFile, jniFilter);
+
+	jniEnvironment->DeleteLocalRef(jniFilter);
+	jniEnvironment->DeleteLocalRef(jniActivity);
+}
+
+void LSG_Window::OpenFolder(std::function<void(const std::string&)> resultsCallback)
+{
+	LSG_Window::openCB = resultsCallback;
+
+	auto jniEnvironment = LSG_AndroidJNI::GetEnvironment();
+	auto jniActivity    = LSG_AndroidJNI::GetClass(LSG_ConstAndroid::ActivityClassPath, jniEnvironment);
+
+	auto jniOpenFolder = jniEnvironment->GetStaticMethodID(jniActivity, "OpenFolder", "()V");
 
 	jniEnvironment->CallStaticVoidMethod(jniActivity, jniOpenFolder);
 
-	while (jniEnvironment->GetStaticBooleanField(jniActivity, jniIsPickingContent))
-		SDL_Delay(10);
-
-	auto openedFolder   = (jstring)jniEnvironment->GetStaticObjectField(jniActivity, jniContentPath);
-	auto folderUTF8     = jniEnvironment->GetStringUTFChars(openedFolder, nullptr);
-	auto selectedFolder = std::string(folderUTF8);
-
-	jniEnvironment->ReleaseStringUTFChars(openedFolder, folderUTF8);
 	jniEnvironment->DeleteLocalRef(jniActivity);
-
-	return selectedFolder;
 }
+#endif
 
-std::string LSG_Window::pickFile(const LSG_Strings& filters, bool saveFile)
-{
-	auto jniEnvironment      = LSG_AndroidJNI::GetEnvironment();
-	auto jniActivity         = LSG_AndroidJNI::GetClass(LSG_ConstAndroid::ActivityClassPath, jniEnvironment);
-	auto jniIsPickingContent = jniEnvironment->GetStaticFieldID(jniActivity, "IsPickingContent", "Z");
-	auto jniContentPath      = jniEnvironment->GetStaticFieldID(jniActivity, "ContentPath",      "Ljava/lang/String;");
-	auto jniPickMethod       = (saveFile ? "SaveFile" : "OpenFile");
-	auto jniPickFile         = jniEnvironment->GetStaticMethodID(jniActivity, jniPickMethod, "(Ljava/lang/String;)V");
-
-	std::string filter = "";
-
-	for (size_t i = 0; i < filters.size(); i++)
-		filter.append(filters[i]).append(i < (filters.size() - 1) ? " " : "");
-
-	auto jniFilter = jniEnvironment->NewStringUTF(filter.c_str());
-
-	jniEnvironment->CallStaticVoidMethod(jniActivity, jniPickFile, jniFilter);
-
-	while (jniEnvironment->GetStaticBooleanField(jniActivity, jniIsPickingContent))
-		SDL_Delay(10);
-
-	auto pickedFile   = (jstring)jniEnvironment->GetStaticObjectField(jniActivity, jniContentPath);
-	auto fileUTF8     = jniEnvironment->GetStringUTFChars(pickedFile, nullptr);
-	auto selectedFile = std::string(fileUTF8);
-
-	jniEnvironment->ReleaseStringUTFChars(pickedFile, fileUTF8);
-	jniEnvironment->DeleteLocalRef(jniFilter);
-	jniEnvironment->DeleteLocalRef(jniActivity);
-
-	return selectedFile;
-}
-#elif defined _ios
+#if defined _ios
 @interface MyDocumentPicker : UIViewController<UIDocumentPickerDelegate>
 @property std::function<void(NSArray<NSURL*>*)> resultsCallback;
 @end
@@ -626,7 +680,7 @@ void LSG_Window::OpenFileDocuments(std::function<void(NSArray<NSURL*>*)> results
 
     picker.delegate = documentPicker;
 
-    auto viewController = LSG_Window::sysWmInfo.info.uikit.window.rootViewController;
+    auto viewController = LSG_Window::uiWindow.rootViewController;
 
     [viewController presentViewController: picker animated: true completion: nil];
 }
@@ -660,7 +714,7 @@ void LSG_Window::OpenFileMedia(std::function<void(NSArray<MPMediaItem*>*)> resul
 
     picker.delegate = mediaPicker;
 
-    auto viewController = LSG_Window::sysWmInfo.info.uikit.window.rootViewController;
+	auto viewController = LSG_Window::uiWindow.rootViewController;
 
     [viewController presentViewController: picker animated: true completion: nil];
 }
@@ -696,7 +750,7 @@ void LSG_Window::OpenFilePhotos(std::function<void(NSArray<PHPickerResult*>* res
 
     picker.delegate = photoPicker;
     
-    auto viewController = LSG_Window::sysWmInfo.info.uikit.window.rootViewController;
+	auto viewController = LSG_Window::uiWindow.rootViewController;
 
     [viewController presentViewController: picker animated: true completion: nil];
 }
@@ -711,7 +765,7 @@ void LSG_Window::OpenFolder(std::function<void(NSArray<NSURL*>*)> resultsCallbac
 
     picker.delegate = documentPicker;
 
-    auto viewController = LSG_Window::sysWmInfo.info.uikit.window.rootViewController;
+	auto viewController = LSG_Window::uiWindow.rootViewController;
 
     [viewController presentViewController: picker animated: true completion: nil];
 }
@@ -734,15 +788,21 @@ void LSG_Window::Render()
 /**
  * @throws runtime_error
  */
-SDL_Texture* LSG_Window::RotateTexture(SDL_Texture* texture, const LSG_ImageOrientation& orientation, const SDL_Size& size, uint32_t format)
+SDL_Texture* LSG_Window::RotateTexture(SDL_Texture* texture, const LSG_ImageOrientation& orientation, const SDL_Size& size)
 {
+	auto format = (SDL_PixelFormat)SDL_GetNumberProperty(
+		SDL_GetTextureProperties(texture),
+		SDL_PROP_TEXTURE_FORMAT_NUMBER,
+		0
+	);
+
 	auto renderTarget = SDL_GetRenderTarget(LSG_Window::renderer);
 	auto newTexture   = SDL_CreateTexture(LSG_Window::renderer, format, SDL_TEXTUREACCESS_TARGET, size.width, size.height);
 
-	if (SDL_SetRenderTarget(LSG_Window::renderer, newTexture) < 0)
+	if (!SDL_SetRenderTarget(LSG_Window::renderer, newTexture))
 		throw std::runtime_error(std::format("Failed to set render target: {}", SDL_GetError()));
 
-	SDL_RenderCopyEx(LSG_Window::renderer, texture, nullptr, nullptr, orientation.rotation, nullptr, orientation.flip);
+	LSG_Graphics::RenderTextureRotated(LSG_Window::renderer, texture, nullptr, nullptr, orientation.rotation, nullptr, orientation.flip);
 
 	SDL_SetRenderTarget(LSG_Window::renderer, renderTarget);
 
@@ -751,61 +811,38 @@ SDL_Texture* LSG_Window::RotateTexture(SDL_Texture* texture, const LSG_ImageOrie
 	return newTexture;
 }
 
-#if defined _android
-std::string LSG_Window::SaveFile(const LSG_Strings& filters)
+#if defined _linux
+void LSG_Window::saveFileCB(GObject* source, GAsyncResult* result, gpointer user_data)
 {
-	return LSG_Window::pickFile(filters, true);
-}
-#elif defined _linux
-std::string LSG_Window::SaveFile(const LSG_Strings& filters)
-{
-	if (std::strlen(std::getenv("DISPLAY")) == 0)
-		SDL_setenv("DISPLAY", ":0", 1);
+	auto file = gtk_file_dialog_save_finish(GTK_FILE_DIALOG(source), result, nullptr);
 
-	if (!gtk_init_check(0, nullptr))
+	if (!file)
+		return;
+
+	LSG_Window::path = std::string(g_file_get_path(file));
+
+	g_object_unref(file);
+}
+
+std::string LSG_Window::SaveFile(const LSG_Strings& filters)
+{
+	if (!gtk_init_check())
 		return "";
 
-	auto dialog = gtk_file_chooser_dialog_new(
-		"Save File",
-		nullptr,
-		GTK_FILE_CHOOSER_ACTION_SAVE,
-		"_Cancel",
-		GTK_RESPONSE_CANCEL,
-		"_Save",
-		GTK_RESPONSE_ACCEPT,
-		nullptr
-	);
+	auto dialog = gtk_file_dialog_new();
 
-	if (!filters.empty())
-	{
-		auto fileFilter = gtk_file_filter_new();
+	LSG_Window::setFilters(filters, dialog);
 
-		for (const auto& filter : filters)
-			gtk_file_filter_add_pattern(fileFilter, filter.c_str());
+	LSG_Window::path = "";
 
-		gtk_file_chooser_set_filter(GTK_FILE_CHOOSER(dialog), fileFilter);
-	}
+	gtk_file_dialog_save(dialog, nullptr, nullptr, saveFileCB, nullptr);
 
-	std::string filePath = "";
+	g_object_unref(dialog);
 
-	if (gtk_dialog_run(GTK_DIALOG(dialog)) == GTK_RESPONSE_ACCEPT)
-	{
-		auto selectedPath = gtk_file_chooser_get_filename(GTK_FILE_CHOOSER(dialog));
+	while (g_list_model_get_n_items(gtk_window_get_toplevels()) > 0)
+		g_main_context_iteration(nullptr, TRUE);
 
-		filePath = std::string(selectedPath);
-
-		if (filePath.substr(0, 7) == "file://")
-			filePath = filePath.substr(7);
-
-		g_free(selectedPath);
-	}
-
-	gtk_widget_destroy(GTK_WIDGET(dialog));
-
-	while (gtk_events_pending())
-		gtk_main_iteration();
-
-	return filePath;
+	return LSG_Window::path;
 }
 #elif defined _macosx
 std::string LSG_Window::SaveFile(const LSG_Strings& filters)
@@ -902,7 +939,7 @@ std::wstring LSG_Window::SaveFile(const LSG_Strings& filters)
 void LSG_Window::SetDPIScale()
 {
 	#if defined _android
-		LSG_Window::dpiScale = (LSG_Window::getDPIScale() / 160.0f);
+		LSG_Window::dpiScale = SDL_GetWindowDisplayScale(LSG_Window::window);
 	#else
 		LSG_Window::dpiScale = LSG_Window::GetSizeScale().x;
 	#endif
@@ -939,6 +976,17 @@ void LSG_Window::SetTitle(const std::string& title)
 void LSG_Window::ShowMessage(const std::string& message, uint32_t flags)
 {
 	SDL_ShowSimpleMessageBox(flags, LSG_Window::GetTitle().c_str(), message.c_str(), LSG_Window::window);
+}
+
+void LSG_Window::StartTextInput(const SDL_Rect* area, int cursor)
+{
+	SDL_SetTextInputArea(LSG_Window::window, area, cursor);
+	SDL_StartTextInput(LSG_Window::window);
+}
+
+void LSG_Window::StopTextInput()
+{
+	SDL_StopTextInput(LSG_Window::window);
 }
 
 SDL_Texture* LSG_Window::ToTexture(const std::string& imageFile)

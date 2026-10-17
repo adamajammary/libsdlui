@@ -12,16 +12,24 @@ private:
 private:
     static float         dpiScale;
     static SDL_Renderer* renderer;
-    static SDL_SysWMinfo sysWmInfo;
     static SDL_Window*   window;
+
+    #if defined _android
+        static std::function<void(const std::string&)> openCB;
+    #elif defined _ios
+        static UIWindow* uiWindow;
+    #elif defined _linux
+        static std::string path;
+        static LSG_Strings paths;
+    #endif
 
 public:
     static void          Close();
-    static int           GetDPIScaled(int value);
+    static int           GetDPIScaled(int value, bool inverse = false);
     static SDL_Size      GetMinimumSize();
     static SDL_Point     GetMousePosition();
     static SDL_Point     GetPosition();
-    static SDL_Size      GetSize();
+    static SDL_Size      GetSizeInPixels();
     static SDL_FPoint    GetSizeScale();
     static std::string   GetTitle();
     static void          InitRenderTarget(SDL_Texture* &renderTarget, const SDL_Size& textureSize);
@@ -29,7 +37,7 @@ public:
     static SDL_Renderer* Open(const std::string& title, int width, int height);
     static void          Present();
     static void          Render();
-    static SDL_Texture*  RotateTexture(SDL_Texture* texture, const LSG_ImageOrientation& orientation, const SDL_Size& size, uint32_t format);
+    static SDL_Texture*  RotateTexture(SDL_Texture* texture, const LSG_ImageOrientation& orientation, const SDL_Size& size);
     static void          SetDPIScale();
     static void          SetMaximized(bool maximized = true);
     static void          SetMinimumSize(int width, int height);
@@ -37,29 +45,39 @@ public:
     static void          SetSize(int width, int height);
     static void          SetTitle(const std::string& title);
     static void          ShowMessage(const std::string& message, uint32_t flags = SDL_MESSAGEBOX_ERROR);
+    static void          StartTextInput(const SDL_Rect* area, int cursor);
+    static void          StopTextInput();
     static SDL_Texture*  ToTexture(const std::string& imageFile);
     static SDL_Texture*  ToTexture(SDL_Surface* surface);
 
     #if defined _windows
-        static std::wstring              OpenFile(const LSG_Strings& filters);
+        static std::wstring              OpenFile(const  LSG_Strings& filters);
         static std::vector<std::wstring> OpenFiles(const LSG_Strings& filters);
         static std::wstring              OpenFolder();
         static std::vector<std::wstring> OpenFolders();
         static std::wstring              SaveFile(const LSG_Strings& filters);
-    #elif defined _linux || defined _macosx
-        static std::string OpenFile(const LSG_Strings& filters);
+    #endif
+
+    #if defined _linux || defined _macosx
+        static std::string OpenFile(const  LSG_Strings& filters);
         static LSG_Strings OpenFiles(const LSG_Strings& filters);
+
         static std::string OpenFolder();
         static LSG_Strings OpenFolders();
+
         static std::string SaveFile(const LSG_Strings& filters);
-    #elif defined _android
-        static float       getDPIScale();
-        static std::string OpenFile(const LSG_Strings& filters);
-        static std::string OpenFolder();
-        static std::string SaveFile(const LSG_Strings& filters);
-    #elif defined _ios
-        static void OpenFileDocuments(std::function<void(NSArray<NSURL*>*)> resultsCallback, bool allowMultipleSelection);
-        static void OpenFileMedia(std::function<void(NSArray<MPMediaItem*>*)> resultsCallback, bool allowMultipleSelection);
+    #endif
+
+    #if defined _android
+        static void InitJNI();
+
+        static void OpenFile(std::function<void(const std::string&)> resultsCallback, const LSG_Strings& filters = {});
+        static void OpenFolder(std::function<void(const std::string&)> resultsCallback);
+    #endif
+
+    #if defined _ios
+        static void OpenFileDocuments(std::function<void(NSArray<NSURL*>*)>       resultsCallback, bool allowMultipleSelection);
+        static void OpenFileMedia(std::function<void(NSArray<MPMediaItem*>*)>     resultsCallback, bool allowMultipleSelection);
         static void OpenFilePhotos(std::function<void(NSArray<PHPickerResult*>*)> resultsCallback, bool allowMultipleSelection);
         static void OpenFolder(std::function<void(NSArray<NSURL*>*)> resultsCallback);
     #endif
@@ -73,10 +91,28 @@ private:
         static std::vector<std::wstring> getFiltersWide(const LSG_Strings& filters);
         static std::vector<std::wstring> openFiles(bool allowMultipleSelection, const LSG_Strings& filters);
         static std::vector<std::wstring> openFolders(bool allowMultipleSelection);
-    #elif defined _linux || defined _macosx
+    #endif
+
+    #if defined _linux
+        static LSG_Strings getPaths(GFile* file);
+        static LSG_Strings getPaths(GListModel* files);
+
+        static void openFileCB(GObject*           source, GAsyncResult* result, gpointer user_data);
+        static void openFileMultipleCB(GObject*   source, GAsyncResult* result, gpointer user_data);
+        static void openFolderCB(GObject*         source, GAsyncResult* result, gpointer user_data);
+        static void openFolderMultipleCB(GObject* source, GAsyncResult* result, gpointer user_data);
+
+        static void saveFileCB(GObject* source, GAsyncResult* result, gpointer user_data);
+
+        static void setFilters(const LSG_Strings& filters, GtkFileDialog* dialog);
+    #endif
+
+    #if defined _android
+        static void handleOpenJNI(JNIEnv* jniEnv, jclass jniClass, jstring jniPath);
+    #endif
+
+    #if defined _linux || defined _macosx
         static LSG_Strings openFiles(bool openFolder, bool allowMultipleSelection, const LSG_Strings& filters);
-    #elif defined _android
-        static std::string pickFile(const LSG_Strings& filters, bool saveFile = false);
     #endif
 };
 

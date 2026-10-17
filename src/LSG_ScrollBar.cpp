@@ -356,7 +356,7 @@ void LSG_ScrollBar::renderScrollableTexture(
 	auto clip           = this->getScrollableClip(backgroundArea, size);
 	auto destination    = LSG_Graphics::GetDestinationAligned(backgroundArea, size, alignment);
 
-	SDL_RenderCopy(renderer, texture, &clip, &destination);
+	LSG_Graphics::RenderTexture(renderer, texture, &clip, &destination);
 }
 
 void LSG_ScrollBar::renderScrollBarHorizontal(
@@ -440,7 +440,7 @@ void LSG_ScrollBar::renderScrollBar(SDL_Renderer* renderer, const SDL_Rect& bar,
 	SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
 	SDL_SetRenderDrawColor(renderer, backgroundColor.r, backgroundColor.g, backgroundColor.b, 255);
 
-	SDL_RenderFillRect(renderer, &bar);
+	LSG_Graphics::RenderFill(renderer, &bar);
 }
 
 void LSG_ScrollBar::renderScrollThumbHorizontal(SDL_Renderer* renderer, const SDL_Color& color, int maxWidth, LSG_Component* component)
@@ -469,13 +469,13 @@ void LSG_ScrollBar::renderScrollThumbHorizontal(SDL_Renderer* renderer, const SD
 			LSG_Window::GetDPIScaled(LSG_ScrollBar::ThumbRadius),
 			color,
 			this->scrollHorizontal.thumb,
-			std::format("{}_scroll_thumb_horizontal", component->GetID())
+			std::format("{}_scroll_thumb_horizontal_{}_{}_{}_{}", component->GetID(), color.r, color.g, color.b, color.a)
 		);
 	}
 	else
 	{
 		SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
-		SDL_RenderFillRect(renderer, &this->scrollHorizontal.thumb);
+		LSG_Graphics::RenderFill(renderer, &this->scrollHorizontal.thumb);
 	}
 }
 
@@ -505,13 +505,13 @@ void LSG_ScrollBar::renderScrollThumbVertical(SDL_Renderer* renderer, const SDL_
 			LSG_Window::GetDPIScaled(LSG_ScrollBar::ThumbRadius),
 			color,
 			this->scrollVertical.thumb,
-			std::format("{}_scroll_thumb_vertical", component->GetID())
+			std::format("{}_scroll_thumb_vertical{}_{}_{}_{}", component->GetID(), color.r, color.g, color.b, color.a)
 		);
 	}
 	else
 	{
 		SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
-		SDL_RenderFillRect(renderer, &this->scrollVertical.thumb);
+		LSG_Graphics::RenderFill(renderer, &this->scrollVertical.thumb);
 	}
 }
 

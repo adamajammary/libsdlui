@@ -29,17 +29,17 @@
     #include <PhotosUI/PhotosUI.h>       // PHPickerResult, PHPickerViewController
 #endif
 
-#ifndef LIB_SDL2_H
-#define LIB_SDL2_H
+#ifndef LIB_SDL_H
+#define LIB_SDL_H
 extern "C" {
-	#include <SDL2/SDL.h>
+	#include <SDL3/SDL.h>
 }
 #endif
 
-#ifndef LIB_SDL2_TTF_H
-#define LIB_SDL2_TTF_H
+#ifndef LIB_SDL_TTF_H
+#define LIB_SDL_TTF_H
 extern "C" {
-	#include <SDL2/SDL_ttf.h>
+	#include <SDL3_ttf/SDL_ttf.h>
 }
 #endif
 
@@ -166,8 +166,8 @@ struct LSG_ExifData
 
 struct LSG_ImageOrientation
 {
-	SDL_RendererFlip flip     = SDL_FLIP_NONE;
-	double           rotation = 0.0;
+	SDL_FlipMode flip     = SDL_FLIP_NONE;
+	double       rotation = 0.0;
 };
 
 struct LSG_GPSCoordinate
@@ -184,6 +184,8 @@ struct LSG_GPS
 	LSG_GPSCoordinate longitude = {};
 	double            altitude  = 0.0;
 };
+
+using LSG_OnHoverCallback = std::function<std::string()>;
 
 struct LSG_SliderPart
 {
@@ -341,7 +343,7 @@ DLLEXPORT std::string DLL LSG_GetColorTheme();
  * @returns a scaled value relative to the display DPI factor
  * @throws runtime_error
  */
-DLLEXPORT int DLL LSG_GetDPIScaled(int value);
+DLLEXPORT int DLL LSG_GetDPIScaled(int value, bool inverse = false);
 
 /**
  * @returns a file structure based on filePath
@@ -592,12 +594,21 @@ DLLEXPORT SDL_Size DLL LSG_GetSize(const std::string& id);
 DLLEXPORT LSG_SliderParts DLL LSG_GetSliderParts(const std::string& id);
 
 /**
- * @returns the value of the slider as a percent between 0 and 1
+ * @returns the current value of the slider as a percent between 0 and 1
  * @param id <slider> component ID
  * @throws invalid_argument
  * @throws runtime_error
  */
 DLLEXPORT double DLL LSG_GetSliderValue(const std::string& id);
+
+/**
+ * @returns the value of the slider as a percent between 0 and 1 relative to mousePosition
+ * @param id            <slider> component ID
+ * @param mousePosition Mouse cursor position
+ * @throws invalid_argument
+ * @throws runtime_error
+ */
+DLLEXPORT double DLL LSG_GetSliderValue(const std::string& id, const SDL_Point& mousePosition);
 
 /**
  * @returns the sort column index of the table
@@ -872,15 +883,14 @@ DLLEXPORT void DLL LSG_NavigateEnd(const std::string& id, const std::string& tex
  */
 DLLEXPORT void DLL LSG_NavigateTo(const std::string& id, int position, const std::string& text = "");
 
+#if defined _linux || defined _macosx || defined _windows
 /**
  * @brief Displays an Open File dialog where you can select a single file.
  * @returns the selected file path or an empty string if cancelled
  * @param filters Optional filter by file type
  * @throws runtime_error
  */
-#if defined _android || defined _linux || defined _macosx || defined _windows
 DLLEXPORT std::string DLL LSG_OpenFile(const LSG_Strings& filters = {});
-#endif
 
 /**
  * @brief Displays an Open File dialog where you can select multiple files.
@@ -888,71 +898,89 @@ DLLEXPORT std::string DLL LSG_OpenFile(const LSG_Strings& filters = {});
  * @param filters Optional filter by file type
  * @throws runtime_error
  */
-#if defined _linux || defined _macosx || _windows
 DLLEXPORT LSG_Strings DLL LSG_OpenFiles(const LSG_Strings& filters = {});
-#endif
 
 /**
  * @brief Displays an Open Folder dialog where you can select a single folder.
  * @returns the selected folder path or an empty string if cancelled
  * @throws runtime_error
  */
-#if defined _android || defined _linux || defined _macosx || defined _windows
 DLLEXPORT std::string DLL LSG_OpenFolder();
-#endif
 
 /**
  * @brief Displays an Open Folder dialog where you can select multiple folders.
  * @returns the selected folder paths or an empty list if cancelled
  * @throws runtime_error
  */
-#if defined _linux || defined _macosx || defined _windows
 DLLEXPORT LSG_Strings DLL LSG_OpenFolders();
 #endif
 
+#if defined _android
+/**
+ * @brief Displays asynchronously an Open File dialog where you can select a single file.
+ * @param resultsCallback Callback function with the selected file path, or an empty string if cancelled or denied access.
+ * @param filters Optional filter by file type
+ * @throws runtime_error
+ */
+DLLEXPORT void DLL LSG_OpenFile(std::function<void(const std::string&)> resultsCallback, const LSG_Strings& filters = {});
+
+/**
+ * @brief Displays asynchronously an Open Folder dialog where you can select a single folder.
+ * @param resultsCallback Callback function with the selected folder path, or an empty string if cancelled or denied access.
+ * @throws runtime_error
+ */
+DLLEXPORT void DLL LSG_OpenFolder(std::function<void(const std::string&)> resultsCallback);
+#endif
+
+#if defined _ios
 /**
  * @brief Displays asynchronously a Document Picker dialog where you can select a single item file.
  * @param resultsCallback Callback function with an array containing the selected file, or an empty array if cancelled or denied access.
  * @throws runtime_error
  */
-#if defined _ios
 DLLEXPORT void DLL LSG_OpenFile(std::function<void(NSArray<NSURL*>*)> resultsCallback);
-#endif
 
 /**
  * @brief Displays asynchronously a Document Picker dialog where you can select multiple item files.
  * @param resultsCallback Callback function with an array of selected files, or an empty array if cancelled or denied access.
  * @throws runtime_error
  */
-#if defined _ios
 DLLEXPORT void DLL LSG_OpenFiles(std::function<void(NSArray<NSURL*>*)> resultsCallback);
-#endif
 
 /**
  * @brief Displays asynchronously a Document Picker dialog where you can select a single folder.
  * @param resultsCallback Callback function with an array containing the selected folder, or an empty array if cancelled or denied access.
  * @throws runtime_error
  */
-#if defined _ios
 DLLEXPORT void DLL LSG_OpenFolder(std::function<void(NSArray<NSURL*>*)> resultsCallback);
-#endif
 
 /**
  * @brief Displays asynchronously an Open Music dialog where you can select a single media file.
  * @param resultsCallback Callback function with an array containing the selected file, or an empty array if cancelled or denied access.
  * @throws runtime_error
  */
-#if defined _ios
 DLLEXPORT void DLL LSG_OpenMediaFile(std::function<void(NSArray<MPMediaItem*>*)> resultsCallback);
-#endif
 
 /**
  * @brief Displays asynchronously an Open Music dialog where you can select multiple media files.
  * @param resultsCallback Callback function with an array of selected files, or an empty array if cancelled or denied access.
  * @throws runtime_error
  */
-#if defined _ios
 DLLEXPORT void DLL LSG_OpenMediaFiles(std::function<void(NSArray<MPMediaItem*>*)> resultsCallback);
+
+/**
+ * @brief Displays asynchronously an Open Photo dialog where you can select a single image file.
+ * @param resultsCallback Callback function with an array containing the selected file, or an empty array if cancelled or denied access.
+ * @throws runtime_error
+ */
+DLLEXPORT void DLL LSG_OpenPhotoFile(std::function<void(NSArray<PHPickerResult*>*)> resultsCallback);
+
+/**
+ * @brief Displays asynchronously an Open Photo dialog where you can select multiple image files.
+ * @param resultsCallback Callback function with an array of selected files, or an empty array if cancelled or denied access.
+ * @throws runtime_error
+ */
+DLLEXPORT void DLL LSG_OpenPhotoFiles(std::function<void(NSArray<PHPickerResult*>*)> resultsCallback);
 #endif
 
 /**
@@ -970,24 +998,6 @@ DLLEXPORT void DLL LSG_OpenMenu(const std::string& id);
  * @throws runtime_error
  */
 DLLEXPORT void DLL LSG_OpenModal(const std::string& id);
-
-/**
- * @brief Displays asynchronously an Open Photo dialog where you can select a single image file.
- * @param resultsCallback Callback function with an array containing the selected file, or an empty array if cancelled or denied access.
- * @throws runtime_error
- */
-#if defined _ios
-DLLEXPORT void DLL LSG_OpenPhotoFile(std::function<void(NSArray<PHPickerResult*>*)> resultsCallback);
-#endif
-
-/**
- * @brief Displays asynchronously an Open Photo dialog where you can select multiple image files.
- * @param resultsCallback Callback function with an array of selected files, or an empty array if cancelled or denied access.
- * @throws runtime_error
- */
-#if defined _ios
-DLLEXPORT void DLL LSG_OpenPhotoFiles(std::function<void(NSArray<PHPickerResult*>*)> resultsCallback);
-#endif
 
 /**
  * @brief Opens the sub-menu.
@@ -1114,7 +1124,7 @@ DLLEXPORT std::vector<SDL_Event> DLL LSG_Run();
  * @param filters Optional filter by file type
  * @throws runtime_error
  */
-#if defined _android || defined _linux || defined _macosx || defined _windows
+#if defined _linux || defined _macosx || defined _windows
 DLLEXPORT std::string DLL LSG_SaveFile(const LSG_Strings& filters = {});
 #endif
 
@@ -1533,7 +1543,16 @@ DLLEXPORT void DLL LSG_SetSize(const std::string& id, const SDL_Size& size, bool
 DLLEXPORT void DLL LSG_SetSize(const std::string& id, double width, double height, bool layout = true);
 
 /**
- * @brief Sets the slider parts as percentage values with an optional tooltip.
+ * @brief Sets a callback that will be called every time the mouse cursor hovers over the slider.
+ * @param id       <slider> component ID
+ * @param callback Returns a string that will be displayed as a tooltip
+ * @throws invalid_argument
+ * @throws runtime_error
+ */
+DLLEXPORT void DLL LSG_SetSliderOnHoverCallback(const std::string& id, const LSG_OnHoverCallback& callback);
+
+/**
+ * @brief Sets the slider parts as percentage values with a tooltip.
  * @param id    <slider> component ID
  * @param parts Slider parts
  * @throws invalid_argument
@@ -1844,6 +1863,12 @@ DLLEXPORT std::string DLL LSG_TextToUTF8(const std::wstring& wide);
  * @param text Text string
  */
 DLLEXPORT std::wstring DLL LSG_TextToWide(const std::string& text);
+
+/**
+ * @brief Removes whitespaces from beginning and end of text.
+ * @param text Text string
+ */
+DLLEXPORT std::string DLL LSG_TextTrim(const std::string& text);
 
 /**
  * @brief Tries to initialize the library and open a new window based on layout from XML file.

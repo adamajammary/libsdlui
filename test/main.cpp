@@ -1,5 +1,3 @@
-#define SDL_MAIN_HANDLED
-
 #include <cstdio> // snprintf(x)
 #include <format>
 
@@ -8,6 +6,10 @@
 #endif
 
 #include <libsdlui.h>
+
+extern "C" {
+	#include "SDL3/SDL_main.h"
+}
 
 static void setColorTheme(const std::string& menuItemId, const std::string& colorThemeFile, bool isInit = false)
 {
@@ -52,13 +54,13 @@ static void handleKeyEvent(const SDL_KeyboardEvent& event)
 {
     // https://wiki.libsdl.org/SDL2/SDL_Keymod
 
-    auto key     = event.keysym.sym;
-    bool isCtrl  = (event.keysym.mod & KMOD_CTRL);
-    bool isShift = (event.keysym.mod & KMOD_SHIFT);
+    auto key     = event.key;
+    bool isCtrl  = (event.mod & SDL_KMOD_CTRL);
+    bool isShift = (event.mod & SDL_KMOD_SHIFT);
 
-    if (isCtrl && (key == SDLK_d))
+    if (isCtrl && (key == SDLK_D))
         setColorTheme("MenuIdColorThemeDark", "ui/dark.colortheme");
-    else if (isCtrl && (key == SDLK_l))
+    else if (isCtrl && (key == SDLK_L))
         setColorTheme("MenuIdColorThemeLight", "ui/light.colortheme");
     else if (isShift && (key == SDLK_F1))
         LSG_OpenModal("ModalIdAbout");
@@ -158,13 +160,35 @@ static void handleEvents(const std::vector<SDL_Event>& events)
 {
     for (const auto& event : events)
     {
-        if ((event.type == SDL_QUIT) || ((event.type == SDL_WINDOWEVENT) && (event.window.event == SDL_WINDOWEVENT_CLOSE)))
+        if ((event.type == SDL_EVENT_QUIT) || (event.type == SDL_EVENT_WINDOW_CLOSE_REQUESTED))
             LSG_Quit();
-        else if (event.type == SDL_KEYUP)
+        else if (event.type == SDL_EVENT_KEY_UP)
             handleKeyEvent(event.key);
-        else if (event.type >= SDL_USEREVENT)
+        else if (event.type >= SDL_EVENT_USER)
             handleUserEvent(event.user);
     }
+}
+
+static std::string handleHover() {
+    float x, y;
+    SDL_GetMouseState(&x, &y);
+
+    SDL_Point mousePosition = { (int)x, (int)y };
+
+    auto value   = LSG_GetSliderValue("Slider", mousePosition);
+    auto percent = (int)(value * 100.0);
+
+    return std::format("Percent: {}%", percent);
+}
+
+static void init()
+{
+    LSG_SetSliderOnHoverCallback("Slider", handleHover);
+
+    if (!LSG_IsPreferredDarkMode())
+        setColorTheme("MenuIdColorThemeLight", "ui/light.colortheme", true);
+    else
+        setColorTheme("MenuIdColorThemeDark", "ui/dark.colortheme", true);
 }
 
 static void render(SDL_Renderer* renderer)
@@ -176,11 +200,11 @@ static void render(SDL_Renderer* renderer)
     SDL_Size  windowSize = LSG_GetWindowSize();
     SDL_Size  overlay    = { 100, 100 };
 
-    SDL_Rect destination = {
-        ((windowSize.width  - overlay.width)  / 2),
-        ((windowSize.height - overlay.height) / 2),
-        overlay.width,
-        overlay.height
+    SDL_FRect destination = {
+        (float)((windowSize.width  - overlay.width)  / 2),
+        (float)((windowSize.height - overlay.height) / 2),
+        (float)overlay.width,
+        (float)overlay.height
     };
 
     SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_BLEND);
@@ -188,25 +212,14 @@ static void render(SDL_Renderer* renderer)
     SDL_RenderFillRect(renderer, &destination);
 }
 
-#if defined _windows && defined _DEBUG
-int wmain(int argc, wchar_t* argv[])
-#elif defined _windows && defined NDEBUG
-int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nCmdShow)
-#else
-int SDL_main(int argc, char* argv[])
-#endif
+int main(int argc, char* argv[])
 {
     try
     {
         SDL_Renderer* renderer = LSG_Start("ui/main.xml");
 
         if (LSG_IsRunning())
-        {
-            if (!LSG_IsPreferredDarkMode())
-                setColorTheme("MenuIdColorThemeLight", "ui/light.colortheme", true);
-            else
-                setColorTheme("MenuIdColorThemeDark", "ui/dark.colortheme", true);
-        }
+            init();
 
         std::vector<SDL_Event> events;
 
@@ -235,14 +248,3 @@ int SDL_main(int argc, char* argv[])
 
     return 0;
 }
-
-#if !defined _windows
-int main(int argc, char* argv[])
-{
-#if defined _ios
-	return SDL_UIKitRunApp(argc, argv, SDL_main);
-#else
-	return SDL_main(argc, argv);
-#endif
-}
-#endif

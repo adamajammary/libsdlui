@@ -2,10 +2,10 @@
 
 const char ERROR_NOT_STARTED[] = "libsdlui has not been started, call LSG_Start.";
 
-char* basePath  = nullptr;
-bool  isRunning = false;
+std::string basePath  = "";
+bool        isRunning = false;
 
-const char* LSG_GetBasePath()
+std::string LSG_GetBasePath()
 {
 	return basePath;
 }
@@ -31,13 +31,15 @@ static std::string getErrorNoID(const std::string& component, const std::string&
  */
 static void initBasePath()
 {
-	if (basePath)
+	if (!basePath.empty())
 		return;
 
-	basePath = SDL_GetPrefPath(nullptr, nullptr);
+	auto path = SDL_GetAndroidInternalStoragePath();
 
-	if (!basePath)
-		throw std::runtime_error("Failed to get an app-specific location where files can be written.");
+	if (!path)
+		throw std::runtime_error(std::format("Failed to get an app-specific location where files can be written: {}", SDL_GetError()));
+
+	basePath = std::format("{}/", path);
 
 	auto jniAssetManager = LSG_AndroidJNI::GetAssetManager();
 	auto dirs            = { "fonts", "img", "ui" };
@@ -62,7 +64,7 @@ static void initBasePath()
 				throw std::runtime_error(std::format("Failed to open asset: {}", sourcePath));
 
 			auto destinationPath = std::format("{}{}", basePath, sourcePath);
-			auto destinationFile = SDL_RWFromFile(destinationPath.c_str(), "w");
+			auto destinationFile = SDL_IOFromFile(destinationPath.c_str(), "w");
 
 			if (!destinationFile)
 				throw std::runtime_error(std::format("Failed to write file '{}': {}", destinationPath, SDL_GetError()));
@@ -71,9 +73,9 @@ static void initBasePath()
 			int  fileReadSize = 0;
 
 			while ((fileReadSize = AAsset_read(sourceAsset, destinationBuffer, BUFSIZ)) > 0)
-				SDL_RWwrite(destinationFile, destinationBuffer, fileReadSize, 1);
+				SDL_WriteIO(destinationFile, destinationBuffer, fileReadSize);
 
-			SDL_RWclose(destinationFile);
+			SDL_CloseIO(destinationFile);
 			AAsset_close(sourceAsset);
 		}
 
@@ -83,7 +85,15 @@ static void initBasePath()
 #else
 static void initBasePath()
 {
-	basePath = SDL_GetBasePath();
+	if (!basePath.empty())
+		return;
+
+	auto path = SDL_GetBasePath();
+
+	if (!path)
+		throw std::runtime_error(std::format("Failed to get an app-specific location where files can be written: {}", SDL_GetError()));
+
+	basePath = std::string(path);
 }
 #endif
 
@@ -92,13 +102,19 @@ static SDL_Renderer* init(const std::string& title, int width, int height)
 	if (isRunning)
 		LSG_Quit();
 
-	#if defined _macosx
+	#if defined _android
+		SDL_SetHint(SDL_HINT_ANDROID_BLOCK_ON_PAUSE, "0");
+	#elif defined _macosx
 		SDL_SetHint(SDL_HINT_MAC_CTRL_CLICK_EMULATE_RIGHT_CLICK, "1");
 	#elif defined _linux
-		SDL_setenv("SDL_VIDEO_X11_LEGACY_FULLSCREEN", "0", 1);
+        SDL_SetHint(SDL_HINT_VIDEO_DRIVER, "x11");
 
-		if (!std::getenv("DISPLAY"))
-			SDL_setenv("DISPLAY", ":0", 1);
+		SDL_setenv_unsafe("SDL_VIDEO_X11_LEGACY_FULLSCREEN", "0", 1);
+
+		auto envDisplay = SDL_getenv("DISPLAY");
+
+		if (!envDisplay || (std::strlen(envDisplay) == 0))
+			SDL_setenv_unsafe("DISPLAY", ":0", 1);
 	#elif defined _windows
 		#if (WINVER >= 0x0605)
 			SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE_V2);
@@ -106,27 +122,25 @@ static SDL_Renderer* init(const std::string& title, int width, int height)
 			SetProcessDPIAware();
 		#endif
 	#endif
-	
+
 	SDL_SetHint(SDL_HINT_MOUSE_TOUCH_EVENTS,           "0");
 	SDL_SetHint(SDL_HINT_TOUCH_MOUSE_EVENTS,           "0");
-	SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY,         "2");
-	SDL_SetHint(SDL_HINT_VIDEO_HIGHDPI_DISABLED,       "0");
+	SDL_SetHint(SDL_HINT_VIDEO_ALLOW_SCREENSAVER,      "1");
 	SDL_SetHint(SDL_HINT_VIDEO_MINIMIZE_ON_FOCUS_LOSS, "0");
 
-	if ((SDL_InitSubSystem(SDL_INIT_VIDEO) < 0) || (SDL_InitSubSystem(SDL_INIT_EVENTS) < 0))
+	if (!SDL_InitSubSystem(SDL_INIT_VIDEO) || !SDL_InitSubSystem(SDL_INIT_EVENTS))
 		throw std::runtime_error(std::format("Failed to initialize SDL: {}", SDL_GetError()));
 
-	SDL_EventState(SDL_SYSWMEVENT, SDL_ENABLE);
-
-	if (IMG_Init(IMG_INIT_JPG | IMG_INIT_PNG | IMG_INIT_TIF | IMG_INIT_WEBP) < 15)
-		throw std::runtime_error(std::format("Failed to initialize SDL_image: {}", IMG_GetError()));
-
-	if (TTF_Init() < 0)
-		throw std::runtime_error(std::format("Failed to initialize SDL_ttf: {}", TTF_GetError()));
+	if (!TTF_Init())
+		throw std::runtime_error(std::format("Failed to initialize SDL_ttf: {}", SDL_GetError()));
 
 	auto renderer = LSG_Window::Open(title, width, height);
 
-	SDL_StopTextInput();
+	SDL_StopTextInput(SDL_GetRenderWindow(renderer));
+
+	#if defined _android
+		LSG_Window::InitJNI();
+	#endif
 
 	isRunning = true;
 
@@ -323,12 +337,12 @@ std::string LSG_GetColorTheme()
 	return LSG_UI::GetColorTheme();
 }
 
-int LSG_GetDPIScaled(int value)
+int LSG_GetDPIScaled(int value, bool inverse)
 {
 	if (!isRunning)
 		throw std::runtime_error(ERROR_NOT_STARTED);
 
-	return LSG_Window::GetDPIScaled(value);
+	return LSG_Window::GetDPIScaled(value, inverse);
 }
 
 LSG_File LSG_GetFile(const std::string& filePath)
@@ -778,7 +792,22 @@ double LSG_GetSliderValue(const std::string& id)
 	if (!component || !component->IsSlider())
 		throw std::invalid_argument(getErrorNoID("<slider>", id));
 
-	auto value = static_cast<LSG_Slider*>(component)->GetValue();
+	auto value = static_cast<LSG_ProgressBar*>(component)->GetValue();
+
+	return value;
+}
+
+double LSG_GetSliderValue(const std::string& id, const SDL_Point& mousePosition)
+{
+	if (!isRunning)
+		throw std::runtime_error(ERROR_NOT_STARTED);
+
+	auto component = getComponent(id);
+
+	if (!component || !component->IsSlider())
+		throw std::invalid_argument(getErrorNoID("<slider>", id));
+
+	auto value = static_cast<LSG_Slider*>(component)->GetValue(mousePosition);
 
 	return value;
 }
@@ -1025,7 +1054,7 @@ SDL_Size LSG_GetWindowSize()
 	if (!isRunning)
 		throw std::runtime_error(ERROR_NOT_STARTED);
 
-	return LSG_Window::GetSize();
+	return LSG_Window::GetSizeInPixels();
 }
 
 std::string LSG_GetWindowTitle()
@@ -1209,7 +1238,7 @@ std::string LSG_OpenFile(const LSG_Strings& filters)
 
 	return filePath;
 }
-#elif defined _android || defined _linux || defined _macosx
+#elif defined _linux || defined _macosx
 std::string LSG_OpenFile(const LSG_Strings& filters)
 {
 	if (!isRunning)
@@ -1250,7 +1279,7 @@ LSG_Strings LSG_OpenFiles(const LSG_Strings& filters)
 }
 #endif
 
-#if defined _android || defined _linux || defined _macosx || defined _windows
+#if defined _linux || defined _macosx || defined _windows
 std::string LSG_OpenFolder()
 {
 	if (!isRunning)
@@ -1268,9 +1297,7 @@ std::string LSG_OpenFolder()
 		return LSG_Window::OpenFolder();
 	#endif
 }
-#endif
 
-#if defined _linux || defined _macosx || defined _windows
 LSG_Strings LSG_OpenFolders()
 {
 	if (!isRunning)
@@ -1297,6 +1324,24 @@ LSG_Strings LSG_OpenFolders()
 }
 #endif
 
+#if defined _android
+void LSG_OpenFile(std::function<void(const std::string&)> resultsCallback, const LSG_Strings& filters)
+{
+	if (!isRunning)
+		throw std::runtime_error(ERROR_NOT_STARTED);
+
+	LSG_Window::OpenFile(resultsCallback, filters);
+}
+
+void LSG_OpenFolder(std::function<void(const std::string&)> resultsCallback)
+{
+	if (!isRunning)
+		throw std::runtime_error(ERROR_NOT_STARTED);
+
+	LSG_Window::OpenFolder(resultsCallback);
+}
+#endif
+
 #if defined _ios
 void LSG_OpenFile(std::function<void(NSArray<NSURL*>*)> resultsCallback)
 {
@@ -1305,9 +1350,7 @@ void LSG_OpenFile(std::function<void(NSArray<NSURL*>*)> resultsCallback)
 
     LSG_Window::OpenFileDocuments(resultsCallback, false);
 }
-#endif
 
-#if defined _ios
 void LSG_OpenFiles(std::function<void(NSArray<NSURL*>*)> resultsCallback)
 {
     if (!isRunning)
@@ -1315,9 +1358,7 @@ void LSG_OpenFiles(std::function<void(NSArray<NSURL*>*)> resultsCallback)
 
     LSG_Window::OpenFileDocuments(resultsCallback, true);
 }
-#endif
 
-#if defined _ios
 void LSG_OpenFolder(std::function<void(NSArray<NSURL*>*)> resultsCallback)
 {
     if (!isRunning)
@@ -1325,9 +1366,7 @@ void LSG_OpenFolder(std::function<void(NSArray<NSURL*>*)> resultsCallback)
 
     LSG_Window::OpenFolder(resultsCallback);
 }
-#endif
 
-#if defined _ios
 void LSG_OpenMediaFile(std::function<void(NSArray<MPMediaItem*>*)> resultsCallback)
 {
     if (!isRunning)
@@ -1335,15 +1374,29 @@ void LSG_OpenMediaFile(std::function<void(NSArray<MPMediaItem*>*)> resultsCallba
 
     LSG_Window::OpenFileMedia(resultsCallback, false);
 }
-#endif
 
-#if defined _ios
 void LSG_OpenMediaFiles(std::function<void(NSArray<MPMediaItem*>*)> resultsCallback)
 {
     if (!isRunning)
         throw std::runtime_error(ERROR_NOT_STARTED);
 
     LSG_Window::OpenFileMedia(resultsCallback, true);
+}
+
+void LSG_OpenPhotoFile(std::function<void(NSArray<PHPickerResult*>*)> resultsCallback)
+{
+    if (!isRunning)
+        throw std::runtime_error(ERROR_NOT_STARTED);
+
+    LSG_Window::OpenFilePhotos(resultsCallback, false);
+}
+
+void LSG_OpenPhotoFiles(std::function<void(NSArray<PHPickerResult*>*)> resultsCallback)
+{
+    if (!isRunning)
+        throw std::runtime_error(ERROR_NOT_STARTED);
+
+    LSG_Window::OpenFilePhotos(resultsCallback, true);
 }
 #endif
 
@@ -1372,26 +1425,6 @@ void LSG_OpenModal(const std::string& id)
 
 	static_cast<LSG_Modal*>(component)->Open();
 }
-
-#if defined _ios
-void LSG_OpenPhotoFile(std::function<void(NSArray<PHPickerResult*>*)> resultsCallback)
-{
-    if (!isRunning)
-        throw std::runtime_error(ERROR_NOT_STARTED);
-
-    LSG_Window::OpenFilePhotos(resultsCallback, false);
-}
-#endif
-
-#if defined _ios
-void LSG_OpenPhotoFiles(std::function<void(NSArray<PHPickerResult*>*)> resultsCallback)
-{
-    if (!isRunning)
-        throw std::runtime_error(ERROR_NOT_STARTED);
-
-    LSG_Window::OpenFilePhotos(resultsCallback, true);
-}
-#endif
 
 void LSG_OpenSubMenu(const std::string& id)
 {
@@ -1426,16 +1459,10 @@ void LSG_Quit()
 	LSG_UI::Close();
 	LSG_Window::Close();
 
-	if (basePath) {
-		SDL_free(basePath);
-		basePath = nullptr;
-	}
-
 	TTF_Quit();
 
 	SDL_QuitSubSystem(SDL_INIT_EVENTS);
 	SDL_QuitSubSystem(SDL_INIT_VIDEO);
-	SDL_Quit();
 }
 
 void LSG_RemoveCard(const std::string& id, int row)
@@ -1610,7 +1637,7 @@ std::string LSG_SaveFile(const LSG_Strings& filters)
 
 	return filePath;
 }
-#elif defined _android || defined _linux || defined _macosx
+#elif defined _linux || defined _macosx
 std::string LSG_SaveFile(const LSG_Strings& filters)
 {
 	if (!isRunning)
@@ -2309,6 +2336,19 @@ void LSG_SetSize(const std::string& id, double width, double height, bool layout
 		LSG_UI::LayoutRoot();
 }
 
+void LSG_SetSliderOnHoverCallback(const std::string& id, const LSG_OnHoverCallback& callback)
+{
+	if (!isRunning)
+		throw std::runtime_error(ERROR_NOT_STARTED);
+
+	auto component = getComponent(id);
+
+	if (!component || !component->IsSlider())
+		throw std::invalid_argument(getErrorNoID("<slider>", id));
+
+	static_cast<LSG_Slider*>(component)->SetOnHoverCallback(callback);
+}
+
 void LSG_SetSliderParts(const std::string& id, const LSG_SliderParts& parts)
 {
 	if (!isRunning)
@@ -2731,12 +2771,16 @@ std::wstring LSG_TextToWide(const std::string& text)
 	return LSG_Text::ToWide(text);
 }
 
+std::string LSG_TextTrim(const std::string& text)
+{
+	return LSG_Text::Trim(text);
+}
+
 SDL_Renderer* LSG_Start(const std::string& xmlFile)
 {
 	LibXml::xmlInitParser();
 
-	if (!basePath)
-		initBasePath();
+	initBasePath();
 
 	auto windowAttribs = LSG_UI::OpenWindow(xmlFile);
 
@@ -2779,16 +2823,13 @@ void LSG_StartTest(const std::string& xmlFile, const std::string& workingDir)
 {
 	LibXml::xmlInitParser();
 
-	if (!basePath)
-		basePath = (char*)workingDir.c_str();
+	if (basePath.empty())
+		basePath = std::string(workingDir);
 
 	auto windowAttribs = LSG_UI::OpenWindow(xmlFile);
 
-	if (IMG_Init(IMG_INIT_PNG) < IMG_INIT_PNG)
-		throw std::runtime_error(std::format("Failed to initialize SDL2_image: {}", IMG_GetError()));
-
-	if (TTF_Init() < 0)
-		throw std::runtime_error(std::format("Failed to initialize SDL2_ttf: {}", TTF_GetError()));
+	if (!TTF_Init())
+		throw std::runtime_error(std::format("Failed to initialize SDL3_ttf: {}", SDL_GetError()));
 
 	LSG_Window::OpenTest();
 

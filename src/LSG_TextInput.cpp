@@ -142,10 +142,11 @@ size_t LSG_TextInput::getIndex(int mousePositionX)
 
 		if (this->value[index] < 0)
 		{
-			auto char16 = LSG_Text::ToUTF16(this->value.substr(index, 2));
-			auto font   = fontDefault;
+			auto text  = this->value.substr(index, 2);
+			auto utf16 = LSG_Text::ToUTF16(text);
+			auto font  = fontDefault;
 
-			if (!LSG_Text::FontSupportsText(font, char16))
+			if (!LSG_Text::FontSupportsText(font, utf16))
 			{
 				if (!fontCJK)
 					fontCJK = LSG_Text::GetFontCJK(fontSize);
@@ -153,11 +154,15 @@ size_t LSG_TextInput::getIndex(int mousePositionX)
 				font = fontCJK;
 			}
 
-			TTF_SizeUNICODE(font, char16, &width, nullptr);
+			TTF_GetStringSize(font, text.c_str(), text.size(), &width, nullptr);
 
-			SDL_free(char16);
-		} else {
-			TTF_SizeUTF8(fontDefault, this->value.substr(index, 1).c_str(), &width, nullptr);
+			SDL_free(utf16);
+		}
+		else
+		{
+			auto text = this->value.substr(index, 1);
+
+			TTF_GetStringSize(fontDefault, text.c_str(), text.size(), &width, nullptr);
 		}
 
 		if ((positionX + width) > mousePositionX)
@@ -511,7 +516,7 @@ void LSG_TextInput::renderIconClear(SDL_Renderer* renderer, const SDL_Rect& icon
 	if (!this->textures[LSG_TEXT_INPUT_TEXTURE_ICON_CLEAR])
 		this->setIconClear();
 
-	SDL_RenderCopy(renderer, this->textures[LSG_TEXT_INPUT_TEXTURE_ICON_CLEAR], nullptr, &icon);
+	LSG_Graphics::RenderTexture(renderer, this->textures[LSG_TEXT_INPUT_TEXTURE_ICON_CLEAR], nullptr, &icon);
 
 	if (this->enabled && this->highlightedIconClear)
 		this->renderHighlight(renderer, icon, (icon.h / 2));
@@ -552,7 +557,7 @@ void LSG_TextInput::renderText(SDL_Renderer* renderer, const SDL_Rect& backgroun
 		clip.h
 	};
 
-	SDL_RenderCopy(renderer, texture, &clip, &destination);
+	LSG_Graphics::RenderTexture(renderer, texture, &clip, &destination);
 }
 
 void LSG_TextInput::SelectAll()
@@ -642,39 +647,47 @@ void LSG_TextInput::setCursor()
 
 	auto fontSize = this->getFontSize();
 
-	auto cursorText16 = LSG_Text::ToUTF16(this->value.substr(0, this->cursorPosition));
-	auto cursorFont   = LSG_Text::GetFont(fontSize, cursorText16);
+	auto cursorText      = this->value.substr(0, this->cursorPosition);
+	auto cursorTextUTF16 = LSG_Text::ToUTF16(cursorText);
+	auto cursorFont      = LSG_Text::GetFont(fontSize, cursorTextUTF16);
 
-	TTF_SizeUNICODE(cursorFont, cursorText16, &this->cursorTextWidth, nullptr);
+	TTF_GetStringSize(cursorFont, cursorText.c_str(), cursorText.size(), &this->cursorTextWidth, nullptr);
 
 	TTF_CloseFont(cursorFont);
-	SDL_free(cursorText16);
+	SDL_free(cursorTextUTF16);
 
-	auto text16 = LSG_Text::ToUTF16(this->value);
-	auto font   = LSG_Text::GetFont(fontSize, text16);
+	auto textUTF16 = LSG_Text::ToUTF16(this->value);
+	auto font      = LSG_Text::GetFont(fontSize, textUTF16);
 
-	TTF_SizeUNICODE(font, text16, &this->textSize.width, &this->textSize.height);
+	TTF_GetStringSize(font, this->value.c_str(), this->value.size(), &this->textSize.width, &this->textSize.height);
 
 	TTF_CloseFont(font);
-	SDL_free(text16);
+	SDL_free(textUTF16);
 
 	if (this->highlightedTextLength != 0)
 	{
 		auto start  = std::min((this->cursorPosition + this->highlightedTextLength), this->cursorPosition);
 		auto length = std::abs(this->highlightedTextLength);
 
-		auto highlightedText16 = LSG_Text::ToUTF16(this->value.substr(start, length));
-		auto highlightedFont   = LSG_Text::GetFont(fontSize, highlightedText16);
+		auto highlightedText      = this->value.substr(start, length);
+		auto highlightedTextUTF16 = LSG_Text::ToUTF16(highlightedText);
+		auto highlightedFont      = LSG_Text::GetFont(fontSize, highlightedTextUTF16);
 
-		TTF_SizeUNICODE(highlightedFont, highlightedText16, &this->highlightedTextSize.width, &this->highlightedTextSize.height);
+		TTF_GetStringSize(
+			highlightedFont,
+			highlightedText.c_str(),
+			highlightedText.size(),
+			&this->highlightedTextSize.width,
+			&this->highlightedTextSize.height
+		);
 
 		TTF_CloseFont(highlightedFont);
-		SDL_free(highlightedText16);
+		SDL_free(highlightedTextUTF16);
 	} else {
 		this->highlightedTextSize = {};
 	}
 }
-	
+
 void LSG_TextInput::setIconClear()
 {
 	if (this->textures[LSG_TEXT_INPUT_TEXTURE_ICON_CLEAR]) {
@@ -744,8 +757,7 @@ void LSG_TextInput::start()
 	this->active           = true;
 	this->lastCursorActive = (SDL_GetTicks() - 500);
 
-	SDL_SetTextInputRect(&this->background);
-	SDL_StartTextInput();
+	LSG_Window::StartTextInput(&this->background, 0);
 }
 
 void LSG_TextInput::Stop()
@@ -755,5 +767,5 @@ void LSG_TextInput::Stop()
 
 	this->active = false;
 
-	SDL_StopTextInput();
+	LSG_Window::StopTextInput();
 }

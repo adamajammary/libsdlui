@@ -1,13 +1,13 @@
 apply plugin: "com.android.application"
 
 android {
-  namespace "com.libsdlui.test"
+  namespace "com.sdlui.app"
 
   defaultConfig {
-    applicationId "com.libsdlui.test"
-    compileSdk 34
+    applicationId "com.sdlui.app"
+    compileSdk 36
     minSdkVersion 29
-    targetSdkVersion 34
+    targetSdkVersion 36
     versionCode 1
     versionName "1.0.0"
   }
@@ -15,4 +15,9 @@ android {
   sourceSets.main {
     jniLibs.srcDir "libs"
   }
+}
+
+dependencies {
+  implementation "androidx.documentfile:documentfile:1.1.0"
+  implementation "androidx.media3:media3-extractor:1.11.1"
 }

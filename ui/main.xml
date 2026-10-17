@@ -182,7 +182,7 @@
             spacing="10"
             text-color="#FFFFFF"
             text-halign="center"
-            text-valign="top"
+            text-valign="bottom"
           >
             <tile image="img/tile-1.jpg" text="Tile #1" />
             <tile image="img/tile-2.jpg" text="Tile #2" />
@@ -256,6 +256,7 @@
           thumb-size="30"
           thumb-border-color="#000000"
           thumb-border-width="1"
+          tooltip="Slider"
         >
           <slider-part value="0"    tooltip="Part 1" />
           <slider-part value="0.25" tooltip="Part 2" />

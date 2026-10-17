@@ -154,7 +154,7 @@ SDL_Point LSG_UI::GetAlignedPosition(const SDL_Point& offsetPosition, int conten
 
 SDL_Rect LSG_UI::GetBackgroundArea()
 {
-	auto windowSize = LSG_Window::GetSize();
+	auto windowSize = LSG_Window::GetSizeInPixels();
 
 	#if defined _ios
 		UIWindow* window = [UIApplication sharedApplication].windows.firstObject;
@@ -348,7 +348,7 @@ SDL_Cursor* LSG_UI::GetCursor(LSG_Component* component, const SDL_Point& mousePo
 
 	if (component->IsButton())
 	{
-		cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_HAND);
+		cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_POINTER);
 	}
 	else if (component->IsCards())
 	{
@@ -357,21 +357,21 @@ SDL_Cursor* LSG_UI::GetCursor(LSG_Component* component, const SDL_Point& mousePo
 	else if (component->IsNavigation())
 	{
 		if (static_cast<LSG_Navigation*>(component)->IsMouseOverArrow(scrolledPosition))
-			cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_HAND);
+			cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_POINTER);
 	}
 	else if (component->IsTable())
 	{
 		if (static_cast<LSG_Table*>(component)->IsMouseOverColumnBorder(scrolledPosition))
-			cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_SIZEWE);
+			cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_EW_RESIZE);
 	}
 	else if (component->IsTextInput())
 	{
 		auto textInput = static_cast<LSG_TextInput*>(component);
 
 		if (textInput->IsMouseOverIconClear(mousePosition))
-			cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_HAND);
+			cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_POINTER);
 		else
-			cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_IBEAM);
+			cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_TEXT);
 	}
 	else if (component->IsTiles())
 	{
@@ -380,7 +380,7 @@ SDL_Cursor* LSG_UI::GetCursor(LSG_Component* component, const SDL_Point& mousePo
 	else if (component->IsToggle())
 	{
 		if (static_cast<LSG_Toggle*>(component)->IsMouseOver(scrolledPosition))
-			cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_HAND);
+			cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_POINTER);
 	}
 
 	return cursor;
@@ -410,7 +410,7 @@ SDL_Rect LSG_UI::GetScrolledBackground(LSG_Component* component)
 		component->background.h
 	};
 
-	if (!SDL_HasIntersection(&scrolledBackground, &panel->background))
+	if (!SDL_HasRectIntersection(&scrolledBackground, &panel->background))
 		return { -1, -1 };
 
 	return scrolledBackground;
@@ -443,6 +443,9 @@ LibXml::xmlDoc* LSG_UI::GetXmlDocument()
 
 void LSG_UI::HighlightComponents(const SDL_Point& mousePosition)
 {
+	if (!SDL_HasMouse())
+		return;
+
 	auto activeCursor = SDL_GetCursor();
 
 	if (!activeCursor)
@@ -483,7 +486,7 @@ void LSG_UI::HighlightComponents(const SDL_Point& mousePosition)
 			component->highlighted = menu->IsMouseOverIconOpen(mousePosition);
 
 			if (component->highlighted) {
-				cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_HAND);
+				cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_POINTER);
 				break;
 			}
 
@@ -542,7 +545,7 @@ void LSG_UI::HighlightComponents(const SDL_Point& mousePosition)
 				menu->Highlight(mousePosition);
 
 				if (menu->IsHighlightedIconClose() || menu->IsHighlightedNavBack())
-					cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_HAND);
+					cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_POINTER);
 
 				continue;
 			}
@@ -554,7 +557,7 @@ void LSG_UI::HighlightComponents(const SDL_Point& mousePosition)
 				component.second->highlighted = SDL_PointInRect(&mousePosition, &background);
 
 				if (component.second->highlighted)
-					cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_HAND);
+					cursor = SDL_CreateSystemCursor(SDL_SYSTEM_CURSOR_POINTER);
 
 				continue;
 			}
@@ -1163,7 +1166,7 @@ void LSG_UI::renderModal(SDL_Renderer* renderer)
 
 void LSG_UI::renderTooltip(SDL_Renderer* renderer)
 {
-	if (!SDL_GetCursor())
+	if (!SDL_HasMouse())
 		return;
 
 	for (const auto& component : LSG_UI::componentsByLayer)
@@ -1466,7 +1469,7 @@ void LSG_UI::setToggle(LSG_Component* component)
 
 void LSG_UI::UnhighlightComponents()
 {
-	if (!SDL_GetCursor())
+	if (!SDL_HasMouse())
 		return;
 
 	for (const auto& component : LSG_UI::componentsByLayer)

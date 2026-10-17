@@ -2,6 +2,7 @@
 #define LSG_MAIN_H
 
 #include <algorithm> // min/max()
+#include <cmath>     // ceil()
 #include <cstdio>    // snprintf()
 #include <cstring>   // strlen(), strtok()
 #include <cwchar>    // wcslen()
@@ -24,7 +25,7 @@
     #include <UIKit/UIKit.h>       // UIScreen, UIUserInterfaceStyle*
     #include <UniformTypeIdentifiers/UniformTypeIdentifiers.h> // UTType
 #elif defined _linux
-	#include <gtk/gtk.h>  // gtk_file_chooser_dialog_new(), gtk_dialog_run(), gtk_file_chooser_get_uri()
+	#include <gtk/gtk.h> // gtk_file_*, gtk_init, g_list_*, g_main_*, g_object_*
 #elif defined _macosx
 	#include <AppKit/AppKit.h>         // NSApp, NSAppearanceName*, NSOpenPanel
 	#include <Foundation/Foundation.h> // NSString, NSUserDefaults
@@ -33,22 +34,15 @@
 	#include <shobjidl_core.h> // IFileOpenDialog, IFileSaveDialog
 #endif
 
-#ifndef LIB_SDL2_SYSWM_H
-#define LIB_SDL2_SYSWM_H
+#ifndef LIB_SDL_IMAGE_H
+#define LIB_SDL_IMAGE_H
 extern "C" {
-	#include <SDL2/SDL_syswm.h>
+	#include <SDL3_image/SDL_image.h>
 }
 #endif
 
-#ifndef LIB_SDL2_IMAGE_H
-#define LIB_SDL2_IMAGE_H
-extern "C" {
-	#include <SDL2/SDL_image.h>
-}
-#endif
-
-#ifndef LIB_XML2_H
-#define LIB_XML2_H
+#ifndef LIB_XML_H
+#define LIB_XML_H
 namespace LibXml {
 	extern "C" {
 		#include <libxml/xpath.h>
@@ -165,7 +159,7 @@ enum LSG_Vector
 #if defined _android
 struct LSG_ConstAndroid
 {
-	static inline const std::string ActivityClassPath = "com/libsdlui/app/SDLUIActivity";
+	static inline const std::string ActivityClassPath = "com/sdlui/lib/SDLUIActivity";
 };
 #endif
 
@@ -259,7 +253,7 @@ struct LSG_ItemText
 	LSG_ItemTexture texture = {};
 };
 
-const char* LSG_GetBasePath();
+std::string LSG_GetBasePath();
 
 #if defined _android
 	#include "LSG_AndroidJNI.h"

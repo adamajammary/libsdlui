@@ -13,39 +13,32 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS        OFF)
 
 # libsdlui depends on the following third-party libraries:
-# - sdl2, sdl2_image, sdl2_ttf, libtiff, libwebp, libxml2
+# - sdl3, sdl3_image, sdl3_ttf, libxml2
 
 if (ANDROID)
-    set(EXT_LIB_SDL  libSDL2.so)
-    set(EXT_LIB_SDLI libSDL2_image.so)
-    set(EXT_LIB_SDLT libSDL2_ttf.so)
+    set(EXT_LIB_SDL  libSDL3.so)
+    set(EXT_LIB_SDLI libSDL3_image.so)
+    set(EXT_LIB_SDLT libSDL3_ttf.so)
     set(EXT_LIB_XML  libxml2.so)
 elseif (IOS)
-    set(EXT_LIB_FT   libfreetype.a)
-    set(EXT_LIB_SDL  libSDL2.a)
-    set(EXT_LIB_SDLI libSDL2_image.a)
-    set(EXT_LIB_SDLT libSDL2_ttf.a)
-    set(EXT_LIB_WPDC libwebpdecoder.a)
-    set(EXT_LIB_WPDM libwebpdemux.a)
+    set(EXT_LIB_SDL  libSDL3.a)
+    set(EXT_LIB_SDLI libSDL3_image.a)
+    set(EXT_LIB_SDLT libSDL3_ttf.a)
     set(EXT_LIB_XML  libxml2.a)
 elseif (APPLE)
-    set(EXT_LIB_SDL  libSDL2-2.0.0.dylib)
-    set(EXT_LIB_SDLI libSDL2_image-2.0.0.dylib)
-    set(EXT_LIB_SDLT libSDL2_ttf-2.0.0.dylib)
+    set(EXT_LIB_SDL  libSDL3.0.dylib)
+    set(EXT_LIB_SDLI libSDL3_image.0.dylib)
+    set(EXT_LIB_SDLT libSDL3_ttf.0.dylib)
     set(EXT_LIB_XML  libxml2.16.dylib)
 elseif (WIN32)
-    set(EXT_LIB_SDL  SDL2.dll)
-    set(EXT_LIB_SDLL SDL2.lib)
-    set(EXT_LIB_SDLI SDL2_image.dll)
-    set(EXT_LIB_SDIL SDL2_image.lib)
-    set(EXT_LIB_SDLT SDL2_ttf.dll)
-    set(EXT_LIB_SDTL SDL2_ttf.lib)
+    set(EXT_LIB_SDL  SDL3.dll)
+    set(EXT_LIB_SDLI SDL3_image.dll)
+    set(EXT_LIB_SDLT SDL3_ttf.dll)
     set(EXT_LIB_XML  libxml2.dll)
-    set(EXT_LIB_XMLL libxml2.lib)
 else()
-    set(EXT_LIB_SDL  libSDL2-2.0.so.0)
-    set(EXT_LIB_SDLI libSDL2_image-2.0.so.0)
-    set(EXT_LIB_SDLT libSDL2_ttf-2.0.so.0)
+    set(EXT_LIB_SDL  libSDL3.so.0)
+    set(EXT_LIB_SDLI libSDL3_image.so.0)
+    set(EXT_LIB_SDLT libSDL3_ttf.so.0)
     set(EXT_LIB_XML  libxml2.so.16)
 endif()
 
@@ -53,17 +46,6 @@ find_file(LIB_SDL  ${EXT_LIB_SDL}  PATHS "${LIB_DIR}" NO_CACHE REQUIRED CMAKE_FI
 find_file(LIB_SDLI ${EXT_LIB_SDLI} PATHS "${LIB_DIR}" NO_CACHE REQUIRED CMAKE_FIND_ROOT_PATH_BOTH)
 find_file(LIB_SDLT ${EXT_LIB_SDLT} PATHS "${LIB_DIR}" NO_CACHE REQUIRED CMAKE_FIND_ROOT_PATH_BOTH)
 find_file(LIB_XML  ${EXT_LIB_XML}  PATHS "${LIB_DIR}" NO_CACHE REQUIRED CMAKE_FIND_ROOT_PATH_BOTH)
-
-if (IOS)
-    find_file(LIB_FT   ${EXT_LIB_FT}   PATHS "${LIB_DIR}" NO_CACHE REQUIRED CMAKE_FIND_ROOT_PATH_BOTH)
-    find_file(LIB_WPDC ${EXT_LIB_WPDC} PATHS "${LIB_DIR}" NO_CACHE REQUIRED CMAKE_FIND_ROOT_PATH_BOTH)
-    find_file(LIB_WPDM ${EXT_LIB_WPDM} PATHS "${LIB_DIR}" NO_CACHE REQUIRED CMAKE_FIND_ROOT_PATH_BOTH)
-elseif (WIN32)
-    find_file(LIB_SDLL ${EXT_LIB_SDLL} PATHS "${LIB_DIR}" NO_CACHE REQUIRED CMAKE_FIND_ROOT_PATH_BOTH)
-    find_file(LIB_SDIL ${EXT_LIB_SDIL} PATHS "${LIB_DIR}" NO_CACHE REQUIRED CMAKE_FIND_ROOT_PATH_BOTH)
-    find_file(LIB_SDTL ${EXT_LIB_SDTL} PATHS "${LIB_DIR}" NO_CACHE REQUIRED CMAKE_FIND_ROOT_PATH_BOTH)
-    find_file(LIB_XMLL ${EXT_LIB_XMLL} PATHS "${LIB_DIR}" NO_CACHE REQUIRED CMAKE_FIND_ROOT_PATH_BOTH)
-endif()
 
 if (NOT EXISTS "${SRC_DIR}/fonts")
     file(MAKE_DIRECTORY "${SRC_DIR}/fonts")
@@ -87,15 +69,11 @@ set(INCS      "${SRC_DIR}/include" "${INC_DIR}" "${INC_DIR}/libxml2")
 set(TEST_INCS "${SRC_DIR}/include" "${INC_DIR}")
 
 if (WIN32)
-    set(LIBS      "${LIB_SDLL}" "${LIB_SDIL}" "${LIB_SDTL}" "${LIB_XMLL}")
-    set(TEST_LIBS "${LIB_SDLL}")
+    set(LIBS      "SDL3.lib" "SDL3_image.lib" "SDL3_ttf.lib" "libxml2.lib")
+    set(TEST_LIBS "SDL3.lib")
 else()
-    set(LIBS      "${LIB_SDL}" "${LIB_SDLI}" "${LIB_SDLT}" "${LIB_XML}")
-    set(TEST_LIBS "${LIB_SDL}")
-
-    if (IOS)
-        set(LIBS ${LIBS} "${LIB_FT}" "${LIB_WPDC}" "${LIB_WPDM}")
-    endif()
+    set(LIBS      "-lSDL3" "-lSDL3_image" "-lSDL3_ttf" "-lxml2")
+    set(TEST_LIBS "-lSDL3")
 endif()
 
 if (ANDROID)
@@ -118,7 +96,7 @@ elseif (IOS)
     set(RC         "${SRC_DIR}/ios/LaunchScreen.storyboard")
 
     set(OS_LIBS      "-framework MediaPlayer" "-framework Photos" "-framework PhotosUI" "-framework StoreKit" "-framework UIKit" "-framework UniformTypeIdentifiers")
-    set(OS_TEST_LIBS "-framework AudioToolbox" "-framework AVFoundation" "-framework CoreBluetooth" "-framework CoreFoundation" "-framework CoreGraphics" "-framework CoreHaptics" "-framework CoreMotion" "-framework CoreServices" "-framework Foundation" "-framework GameController" "-framework ImageIO" "-framework Metal" "-framework OpenGLES" "-framework QuartzCore" "-framework UIKit")
+    set(OS_TEST_LIBS "-framework AudioToolbox" "-framework AVFoundation" "-framework CoreBluetooth" "-framework CoreFoundation" "-framework CoreGraphics" "-framework CoreHaptics" "-framework CoreMedia" "-framework CoreMotion" "-framework CoreServices" "-framework CoreText" "-framework CoreVideo" "-framework Foundation" "-framework GameController" "-framework ImageIO" "-framework Metal" "-framework OpenGLES" "-framework QuartzCore" "-framework UIKit" "-lpng16" "-lsharpyuv" "-lwebp" "-lwebpdemux" "-lwebpmux" "-lz")
 elseif (APPLE)
     set(OS "_macosx")
 
@@ -144,8 +122,8 @@ else()
     set(DLL_EXT "so")
     set(OUT_DIR ".")
 
-    execute_process(COMMAND pkg-config --cflags --keep-system-cflags gtk+-3.0 OUTPUT_VARIABLE OS_CFLAGS OUTPUT_STRIP_TRAILING_WHITESPACE)
-    execute_process(COMMAND pkg-config --libs   --keep-system-libs   gtk+-3.0 OUTPUT_VARIABLE OS_LIBS   OUTPUT_STRIP_TRAILING_WHITESPACE)
+    execute_process(COMMAND pkg-config --cflags --keep-system-cflags gtk4 OUTPUT_VARIABLE OS_CFLAGS OUTPUT_STRIP_TRAILING_WHITESPACE)
+    execute_process(COMMAND pkg-config --libs   --keep-system-libs   gtk4 OUTPUT_VARIABLE OS_LIBS   OUTPUT_STRIP_TRAILING_WHITESPACE)
 endif()
 
 file(GLOB INC_H "${SRC_DIR}/include/*.h")
@@ -171,6 +149,7 @@ set_property(TARGET sdlui PROPERTY COMPILE_FLAGS ${OS_CFLAGS})
 
 target_compile_definitions(sdlui PRIVATE ${OS} _CRT_SECURE_NO_WARNINGS NOMINMAX MAKEDLL)
 target_include_directories(sdlui PRIVATE ${INCS})
+target_link_directories(sdlui    PRIVATE ${LIB_DIR})
 target_link_libraries(sdlui      PRIVATE ${OS_LIBS} ${LIBS})
 
 # dist dir
@@ -200,12 +179,22 @@ add_custom_command(TARGET sdlui POST_BUILD COMMAND cp -f ${INC_H} ${DIST_DIR}/in
 
 # licenses
 
-if (EXISTS "${EXT_LIB_DIR}/LICENSE-sdl2.txt")
-    list(APPEND LICENSES "${EXT_LIB_DIR}/LICENSE-sdl2.txt")
-    list(APPEND LICENSES "${EXT_LIB_DIR}/LICENSE-sdl2_ttf.txt")
-    list(APPEND LICENSES "${EXT_LIB_DIR}/LICENSE-sdl2_image.txt")
+if (EXISTS "${EXT_LIB_DIR}/LICENSE-sdl.txt")
+    list(APPEND LICENSES "${EXT_LIB_DIR}/LICENSE-sdl.txt")
+
+    list(APPEND LICENSES "${EXT_LIB_DIR}/LICENSE-sdl_ttf.txt")
+    list(APPEND LICENSES "${EXT_LIB_DIR}/LICENSE-freetype.txt")
+    list(APPEND LICENSES "${EXT_LIB_DIR}/LICENSE-harfbuzz.txt")
+    list(APPEND LICENSES "${EXT_LIB_DIR}/LICENSE-plutosvg.txt")
+    list(APPEND LICENSES "${EXT_LIB_DIR}/LICENSE-plutovg.txt")
+
+    list(APPEND LICENSES "${EXT_LIB_DIR}/LICENSE-sdl_image.txt")
+    list(APPEND LICENSES "${EXT_LIB_DIR}/LICENSE-jpeg.txt")
+    list(APPEND LICENSES "${EXT_LIB_DIR}/LICENSE-libjxl.txt")
     list(APPEND LICENSES "${EXT_LIB_DIR}/LICENSE-libtiff.txt")
     list(APPEND LICENSES "${EXT_LIB_DIR}/LICENSE-libwebp.txt")
+    list(APPEND LICENSES "${EXT_LIB_DIR}/LICENSE-zlib.txt")
+
     list(APPEND LICENSES "${EXT_LIB_DIR}/LICENSE-libxml2.txt")
 endif()
 
@@ -233,21 +222,22 @@ endif()
 
 target_compile_definitions(testsdlui PRIVATE ${OS})
 target_include_directories(testsdlui PRIVATE ${OS_TEST_INCS} ${TEST_INCS})
+target_link_directories(testsdlui    PRIVATE ${LIB_DIR})
 target_link_libraries(testsdlui      PRIVATE sdlui ${OS_LIBS} ${LIBS} ${OS_TEST_LIBS} ${TEST_LIBS})
 
 if (IOS)
-    set(CMAKE_XCODE_ATTRIBUTE_PRODUCT_BUNDLE_IDENTIFIER "com.libsdlui.test")
+    set(CMAKE_XCODE_ATTRIBUTE_PRODUCT_BUNDLE_IDENTIFIER "com.sdlui.app")
     set(CMAKE_XCODE_ATTRIBUTE_TARGETED_DEVICE_FAMILY    "1,2")
 
     set_target_properties(testsdlui PROPERTIES
         MACOSX_BUNDLE_INFO_PLIST           "${INFO_PLIST}"
         MACOSX_BUNDLE_BUNDLE_NAME          "SDL UI Library"
         MACOSX_BUNDLE_COPYRIGHT            "(c) 2021 Adam A. Jammary (Jammary Studio)"
-        MACOSX_BUNDLE_GUI_IDENTIFIER       "com.libsdlui.test"
+        MACOSX_BUNDLE_GUI_IDENTIFIER       "com.sdlui.app"
         MACOSX_BUNDLE_ICON_FILE            "icon"
-        MACOSX_BUNDLE_BUNDLE_VERSION       "1.6.0"
-        MACOSX_BUNDLE_LONG_VERSION_STRING  "1.6.0"
-        MACOSX_BUNDLE_SHORT_VERSION_STRING "1.6.0"
+        MACOSX_BUNDLE_BUNDLE_VERSION       "1.7.0"
+        MACOSX_BUNDLE_LONG_VERSION_STRING  "1.7.0"
+        MACOSX_BUNDLE_SHORT_VERSION_STRING "1.7.0"
     )
 elseif (WIN32)
     set_property(TARGET testsdlui PROPERTY LINK_FLAGS_DEBUG   "-SUBSYSTEM:CONSOLE,5.02")
@@ -334,7 +324,7 @@ elseif (OS STREQUAL "_macosx")
     add_custom_command(TARGET testsdlui_rpath POST_BUILD COMMAND install_name_tool -change @rpath/${EXT_LIB_SDLI}  @executable_path/${EXT_LIB_SDLI}  ${DIST_DIR}/bin/testsdlui)
     add_custom_command(TARGET testsdlui_rpath POST_BUILD COMMAND install_name_tool -change @rpath/${EXT_LIB_SDLT}  @executable_path/${EXT_LIB_SDLT}  ${DIST_DIR}/bin/testsdlui)
     add_custom_command(TARGET testsdlui_rpath POST_BUILD COMMAND install_name_tool -change @rpath/${EXT_LIB_XML}   @executable_path/${EXT_LIB_XML}   ${DIST_DIR}/bin/testsdlui)
-    add_custom_command(TARGET testsdlui_rpath POST_BUILD COMMAND install_name_tool -change @rpath/libsdlui.dylib @executable_path/libsdlui.dylib ${DIST_DIR}/bin/testsdlui)
+    add_custom_command(TARGET testsdlui_rpath POST_BUILD COMMAND install_name_tool -change @rpath/libsdlui.dylib   @executable_path/libsdlui.dylib   ${DIST_DIR}/bin/testsdlui)
 endif()
 
 # install

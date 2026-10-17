@@ -497,7 +497,7 @@ void LSG_Table::renderColumn(SDL_Renderer* renderer, size_t column, SDL_Rect& cl
 	auto texture     = (header ? this->headerTextures[column] : this->textures[column]);
 
 	if (columnWidth > 0) {
-		SDL_RenderCopy(renderer, texture, &clip, &destination);
+		LSG_Graphics::RenderTexture(renderer, texture, &clip, &destination);
 	} else {
 		clipWidth  = std::max(0, (spacing - (clip.x - sizeWidth)));
 		sizeWidth += (spacing - clipWidth);
@@ -517,7 +517,7 @@ void LSG_Table::renderHeader(SDL_Renderer* renderer, const SDL_Rect& background,
 	SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
 	SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, 255);
 
-	SDL_RenderFillRect(renderer, &header);
+	LSG_Graphics::RenderFill(renderer, &header);
 
 	SDL_Rect clip = {};
 
@@ -546,7 +546,7 @@ void LSG_Table::renderHeader(SDL_Renderer* renderer, const SDL_Rect& background,
 		auto maxWidth     = (header.x + header.w - scrollSize);
 
 		if ((borderX >= header.x) && (borderX < maxWidth) && (i < (this->headerTextures.size() - 1)))
-			SDL_RenderDrawLine(renderer, borderX, header.y, borderX, (header.y + borderHeight - 1));
+			SDL_RenderLine(renderer, borderX, header.y, borderX, (header.y + borderHeight - 1));
 	}
 }
 
@@ -702,7 +702,7 @@ void LSG_Table::setRows(bool sort)
 	auto pageGroups  = this->GetPageGroups();
 	auto pageRows    = this->GetPageRows();
 	auto sortColumn  = this->GetSortColumn();
-	auto columnCount = this->getColumnCount();
+	auto columnCount = (size_t)this->getColumnCount();
 
 	if (columnCount < 1)
 		return;
@@ -711,57 +711,62 @@ void LSG_Table::setRows(bool sort)
 
 	if (!this->header.empty())
 	{
-		for (size_t i = 0; i < columns.size(); i++)
-		{
-			if (i < this->header.size())
-			{
-				if ((i == sortColumn) && (sortOrder == LSG_ConstSortOrder::Ascending))
-					columns[i].append(LSG_ConstSymbol::ArrowUp);
-				else if ((i == sortColumn) && (sortOrder == LSG_ConstSortOrder::Descending))
-					columns[i].append(LSG_ConstSymbol::ArrowDown);
-
-				columns[i].append(!this->header[i].empty() ? this->header[i] : " ");
-			}
-
-			this->headerTextures.push_back(LSG_Text::GetTexture(columns[i], this->getFontSize(), TTF_STYLE_BOLD, this->textColor, this->wrap));
-
-			columns[i].append("\n");
-		}
+		for (size_t i = 0; i < columnCount; i++)
+			columns[i].append("\n \n\n");
 	}
 
 	for (const auto& group : pageGroups)
 	{
 		if (!columns.empty())
-			columns[0].append(std::format("{}\n", group.group));
+			columns[0].append(std::format("\n{}\n\n", group.group));
 
-		for (size_t i = 1; i < columns.size(); i++)
-			columns[i].append("\n");
+		for (size_t i = 1; i < columnCount; i++)
+			columns[i].append("\n \n\n");
 
 		for (const auto& row : group.rows)
 		{
-			for (size_t i = 0; i < columns.size(); i++)
+			for (size_t i = 0; i < columnCount; i++)
 			{
-				if (i < row.size())
-					columns[i].append(i > 0 ? row[i] : std::format("   {}", (!row[0].empty() ? row[0] : " ")));
+				auto rowValue = (i < row.size() && !row[i].empty() ? row[i] : " ");
 
-				columns[i].append("\n");
+				if (i == 0)
+					columns[i].append(std::format("\n   {}\n\n", rowValue));
+				else
+					columns[i].append(std::format("\n{}\n\n", rowValue));
 			}
 		}
 	}
 
 	for (const auto& row : pageRows)
 	{
-		for (size_t i = 0; i < columns.size(); i++)
+		for (size_t i = 0; i < columnCount; i++)
 		{
-			if (i < row.size())
-				columns[i].append(!row[i].empty() ? row[i].c_str() : " ");
+			auto rowValue = (i < row.size() && !row[i].empty() ? row[i] : " ");
 
-			columns[i].append("\n");
+			columns[i].append(std::format("\n{}\n\n", rowValue));
 		}
 	}
 
 	if (columns.empty())
 		return;
+
+	if (!this->header.empty())
+	{
+		for (size_t i = 0; i < columnCount; i++)
+		{
+			std::string arrow = "";
+
+			if (i == sortColumn)
+				arrow = (sortOrder == LSG_ConstSortOrder::Descending ? LSG_ConstSymbol::ArrowDown : LSG_ConstSymbol::ArrowUp);
+
+			std::string headerValue = (i < this->header.size() && !this->header[i].empty() ? this->header[i] : " ");
+
+			auto column  = std::format("\n{}{}\n\n", arrow, headerValue);
+			auto texture = LSG_Text::GetTexture(column, this->getFontSize(), TTF_STYLE_BOLD, this->textColor, this->wrap);
+
+			this->headerTextures.push_back(texture);
+		}
+	}
 
 	for (const auto& column : columns)
 		this->textures.push_back(this->getTexture(column));

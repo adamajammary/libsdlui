@@ -23,6 +23,8 @@ void LSG_MenuSub::AddItem(const std::string& item, const std::string& itemId)
 	itemComponent->text = item;
 
 	itemComponent->SetColors();
+
+	static_cast<LSG_MenuItem*>(itemComponent)->Set();
 }
 
 int LSG_MenuSub::getMaxHeightArrow() const
@@ -92,7 +94,7 @@ void LSG_MenuSub::renderArrow(SDL_Renderer* renderer) const
 		size.height
 	};
 
-	SDL_RenderCopy(renderer, texture, nullptr, &destination);
+	LSG_Graphics::RenderTexture(renderer, texture, nullptr, &destination);
 }
 
 void LSG_MenuSub::Set()

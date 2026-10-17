@@ -23,6 +23,22 @@ void LSG_Graphics::DestroyTextures()
 	LSG_Graphics::textures.clear();
 }
 
+void LSG_Graphics::DestroyTextures(const std::string& prefixId)
+{
+	if (LSG_Graphics::textures.empty())
+		return;
+
+	LSG_Strings textureIds;
+
+	for (const auto& texture : LSG_Graphics::textures) {
+		if (texture.first.starts_with(prefixId))
+			textureIds.push_back(texture.first);
+	}
+
+	for (const auto& id : textureIds)
+		LSG_Graphics::DestroyTexture(id);
+}
+
 SDL_Rect LSG_Graphics::GetDestinationAligned(const SDL_Rect& background, const SDL_Size& size, const LSG_Alignment& alignment)
 {
 	SDL_Rect destination = {
@@ -50,7 +66,7 @@ SDL_Point LSG_Graphics::GetDownscaleFactor(const SDL_Size& fullSize, const SDL_S
 	if ((maxSize.width < 1) || (maxSize.height < 1))
 		return { 1, 1 };
 
-	if ((fullSize.width <= (maxSize.width * 2)) && ((fullSize.height <= (maxSize.height * 2))))
+	if ((fullSize.width < maxSize.width) || (fullSize.height < maxSize.height))
 		return { 1, 1 };
 
 	SDL_Point downScaleFactor = {
@@ -87,26 +103,24 @@ SDL_Surface* LSG_Graphics::getDownScaledSurface(SDL_Surface* surface, const SDL_
 
 	auto srcSurface = surface;
 
-	if (surface->format->BitsPerPixel != 32) {
-		srcSurface = SDL_ConvertSurfaceFormat(surface, SDL_PIXELFORMAT_RGBA32, 0);
-		SDL_FreeSurface(surface);
+	if (SDL_BITSPERPIXEL(surface->format) != 32) {
+		srcSurface = SDL_ConvertSurface(surface, SDL_PIXELFORMAT_RGBA32);
+		SDL_DestroySurface(surface);
 	}
 
 	if (SDL_MUSTLOCK(srcSurface))
 		SDL_LockSurface(srcSurface);
-
-	auto bits   = srcSurface->format->BitsPerPixel;
-	auto bytes  = srcSurface->format->BytesPerPixel;
-	auto format = srcSurface->format->format;
 
 	SDL_Size destSize = {
 		(srcSurface->w / downscaleFactor.x),
 		(srcSurface->h / downscaleFactor.y)
 	};
 
-	auto destSurface = SDL_CreateRGBSurfaceWithFormat(0, destSize.width, (destSize.height + 2), bits, format);
+	auto destSurface = SDL_CreateSurface(destSize.width, (destSize.height + 2), srcSurface->format);
 
 	destSurface->h = destSize.height;
+
+	auto bytes = SDL_BYTESPERPIXEL(srcSurface->format);
 
 	auto divisionFactor    = (downscaleFactor.x * downscaleFactor.y);
 	auto divisionFactorRGB = (downscaleFactor.x * bytes);
@@ -158,7 +172,7 @@ SDL_Surface* LSG_Graphics::getDownScaledSurface(SDL_Surface* surface, const SDL_
 	if (SDL_MUSTLOCK(srcSurface))
 		SDL_UnlockSurface(srcSurface);
 
-	SDL_FreeSurface(srcSurface);
+	SDL_DestroySurface(srcSurface);
 
 	return destSurface;
 }
@@ -172,7 +186,7 @@ SDL_Texture* LSG_Graphics::GetDownScaledTexture(const std::string& imageFile, co
 
 	auto texture = LSG_Window::ToTexture(surface);
 
-	SDL_FreeSurface(surface);
+	SDL_DestroySurface(surface);
 
 	return texture;
 }
@@ -251,9 +265,16 @@ std::vector<SDL_Vertex> LSG_Graphics::getGeometryTriangle(const SDL_Rect& backgr
 		break;
 	}
 
-	SDL_Vertex vertex1 = { { x1, y1 }, { color.r, color.g, color.b, color.a }, {} };
-	SDL_Vertex vertex2 = { { x2, y2 }, { color.r, color.g, color.b, color.a }, {} };
-	SDL_Vertex vertex3 = { { x3, y3 }, { color.r, color.g, color.b, color.a }, {} };
+	SDL_FColor colorF = {
+		((float)color.r / 255.0f),
+		((float)color.g / 255.0f),
+		((float)color.b / 255.0f),
+		((float)color.a / 255.0f)
+	};
+
+	SDL_Vertex vertex1 = { { x1, y1 }, colorF, {} };
+	SDL_Vertex vertex2 = { { x2, y2 }, colorF, {} };
+	SDL_Vertex vertex3 = { { x3, y3 }, colorF, {} };
 
 	return { vertex1, vertex2, vertex3 };
 }
@@ -345,8 +366,10 @@ SDL_Size LSG_Graphics::GetTextureSize(SDL_Texture* texture)
 	if (!texture)
 		return {};
 
-	SDL_Size textureSize = {};
-	SDL_QueryTexture(texture, nullptr, nullptr, &textureSize.width, &textureSize.height);
+	float w, h;
+	SDL_GetTextureSize(texture, &w, &h);
+
+	SDL_Size textureSize = { (int)w, (int)h };
 
 	return textureSize;
 }
@@ -366,7 +389,7 @@ SDL_Surface* LSG_Graphics::GetThumbnail(const std::string& imageFile, const SDL_
 
 	if ((downscaleFactor.x > 1) || (downscaleFactor.y > 1))
 	{
-		SDL_FreeSurface(surface);
+		SDL_DestroySurface(surface);
 
 		surface = LSG_Graphics::getDownScaledSurface(imageFile, downscaleFactor);
 	}
@@ -431,15 +454,15 @@ SDL_Texture* LSG_Graphics::getVector(const std::string& svg)
 	if (svg.empty())
 		return nullptr;
 
-	auto svgRW   = SDL_RWFromConstMem(svg.c_str(), (int)svg.size());
-	auto surface = IMG_LoadSVG_RW(svgRW);
+	auto svgIO   = SDL_IOFromConstMem(svg.c_str(), (int)svg.size());
+	auto surface = IMG_LoadSVG_IO(svgIO);
 
 	if (!surface)
 		return nullptr;
 
 	auto texture = LSG_Window::ToTexture(surface);
 
-	SDL_FreeSurface(surface);
+	SDL_DestroySurface(surface);
 
 	return texture;
 }
@@ -750,24 +773,24 @@ void LSG_Graphics::RenderBorder(SDL_Renderer* renderer, int borderWidth, const S
 	// TOP
 	borderArea.h = borderWidth;
 
-	SDL_RenderFillRect(renderer, &borderArea);
+	LSG_Graphics::RenderFill(renderer, &borderArea);
 
 	// BOTTOM
 	borderArea.y += (background.h - borderWidth);
 
-	SDL_RenderFillRect(renderer, &borderArea);
+	LSG_Graphics::RenderFill(renderer, &borderArea);
 
 	// LEFT
 	borderArea.y = background.y;
 	borderArea.w = borderWidth;
 	borderArea.h = background.h;
 
-	SDL_RenderFillRect(renderer, &borderArea);
+	LSG_Graphics::RenderFill(renderer, &borderArea);
 
 	// RIGHT
 	borderArea.x += (background.w - borderWidth);
 
-	SDL_RenderFillRect(renderer, &borderArea);
+	LSG_Graphics::RenderFill(renderer, &borderArea);
 }
 
 void LSG_Graphics::RenderFill(SDL_Renderer* renderer, int borderWidth, const SDL_Color& color, const SDL_Rect& background)
@@ -777,7 +800,7 @@ void LSG_Graphics::RenderFill(SDL_Renderer* renderer, int borderWidth, const SDL
 	SDL_SetRenderDrawBlendMode(renderer, (color.a < 255 ? SDL_BLENDMODE_BLEND : SDL_BLENDMODE_NONE));
 	SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
 
-	SDL_RenderFillRect(renderer, &fillArea);
+	LSG_Graphics::RenderFill(renderer, &fillArea);
 }
 
 void LSG_Graphics::RenderFillCircle(
@@ -785,7 +808,8 @@ void LSG_Graphics::RenderFillCircle(
 	const SDL_Color&   color,
 	const SDL_Rect&    background,
 	const std::string& id
-) {
+)
+{
 	if (!LSG_Graphics::textures.contains(id))
 	{
 		auto radius = (std::min(background.w, background.h) / 2);
@@ -793,7 +817,7 @@ void LSG_Graphics::RenderFillCircle(
 		LSG_Graphics::textures[id] = LSG_Graphics::getVectorCircle(color, radius);
 	}
 
-	SDL_RenderCopy(renderer, LSG_Graphics::textures[id], nullptr, &background);
+	LSG_Graphics::RenderTexture(renderer, LSG_Graphics::textures[id], nullptr, &background);
 }
 
 void LSG_Graphics::RenderFillCircleWithBorder(
@@ -803,7 +827,8 @@ void LSG_Graphics::RenderFillCircleWithBorder(
 	const SDL_Color&   borderColor,
 	int                borderWidth,
 	const std::string& id
-) {
+)
+{
 	if (!LSG_Graphics::textures.contains(id))
 	{
 		auto radius = (std::min(background.w, background.h) / 2);
@@ -811,7 +836,20 @@ void LSG_Graphics::RenderFillCircleWithBorder(
 		LSG_Graphics::textures[id] = LSG_Graphics::getVectorCircleWithBorder(fillColor, borderColor, borderWidth, radius);
 	}
 
-	SDL_RenderCopy(renderer, LSG_Graphics::textures[id], nullptr, &background);
+	LSG_Graphics::RenderTexture(renderer, LSG_Graphics::textures[id], nullptr, &background);
+}
+
+void LSG_Graphics::RenderFill(SDL_Renderer* renderer, const SDL_Rect* dest)
+{
+	SDL_FRect  destF  = {};
+	SDL_FRect* destFP = nullptr;
+
+	if (dest) {
+		SDL_RectToFRect(dest, &destF);
+		destFP = &destF;
+	}
+
+	SDL_RenderFillRect(renderer, destFP);
 }
 
 void LSG_Graphics::RenderFillRounded(
@@ -820,7 +858,8 @@ void LSG_Graphics::RenderFillRounded(
 	const SDL_Color&   color,
 	const SDL_Rect&    background,
 	const std::string& id
-) {
+)
+{
 	if (!LSG_Graphics::textures.contains(id))
 	{
 		SDL_Size size = { background.w, background.h };
@@ -828,7 +867,7 @@ void LSG_Graphics::RenderFillRounded(
 		LSG_Graphics::textures[id] = LSG_Graphics::getVectorRoundedRectangleFill(color, borderRadius, size);
 	}
 
-	SDL_RenderCopy(renderer, LSG_Graphics::textures[id], nullptr, &background);
+	LSG_Graphics::RenderTexture(renderer, LSG_Graphics::textures[id], nullptr, &background);
 }
 
 void LSG_Graphics::RenderFillRoundedBottom(
@@ -837,7 +876,8 @@ void LSG_Graphics::RenderFillRoundedBottom(
 	const SDL_Color&   color,
 	const SDL_Rect&    background,
 	const std::string& id
-) {
+)
+{
 	if (!LSG_Graphics::textures.contains(id))
 	{
 		SDL_Size size = { background.w, background.h };
@@ -845,7 +885,7 @@ void LSG_Graphics::RenderFillRoundedBottom(
 		LSG_Graphics::textures[id] = LSG_Graphics::getVectorRectangleFillRoundedBottom(color, borderRadius, size);
 	}
 
-	SDL_RenderCopy(renderer, LSG_Graphics::textures[id], nullptr, &background);
+	LSG_Graphics::RenderTexture(renderer, LSG_Graphics::textures[id], nullptr, &background);
 }
 
 void LSG_Graphics::RenderFillRoundedLeft(
@@ -854,7 +894,8 @@ void LSG_Graphics::RenderFillRoundedLeft(
 	const SDL_Color&   color,
 	const SDL_Rect&    background,
 	const std::string& id
-) {
+)
+{
 	if (!LSG_Graphics::textures.contains(id))
 	{
 		SDL_Size size = { background.w, background.h };
@@ -862,7 +903,7 @@ void LSG_Graphics::RenderFillRoundedLeft(
 		LSG_Graphics::textures[id] = LSG_Graphics::getVectorRectangleFillRoundedLeft(color, borderRadius, size);
 	}
 
-	SDL_RenderCopy(renderer, LSG_Graphics::textures[id], nullptr, &background);
+	LSG_Graphics::RenderTexture(renderer, LSG_Graphics::textures[id], nullptr, &background);
 }
 
 void LSG_Graphics::RenderFillWithRoundedBorder(
@@ -873,7 +914,8 @@ void LSG_Graphics::RenderFillWithRoundedBorder(
 	int                borderWidth,
 	const SDL_Rect&    background,
 	const std::string& id
-) {
+)
+{
 	if (!LSG_Graphics::textures.contains(id))
 	{
 		SDL_Size size = { background.w, background.h };
@@ -887,7 +929,7 @@ void LSG_Graphics::RenderFillWithRoundedBorder(
 		);
 	}
 
-	SDL_RenderCopy(renderer, LSG_Graphics::textures[id], nullptr, &background);
+	LSG_Graphics::RenderTexture(renderer, LSG_Graphics::textures[id], nullptr, &background);
 }
 
 void LSG_Graphics::RenderLine(SDL_Renderer* renderer, const SDL_Color& color, int x1, int y1, int x2, int y2)
@@ -895,7 +937,7 @@ void LSG_Graphics::RenderLine(SDL_Renderer* renderer, const SDL_Color& color, in
 	SDL_SetRenderDrawBlendMode(renderer, (color.a < 255 ? SDL_BLENDMODE_BLEND : SDL_BLENDMODE_NONE));
 	SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, color.a);
 
-	SDL_RenderDrawLine(renderer, x1, y1, x2, y2);
+	SDL_RenderLine(renderer, x1, y1, x2, y2);
 }
 
 void LSG_Graphics::RenderRoundedCorners(
@@ -904,7 +946,8 @@ void LSG_Graphics::RenderRoundedCorners(
 	int                borderRadius,
 	const SDL_Rect&    background,
 	const std::string& id
-) {
+)
+{
 	if (!LSG_Graphics::textures.contains(id))
 	{
 		SDL_Size size = { background.w, background.h };
@@ -912,7 +955,7 @@ void LSG_Graphics::RenderRoundedCorners(
 		LSG_Graphics::textures[id] = LSG_Graphics::getVectorRoundedCorners(fillColor, borderRadius, size);
 	}
 
-	SDL_RenderCopy(renderer, LSG_Graphics::textures[id], nullptr, &background);
+	LSG_Graphics::RenderTexture(renderer, LSG_Graphics::textures[id], nullptr, &background);
 }
 
 void LSG_Graphics::RenderRoundedCornersBottom(
@@ -921,7 +964,8 @@ void LSG_Graphics::RenderRoundedCornersBottom(
 	int                borderRadius,
 	const SDL_Rect&    background,
 	const std::string& id
-) {
+)
+{
 	if (!LSG_Graphics::textures.contains(id))
 	{
 		SDL_Size size = { background.w, background.h };
@@ -929,7 +973,7 @@ void LSG_Graphics::RenderRoundedCornersBottom(
 		LSG_Graphics::textures[id] = LSG_Graphics::getVectorRoundedCornersBottom(fillColor, borderRadius, size);
 	}
 
-	SDL_RenderCopy(renderer, LSG_Graphics::textures[id], nullptr, &background);
+	LSG_Graphics::RenderTexture(renderer, LSG_Graphics::textures[id], nullptr, &background);
 }
 
 void LSG_Graphics::RenderRoundedCornersTop(
@@ -938,7 +982,8 @@ void LSG_Graphics::RenderRoundedCornersTop(
 	int                borderRadius,
 	const SDL_Rect&    background,
 	const std::string& id
-) {
+)
+{
 	if (!LSG_Graphics::textures.contains(id))
 	{
 		SDL_Size size = { background.w, background.h };
@@ -946,7 +991,25 @@ void LSG_Graphics::RenderRoundedCornersTop(
 		LSG_Graphics::textures[id] = LSG_Graphics::getVectorRoundedCornersTop(fillColor, borderRadius, size);
 	}
 
-	SDL_RenderCopy(renderer, LSG_Graphics::textures[id], nullptr, &background);
+	LSG_Graphics::RenderTexture(renderer, LSG_Graphics::textures[id], nullptr, &background);
+}
+
+void LSG_Graphics::RenderTexture(SDL_Renderer* renderer, SDL_Texture* texture, const SDL_Rect* clip, const SDL_Rect* dest)
+{
+	SDL_FRect  destF = {}, clipF = {};
+	SDL_FRect* destFP = nullptr, *clipFP = nullptr;
+
+	if (dest) {
+		SDL_RectToFRect(dest, &destF);
+		destFP = &destF;
+	}
+
+	if (clip) {
+		SDL_RectToFRect(clip, &clipF);
+		clipFP = &clipF;
+	}
+
+	SDL_RenderTexture(renderer, texture, clipFP, destFP);
 }
 
 void LSG_Graphics::RenderTexture(
@@ -955,7 +1018,8 @@ void LSG_Graphics::RenderTexture(
 	const LSG_Alignment& alignment,
 	SDL_Texture*         texture,
 	const SDL_Size&      size
-) {
+)
+{
 	SDL_Rect clip = {
 		0,
 		0,
@@ -965,7 +1029,41 @@ void LSG_Graphics::RenderTexture(
 
 	auto destination = LSG_Graphics::GetDestinationAligned(background, size, alignment);
 
-	SDL_RenderCopy(renderer, texture, &clip, &destination);
+	LSG_Graphics::RenderTexture(renderer, texture, &clip, &destination);
+}
+
+void LSG_Graphics::RenderTextureRotated(
+	SDL_Renderer*    renderer,
+	SDL_Texture*     texture,
+	const SDL_Rect*  clip,
+	const SDL_Rect*  dest,
+	double           angle,
+	const SDL_Point* center,
+	SDL_FlipMode     flip
+)
+{
+	SDL_FPoint centerF = {};
+	SDL_FRect  destF   = {}, clipF = {};
+
+	SDL_FPoint* centerFP = nullptr;
+	SDL_FRect*  destFP   = nullptr, * clipFP = nullptr;
+
+	if (dest) {
+		SDL_RectToFRect(dest, &destF);
+		destFP = &destF;
+	}
+
+	if (clip) {
+		SDL_RectToFRect(clip, &clipF);
+		clipFP = &clipF;
+	}
+
+	if (center) {
+		centerF = { (float)center->x, (float)center->y };
+		centerFP = &centerF;
+	}
+
+	SDL_RenderTextureRotated(renderer, texture, clipFP, destFP, angle, centerFP, flip);
 }
 
 void LSG_Graphics::RenderTextureWithRoundedCorners(
@@ -976,8 +1074,9 @@ void LSG_Graphics::RenderTextureWithRoundedCorners(
 	int                radius,
 	const SDL_Color&   backgroundColor,
 	const std::string& id
-) {
-	SDL_RenderCopy(renderer, texture, clip, &destination);
+)
+{
+	LSG_Graphics::RenderTexture(renderer, texture, clip, &destination);
 
 	if (radius < 1)
 		return;
@@ -998,8 +1097,8 @@ void LSG_Graphics::RenderTooltip(SDL_Renderer* renderer, const std::string& text
 
 	// TEXT TEXTURE
 
-	auto fontSize  = LSG_Window::GetDPIScaled(LSG_Graphics::DefaultTooltipFontSize);
-	auto textId    = std::format("{}_tooltip_text", id);
+	auto fontSize  = LSG_Graphics::DefaultTooltipFontSize;
+	auto textId    = std::format("{}_text", id);
 	auto textColor = LSG_ConstDefaultColor::White;
 
 	if (!LSG_Graphics::textures.contains(textId))
@@ -1009,14 +1108,12 @@ void LSG_Graphics::RenderTooltip(SDL_Renderer* renderer, const std::string& text
 
 	// BACKGROUND
 
-	auto offsetCursor = LSG_Window::GetDPIScaled(LSG_Graphics::DefaultTooltipOffsetCursor);
-
 	auto padding   = LSG_Window::GetDPIScaled(LSG_Graphics::DefaultTooltipPadding);
 	auto padding2x = (padding + padding);
 
 	SDL_Rect backgroundDestination = {
 		position.x,
-		(position.y + offsetCursor),
+		(position.y + LSG_Window::GetDPIScaled(LSG_Graphics::DefaultTooltipOffsetCursor)),
 		(textSize.width  + padding2x),
 		(textSize.height + padding2x)
 	};
@@ -1031,17 +1128,14 @@ void LSG_Graphics::RenderTooltip(SDL_Renderer* renderer, const std::string& text
 	if ((backgroundDestination.y + backgroundDestination.h) > windowBottom)
 		backgroundDestination.y = (windowBottom - backgroundDestination.h);
 
-	auto borderRadius = LSG_Window::GetDPIScaled(LSG_Graphics::DefaultTooltipBorderRadius);
-	auto borderWidth  = LSG_Window::GetDPIScaled(LSG_Graphics::DefaultTooltipBorderWidth);
-
 	LSG_Graphics::RenderFillWithRoundedBorder(
 		renderer,
 		LSG_ConstDefaultColor::Black,
 		LSG_ConstDefaultColor::White,
-		borderRadius,
-		borderWidth,
+		LSG_Window::GetDPIScaled(LSG_Graphics::DefaultTooltipBorderRadius),
+		LSG_Window::GetDPIScaled(LSG_Graphics::DefaultTooltipBorderWidth),
 		backgroundDestination,
-		std::format("{}_tooltip_background", id)
+		std::format("{}_background", id)
 	);
 
 	// TEXT
@@ -1053,7 +1147,7 @@ void LSG_Graphics::RenderTooltip(SDL_Renderer* renderer, const std::string& text
 		textSize.height
 	};
 
-	SDL_RenderCopy(renderer, LSG_Graphics::textures[textId], nullptr, &textDestination);
+	LSG_Graphics::RenderTexture(renderer, LSG_Graphics::textures[textId], nullptr, &textDestination);
 }
 
 void LSG_Graphics::Rotate(LSG_ItemImage& image)
@@ -1066,7 +1160,7 @@ void LSG_Graphics::Rotate(LSG_ItemImage& image)
 		auto maxSize = std::max(image.surface->w, image.surface->h);
 
 		image.texture.size    = { maxSize, maxSize };
-		image.texture.texture = LSG_Window::RotateTexture(image.texture.texture, orientation, image.texture.size, image.surface->format->format);
+		image.texture.texture = LSG_Window::RotateTexture(image.texture.texture, orientation, image.texture.size);
 	}
 }
 
@@ -1127,7 +1221,7 @@ void LSG_Graphics::UpdateTexture(SDL_Texture* texture, SDL_Surface* surface)
 
 	SDL_UpdateTexture(texture, nullptr, surface->pixels, surface->pitch);
 
-	if (!SDL_ISPIXELFORMAT_ALPHA(surface->format->format))
+	if (!SDL_ISPIXELFORMAT_ALPHA(surface->format))
 		return;
 
 	SDL_BlendMode blendMode;
