@@ -2775,6 +2775,20 @@ void LSG_SortTable(const std::string& id, LSG_SortOrder sortOrder, int sortColum
 	static_cast<LSG_Table*>(component)->Sort(sortOrder, sortColumn);
 }
 
+std::string LSG_Text_GetFormattedSize(size_t size)
+{
+	if (size >= LSG_ConstSize::TerraByte)
+		return std::format("{:.1f} TB", ((float)size / (float)LSG_ConstSize::TerraByte));
+	else if (size >= LSG_ConstSize::GigaByte)
+		return std::format("{:.1f} GB", ((float)size / (float)LSG_ConstSize::GigaByte));
+	else if (size >= LSG_ConstSize::MegaByte)
+		return std::format("{:.1f} MB", ((float)size / (float)LSG_ConstSize::MegaByte));
+	else if (size >= LSG_ConstSize::KiloByte)
+		return std::format("{:.1f} KB", ((float)size / (float)LSG_ConstSize::KiloByte));
+
+    return std::format("{} bytes", size);
+}
+
 std::string LSG_Text_Join(const LSG_Strings& strings, const std::string& separator)
 {
 	return LSG_Text::Join(strings, separator);

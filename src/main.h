@@ -200,6 +200,14 @@ struct LSG_ConstOrientation
 	}
 };
 
+struct LSG_ConstSize
+{
+    static inline const size_t KiloByte  = 1024ull;
+    static inline const size_t MegaByte  = (KiloByte * 1024ull);
+    static inline const size_t GigaByte  = (MegaByte * 1024ull);
+    static inline const size_t TerraByte = (GigaByte * 1024ull);
+};
+
 struct LSG_ConstSortOrder
 {
 	static inline const std::string Ascending  = "ascending";

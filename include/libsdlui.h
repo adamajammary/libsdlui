@@ -1836,6 +1836,12 @@ DLLEXPORT void DLL LSG_SortList(const std::string& id, LSG_SortOrder sortOrder);
 DLLEXPORT void DLL LSG_SortTable(const std::string& id, LSG_SortOrder sortOrder, int sortColumn);
 
 /**
+ * @returns a formatted string representing the size as KB, MB, GB or TB.
+ * @param size The numerical size in bytes
+ */
+DLLEXPORT std::string DLL LSG_Text_GetFormattedSize(size_t size);
+
+/**
  * @brief Joins text strings together by separator.
  * @param strings   Strings to join
  * @param separator String to use as a separator

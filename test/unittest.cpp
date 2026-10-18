@@ -1266,6 +1266,118 @@ namespace LSG_UnitTest
 
     TEST_CLASS(Text)
     {
+        TEST_METHOD(GetFormattedSize)
+        {
+            try
+            {
+                auto size   = LSG_Text_GetFormattedSize(512ull);
+                auto sizeKB = LSG_Text_GetFormattedSize(1024ull);
+                auto sizeMB = LSG_Text_GetFormattedSize(1024ull * 1024ull);
+                auto sizeGB = LSG_Text_GetFormattedSize(1024ull * 1024ull * 1024ull);
+                auto sizeTB = LSG_Text_GetFormattedSize(1024ull * 1024ull * 1024ull * 1024ull);
+
+                Assert::AreEqual("512 bytes", size.c_str());
+                Assert::AreEqual("1.0 KB", sizeKB.c_str());
+                Assert::AreEqual("1.0 MB", sizeMB.c_str());
+                Assert::AreEqual("1.0 GB", sizeGB.c_str());
+                Assert::AreEqual("1.0 TB", sizeTB.c_str());
+            }
+            catch (const std::exception& e)
+            {
+                Assert::Fail(ToString(e.what()).c_str());
+            }
+        }
+
+        TEST_METHOD(Join)
+        {
+            try
+            {
+                LSG_Strings strings = { "str1", "str2", "str3" };
+
+                auto result = LSG_Text_Join(strings, ", ");
+
+                Assert::AreEqual("str1, str2, str3", result.c_str());
+            }
+            catch (const std::exception& e)
+            {
+                Assert::Fail(ToString(e.what()).c_str());
+            }
+        }
+
+        TEST_METHOD(Replace)
+        {
+            try
+            {
+                auto result = LSG_Text_Replace("str1, str2, str3", ", ", " | ");
+
+                Assert::AreEqual("str1 | str2 | str3", result.c_str());
+            }
+            catch (const std::exception& e)
+            {
+                Assert::Fail(ToString(e.what()).c_str());
+            }
+        }
+
+        TEST_METHOD(Split)
+        {
+            try
+            {
+                auto strings = LSG_Text_Split("str1,str2,str3", ',');
+
+                Assert::AreEqual(3ull, strings.size());
+
+                Assert::AreEqual("str1", strings[0].c_str());
+                Assert::AreEqual("str2", strings[1].c_str());
+                Assert::AreEqual("str3", strings[2].c_str());
+            }
+            catch (const std::exception& e)
+            {
+                Assert::Fail(ToString(e.what()).c_str());
+            }
+        }
+
+        TEST_METHOD(ToLower)
+        {
+            try
+            {
+                auto result = LSG_Text_ToLower("MiXeD 123");
+
+                Assert::AreEqual("mixed 123", result.c_str());
+            }
+            catch (const std::exception& e)
+            {
+                Assert::Fail(ToString(e.what()).c_str());
+            }
+        }
+
+        TEST_METHOD(ToUpper)
+        {
+            try
+            {
+                auto result = LSG_Text_ToUpper("MiXeD 123");
+
+                Assert::AreEqual("MIXED 123", result.c_str());
+            }
+            catch (const std::exception& e)
+            {
+                Assert::Fail(ToString(e.what()).c_str());
+            }
+        }
+
+        TEST_METHOD(Trim)
+        {
+            try
+            {
+                auto result = LSG_Text_Trim("   str   1 2 3   ");
+
+                Assert::AreEqual("str   1 2 3", result.c_str());
+            }
+            catch (const std::exception& e)
+            {
+                Assert::Fail(ToString(e.what()).c_str());
+            }
+        }
+
         TEST_METHOD(SetText)
         {
             try

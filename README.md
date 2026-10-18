@@ -5162,10 +5162,22 @@ LSG_SortTable("Table", LSG_SORT_ORDER_ASCENDING, 0);
 LSG_SortTable("TableWithGroups", LSG_SORT_ORDER_DESCENDING, 1);
 ```
 
-### LSG_TextJoin
+### LSG_Text_GetFormattedSize
 
 ```cpp
-std::string LSG_TextJoin(const LSG_Strings& strings, const std::string& separator);
+std::string LSG_Text_GetFormattedSize(size_t size);
+```
+
+Returns a formatted string representing the size as KB, MB, GB or TB.
+
+Parameters
+
+- **size** The numerical size in bytes
+
+### LSG_Text_Join
+
+```cpp
+std::string LSG_Text_Join(const LSG_Strings& strings, const std::string& separator);
 ```
 
 Joins text strings together by separator.
@@ -5175,10 +5187,10 @@ Parameters
 - **strings** Strings to join
 - **separator** String to use as a separator
 
-### LSG_TextReplace
+### LSG_Text_Replace
 
 ```cpp
-std::string LSG_TextReplace(const std::string& text, const std::string& oldSubstring, const std::string& newSubstring);
+std::string LSG_Text_Replace(const std::string& text, const std::string& oldSubstring, const std::string& newSubstring);
 ```
 
 Replaces all occurrences of oldSubstring in text with newSubstring.
@@ -5189,10 +5201,10 @@ Parameters
 - **oldSubstring** String to be replaced
 - **newSubstring** String to use as replacement
 
-### LSG_TextSplit
+### LSG_Text_Split
 
 ```cpp
-LSG_Strings LSG_TextSplit(const std::string& text, char separator);
+LSG_Strings LSG_Text_Split(const std::string& text, char separator);
 ```
 
 Splits text by separator.
@@ -5202,10 +5214,10 @@ Parameters
 - **text** String to split
 - **separator** Character to use as a separator
 
-### LSG_TextToLower
+### LSG_Text_ToLower
 
 ```cpp
-std::string LSG_TextToLower(const std::string& text);
+std::string LSG_Text_ToLower(const std::string& text);
 ```
 
 Converts text to lowercase.
@@ -5214,10 +5226,10 @@ Parameters
 
 - **text** Text string
 
-### LSG_TextToUpper
+### LSG_Text_ToUpper
 
 ```cpp
-std::string LSG_TextToUpper(const std::string& text);
+std::string LSG_Text_ToUpper(const std::string& text);
 ```
 
 Converts text to uppercase.
@@ -5226,10 +5238,10 @@ Parameters
 
 - **text** Text string
 
-### LSG_TextToUTF8
+### LSG_Text_ToUTF8
 
 ```cpp
-std::string LSG_TextToUTF8(const std::wstring& wide);
+std::string LSG_Text_ToUTF8(const std::wstring& wide);
 ```
 
 Converts wide string to standard string with UTF-8 character encoding.
@@ -5238,10 +5250,10 @@ Parameters
 
 - **wide** Wide text string
 
-### LSG_TextToWide
+### LSG_Text_ToWide
 
 ```cpp
-std::wstring LSG_TextToWide(const std::string& text);
+std::wstring LSG_Text_ToWide(const std::string& text);
 ```
 
 Converts standard string to wide string.
@@ -5250,10 +5262,10 @@ Parameters
 
 - **text** Text string
 
-### LSG_TextTrim
+### LSG_Text_Trim
 
 ```cpp
-std::string LSG_TextTrim(const std::string& text);
+std::string LSG_Text_Trim(const std::string& text);
 ```
 
 Removes whitespaces from beginning and end of text.
