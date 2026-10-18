@@ -285,6 +285,23 @@ DLLEXPORT void DLL LSG_ClearTextInput(const std::string& id);
 DLLEXPORT void DLL LSG_CloseModal(const std::string& id);
 
 /**
+ * @brief Tries to create a directory in the provided path.
+ * @param dir  The name of the sub-directory
+ * @param path The path of the base directory
+ * @throws invalid_argument
+ * @throws runtime_error
+ */
+DLLEXPORT void DLL LSG_FileSystem_CreateDirInPath(const std::string& dir, const std::string& path);
+
+/**
+ * @returns an app-specific location where files can be written
+ * @param appName The name of your application
+ * @throws invalid_argument
+ * @throws runtime_error
+ */
+DLLEXPORT std::string DLL LSG_FileSystem_GetUserDir(const std::string& appName);
+
+/**
  * @returns the background color of the component
  * @param id Component ID
  * @throws invalid_argument
@@ -749,14 +766,6 @@ DLLEXPORT std::string DLL LSG_GetTitle(const std::string& id);
  * @throws runtime_error
  */
 DLLEXPORT std::string DLL LSG_GetTooltip(const std::string& id);
-
-/**
- * @returns an app-specific location where files can be written
- * @param appName The name of your application
- * @throws invalid_argument
- * @throws runtime_error
- */
-DLLEXPORT std::string DLL LSG_GetUserDir(const std::string& appName);
 
 /**
  * @returns the minimum window size
@@ -1831,7 +1840,7 @@ DLLEXPORT void DLL LSG_SortTable(const std::string& id, LSG_SortOrder sortOrder,
  * @param strings   Strings to join
  * @param separator String to use as a separator
  */
-DLLEXPORT std::string DLL LSG_TextJoin(const LSG_Strings& strings, const std::string& separator);
+DLLEXPORT std::string DLL LSG_Text_Join(const LSG_Strings& strings, const std::string& separator);
 
 /**
  * @brief Replaces all occurrences of oldSubstring in text with newSubstring.
@@ -1839,44 +1848,44 @@ DLLEXPORT std::string DLL LSG_TextJoin(const LSG_Strings& strings, const std::st
  * @param oldSubstring String to be replaced
  * @param newSubstring String to use as replacement
  */
-DLLEXPORT std::string DLL LSG_TextReplace(const std::string& text, const std::string& oldSubstring, const std::string& newSubstring);
+DLLEXPORT std::string DLL LSG_Text_Replace(const std::string& text, const std::string& oldSubstring, const std::string& newSubstring);
 
 /**
  * @brief Splits text by separator.
  * @param text      String to split
  * @param separator Character to use as a separator
  */
-DLLEXPORT LSG_Strings DLL LSG_TextSplit(const std::string& text, char separator);
+DLLEXPORT LSG_Strings DLL LSG_Text_Split(const std::string& text, char separator);
 
 /**
  * @brief Converts text to lowercase.
  * @param text Text string
  */
-DLLEXPORT std::string DLL LSG_TextToLower(const std::string& text);
+DLLEXPORT std::string DLL LSG_Text_ToLower(const std::string& text);
 
 /**
  * @brief Converts text to uppercase.
  * @param text Text string
  */
-DLLEXPORT std::string DLL LSG_TextToUpper(const std::string& text);
+DLLEXPORT std::string DLL LSG_Text_ToUpper(const std::string& text);
 
 /**
  * @brief Converts wide string to standard string with UTF-8 character encoding.
  * @param wide Wide text string
  */
-DLLEXPORT std::string DLL LSG_TextToUTF8(const std::wstring& wide);
+DLLEXPORT std::string DLL LSG_Text_ToUTF8(const std::wstring& wide);
 
 /**
  * @brief Converts standard string to wide string.
  * @param text Text string
  */
-DLLEXPORT std::wstring DLL LSG_TextToWide(const std::string& text);
+DLLEXPORT std::wstring DLL LSG_Text_ToWide(const std::string& text);
 
 /**
  * @brief Removes whitespaces from beginning and end of text.
  * @param text Text string
  */
-DLLEXPORT std::string DLL LSG_TextTrim(const std::string& text);
+DLLEXPORT std::string DLL LSG_Text_Trim(const std::string& text);
 
 /**
  * @brief Tries to initialize the library and open a new window based on layout from XML file.

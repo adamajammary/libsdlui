@@ -251,6 +251,45 @@ void LSG_CloseModal(const std::string& id)
 	static_cast<LSG_Modal*>(component)->Close();
 }
 
+void LSG_FileSystem_CreateDirInPath(const std::string& dir, const std::string& path)
+{
+	if (dir.empty() || path.empty())
+		throw std::invalid_argument("'dir' and 'path' can not be empty.");
+
+	auto subDir  = (dir.starts_with('/') || dir.starts_with('\\') ? dir.substr(1) : dir);
+	auto baseDir = (path.ends_with('/')  || path.ends_with('\\')  ? path.substr(0, path.size() - 1) : path);
+
+	#if defined _windows
+        auto result = _wmkdir(std::format(L"{}\\{}", LSG_Text_ToWide(baseDir), LSG_Text_ToWide(subDir)).c_str());
+    #else
+        auto result = mkdir(std::format("{}/{}", baseDir, subDir).c_str(), (S_IRWXU | S_IRWXG));
+    #endif
+
+    if ((result != 0) && (errno != EEXIST))
+        throw std::runtime_error(std::format("Failed to create dir '{}' in path '{}'.", subDir, baseDir));
+}
+
+std::string LSG_FileSystem_GetUserDir(const std::string& appName)
+{
+	if (appName.empty())
+		throw std::invalid_argument("'appName' can not be empty.");
+
+    #if defined _DEBUG
+        auto prefPath = SDL_GetPrefPath(nullptr, std::format("{}-dev", appName).c_str());
+    #else
+        auto prefPath = SDL_GetPrefPath(nullptr, appName.c_str());
+    #endif
+
+    if (!prefPath)
+        throw std::runtime_error(std::format("Failed to get an app-specific location where files can be written: {}", SDL_GetError()));
+
+    auto userDir = std::string(prefPath);
+
+    SDL_free(prefPath);
+
+	return userDir;
+}
+
 SDL_Color LSG_GetBackgroundColor(const std::string& id)
 {
 	if (!isRunning)
@@ -366,7 +405,7 @@ LSG_File LSG_GetFile(const std::string& filePath)
 
     if (extension != std::string::npos) {
         file.name = file.file.substr(0, extension);
-        file.ext  = LSG_TextToLower(file.file.substr(extension + 1));
+        file.ext  = LSG_Text_ToLower(file.file.substr(extension + 1));
     } else {
         file.name = file.file;
     }
@@ -1031,27 +1070,6 @@ std::string LSG_GetTooltip(const std::string& id)
 		throw std::invalid_argument(getErrorNoID("", id));
 
 	return component->GetTooltip();
-}
-
-std::string LSG_GetUserDir(const std::string& appName)
-{
-	if (appName.empty())
-		throw std::invalid_argument("appName can not be empty.");
-
-    #if defined _DEBUG
-        auto prefPath = SDL_GetPrefPath(nullptr, std::format("{}-dev", appName).c_str());
-    #else
-        auto prefPath = SDL_GetPrefPath(nullptr, appName.c_str());
-    #endif
-
-    if (!prefPath)
-        throw std::runtime_error(std::format("Failed to get an app-specific location where files can be written: {}", SDL_GetError()));
-
-    auto userDir = std::string(prefPath);
-
-    SDL_free(prefPath);
-
-	return userDir;
 }
 
 SDL_Size LSG_GetWindowMinimumSize()
@@ -2757,42 +2775,42 @@ void LSG_SortTable(const std::string& id, LSG_SortOrder sortOrder, int sortColum
 	static_cast<LSG_Table*>(component)->Sort(sortOrder, sortColumn);
 }
 
-std::string LSG_TextJoin(const LSG_Strings& strings, const std::string& separator)
+std::string LSG_Text_Join(const LSG_Strings& strings, const std::string& separator)
 {
 	return LSG_Text::Join(strings, separator);
 }
 
-std::string LSG_TextReplace(const std::string& text, const std::string& oldSubstring, const std::string& newSubstring)
+std::string LSG_Text_Replace(const std::string& text, const std::string& oldSubstring, const std::string& newSubstring)
 {
 	return LSG_Text::Replace(text, oldSubstring, newSubstring);
 }
 
-LSG_Strings LSG_TextSplit(const std::string& text, char separator)
+LSG_Strings LSG_Text_Split(const std::string& text, char separator)
 {
 	return LSG_Text::Split(text, separator);
 }
 
-std::string LSG_TextToLower(const std::string& text)
+std::string LSG_Text_ToLower(const std::string& text)
 {
 	return LSG_Text::ToLower(text);
 }
 
-std::string LSG_TextToUpper(const std::string& text)
+std::string LSG_Text_ToUpper(const std::string& text)
 {
 	return LSG_Text::ToUpper(text);
 }
 
-std::string LSG_TextToUTF8(const std::wstring& wide)
+std::string LSG_Text_ToUTF8(const std::wstring& wide)
 {
 	return LSG_Text::ToUTF8(wide);
 }
 
-std::wstring LSG_TextToWide(const std::string& text)
+std::wstring LSG_Text_ToWide(const std::string& text)
 {
 	return LSG_Text::ToWide(text);
 }
 
-std::string LSG_TextTrim(const std::string& text)
+std::string LSG_Text_Trim(const std::string& text)
 {
 	return LSG_Text::Trim(text);
 }

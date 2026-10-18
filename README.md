@@ -1314,6 +1314,47 @@ Example
 LSG_CloseModal("ModalIdAbout");
 ```
 
+### LSG_FileSystem_CreateDirInPath
+
+```cpp
+void LSG_FileSystem_CreateDirInPath(const std::string& dir, const std::string& path);
+```
+
+Tries to create a directory in the provided path.
+
+Parameters
+
+- **dir** The name of the sub-directory
+- **path** The path of the base directory
+
+Exceptions
+
+- invalid_argument
+- runtime_error
+
+Example
+
+```cpp
+LSG_FileSystem_CreateDirInPath("mysubdir", "/path/to/base/dir");
+```
+
+### LSG_FileSystem_GetUserDir
+
+```cpp
+std::string LSG_FileSystem_GetUserDir(const std::string& appName);
+```
+
+Returns an app-specific location where files can be written.
+
+Parameters
+
+- **appName** The name of your application
+
+Exceptions
+
+- invalid_argument
+- runtime_error
+
 ### LSG_GetBackgroundColor
 
 ```cpp
@@ -2284,23 +2325,6 @@ Returns the tooltip text of the component.
 Parameters
 
 - **id** Component ID
-
-Exceptions
-
-- invalid_argument
-- runtime_error
-
-### LSG_GetUserDir
-
-```cpp
-std::string LSG_GetUserDir(const std::string& appName);
-```
-
-Returns an app-specific location where files can be written.
-
-Parameters
-
-- **appName** The name of your application
 
 Exceptions
 
