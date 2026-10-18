@@ -751,6 +751,14 @@ DLLEXPORT std::string DLL LSG_GetTitle(const std::string& id);
 DLLEXPORT std::string DLL LSG_GetTooltip(const std::string& id);
 
 /**
+ * @returns an app-specific location where files can be written
+ * @param appName The name of your application
+ * @throws invalid_argument
+ * @throws runtime_error
+ */
+DLLEXPORT std::string DLL LSG_GetUserDir(const std::string& appName);
+
+/**
  * @returns the minimum window size
  * @throws runtime_error
  */

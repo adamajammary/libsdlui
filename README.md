@@ -2290,6 +2290,23 @@ Exceptions
 - invalid_argument
 - runtime_error
 
+### LSG_GetUserDir
+
+```cpp
+std::string LSG_GetUserDir(const std::string& appName);
+```
+
+Returns an app-specific location where files can be written.
+
+Parameters
+
+- **appName** The name of your application
+
+Exceptions
+
+- invalid_argument
+- runtime_error
+
 ### LSG_GetWindowMinimumSize
 
 ```cpp

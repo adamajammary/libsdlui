@@ -1,6 +1,6 @@
 #include "main.h"
 
-const char ERROR_NOT_STARTED[] = "libsdlui has not been started, call LSG_Start.";
+const char* ERROR_NOT_STARTED = "libsdlui has not been started, call LSG_Start.";
 
 std::string basePath  = "";
 bool        isRunning = false;
@@ -25,10 +25,10 @@ static std::string getErrorNoID(const std::string& component, const std::string&
 	return std::format("Failed to find a {} component with ID '{}'.", component, id);
 }
 
-#if defined _android
 /**
  * @throws runtime_error
  */
+#if defined _android
 static void initBasePath()
 {
 	if (!basePath.empty())
@@ -37,7 +37,7 @@ static void initBasePath()
 	auto path = SDL_GetAndroidInternalStoragePath();
 
 	if (!path)
-		throw std::runtime_error(std::format("Failed to get an app-specific location where files can be written: {}", SDL_GetError()));
+		throw std::runtime_error(std::format("Failed to get the internal storage path for this Android application: {}", SDL_GetError()));
 
 	basePath = std::format("{}/", path);
 
@@ -91,7 +91,7 @@ static void initBasePath()
 	auto path = SDL_GetBasePath();
 
 	if (!path)
-		throw std::runtime_error(std::format("Failed to get an app-specific location where files can be written: {}", SDL_GetError()));
+		throw std::runtime_error(std::format("Failed to get the directory where this application was run from: {}", SDL_GetError()));
 
 	basePath = std::string(path);
 }
@@ -1031,6 +1031,27 @@ std::string LSG_GetTooltip(const std::string& id)
 		throw std::invalid_argument(getErrorNoID("", id));
 
 	return component->GetTooltip();
+}
+
+std::string LSG_GetUserDir(const std::string& appName)
+{
+	if (appName.empty())
+		throw std::invalid_argument("appName can not be empty.");
+
+    #if defined _DEBUG
+        auto prefPath = SDL_GetPrefPath(nullptr, std::format("{}-dev", appName).c_str());
+    #else
+        auto prefPath = SDL_GetPrefPath(nullptr, appName.c_str());
+    #endif
+
+    if (!prefPath)
+        throw std::runtime_error(std::format("Failed to get an app-specific location where files can be written: {}", SDL_GetError()));
+
+    auto userDir = std::string(prefPath);
+
+    SDL_free(prefPath);
+
+	return userDir;
 }
 
 SDL_Size LSG_GetWindowMinimumSize()
