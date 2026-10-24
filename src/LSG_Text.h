@@ -27,6 +27,7 @@ public:
 	static std::string         GetFormattedDuration(size_t seconds);
 	static std::string         GetFormattedSize(size_t size);
 	static std::string         GetFormattedTime();
+	static std::string         GetFormattedTimeAgo(time_t timestamp);
 	static std::string         GetFullPath(const std::string& path);
 	static std::string         GetMediaCodecName(const std::string& codecName);
 	static LSG_TableRowCompare GetTableRowCompare(int column);
@@ -49,6 +50,7 @@ protected:
 	void         renderTextOverflowEllipse(SDL_Renderer* renderer, SDL_Texture* texture, const SDL_Rect& destination, int maxWidth) const;
 
 private:
+	static std::string  getFormattedTimeAgo(int64_t periods, const std::string period);
 	static SDL_Surface* getSurface(const std::string& text, int fontSize, int fontStyle, const SDL_Color& textColor, bool wrap);
 	static SDL_Texture* getTexture(const std::string& text, int fontSize, int fontStyle, const SDL_Color& textColor, bool wrap);
 };

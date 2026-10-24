@@ -146,6 +146,33 @@ std::string LSG_Text::GetFormattedTime()
 	return std::string(buffer);
 }
 
+std::string LSG_Text::GetFormattedTimeAgo(time_t timestamp)
+{
+	auto diffSeconds = (std::time(nullptr) - timestamp);
+
+	if (diffSeconds >= LSG_SECONDS_IN_A_YEAR)
+		return LSG_Text::getFormattedTimeAgo((diffSeconds / LSG_SECONDS_IN_A_YEAR), "year");
+	else if (diffSeconds >= LSG_SECONDS_IN_A_MONTH)
+		return LSG_Text::getFormattedTimeAgo((diffSeconds / LSG_SECONDS_IN_A_MONTH), "month");
+	else if (diffSeconds >= LSG_SECONDS_IN_A_WEEK)
+		return LSG_Text::getFormattedTimeAgo((diffSeconds / LSG_SECONDS_IN_A_WEEK), "week");
+	else if (diffSeconds >= LSG_SECONDS_IN_A_DAY)
+		return LSG_Text::getFormattedTimeAgo((diffSeconds / LSG_SECONDS_IN_A_DAY), "day");
+	else if (diffSeconds >= LSG_SECONDS_IN_AN_HOUR)
+		return LSG_Text::getFormattedTimeAgo((diffSeconds / LSG_SECONDS_IN_AN_HOUR), "hour");
+	else if (diffSeconds >= LSG_SECONDS_IN_A_MINUTE)
+		return LSG_Text::getFormattedTimeAgo((diffSeconds / LSG_SECONDS_IN_A_MINUTE), "minute");
+	else if (diffSeconds > 0)
+		return LSG_Text::getFormattedTimeAgo(diffSeconds, "second");
+
+	return "now";
+}
+
+std::string LSG_Text::getFormattedTimeAgo(int64_t periods, const std::string period)
+{
+	return std::format("{} {}{} ago", periods, period, (periods > 1 ? "s" : ""));
+}
+
 std::string LSG_Text::GetFullPath(const std::string& path)
 {
 	#if defined _windows

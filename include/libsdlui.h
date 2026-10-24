@@ -1871,6 +1871,12 @@ DLLEXPORT std::string DLL LSG_Text_GetFormattedSize(size_t size);
 DLLEXPORT std::string DLL LSG_Text_GetFormattedTime();
 
 /**
+ * @returns a formatted string representing the time that has passed since timestamp as seconds, minutes, hours, days, weeks, months or years
+ * @param timestamp The time to compare against
+ */
+DLLEXPORT std::string DLL LSG_Text_GetFormattedTimeAgo(time_t timestamp);
+
+/**
  * @brief Abbreviates and shortens long codec names: "Windows Media Audio v1 (description) / info" => "WMA v1".
  * @returns a more readable codec name
  * @param codecName The full codec name

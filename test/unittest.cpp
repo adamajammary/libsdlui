@@ -1360,6 +1360,48 @@ namespace LSG_UnitTest
             }
         }
 
+        TEST_METHOD(GetFormattedTimeAgo)
+        {
+            try
+            {
+                auto timeAgo0s = LSG_Text_GetFormattedTimeAgo(std::time(nullptr));
+                auto timeAgo1s = LSG_Text_GetFormattedTimeAgo(std::time(nullptr) - 1ll);
+                auto timeAgo2s = LSG_Text_GetFormattedTimeAgo(std::time(nullptr) - 1ll * 2ll);
+                auto timeAgo1m = LSG_Text_GetFormattedTimeAgo(std::time(nullptr) - 60ll);
+                auto timeAgo2m = LSG_Text_GetFormattedTimeAgo(std::time(nullptr) - 60ll * 2ll);
+                auto timeAgo1h = LSG_Text_GetFormattedTimeAgo(std::time(nullptr) - 3600ll);
+                auto timeAgo2h = LSG_Text_GetFormattedTimeAgo(std::time(nullptr) - 3600ll * 2ll);
+                auto timeAgo1d = LSG_Text_GetFormattedTimeAgo(std::time(nullptr) - 86400ll);
+                auto timeAgo2d = LSG_Text_GetFormattedTimeAgo(std::time(nullptr) - 86400ll * 2ll);
+                auto timeAgo1w = LSG_Text_GetFormattedTimeAgo(std::time(nullptr) - 604800ll);
+                auto timeAgo2w = LSG_Text_GetFormattedTimeAgo(std::time(nullptr) - 604800ll * 2ll);
+                auto timeAgo1M = LSG_Text_GetFormattedTimeAgo(std::time(nullptr) - 2628000ll);
+                auto timeAgo2M = LSG_Text_GetFormattedTimeAgo(std::time(nullptr) - 2628000ll * 2ll);
+                auto timeAgo1y = LSG_Text_GetFormattedTimeAgo(std::time(nullptr) - 31536000ll);
+                auto timeAgo2y = LSG_Text_GetFormattedTimeAgo(std::time(nullptr) - 31536000ll * 2ll);
+
+                Assert::AreEqual("now",           timeAgo0s.c_str());
+                Assert::AreEqual("1 second ago",  timeAgo1s.c_str());
+                Assert::AreEqual("2 seconds ago", timeAgo2s.c_str());
+                Assert::AreEqual("1 minute ago",  timeAgo1m.c_str());
+                Assert::AreEqual("2 minutes ago", timeAgo2m.c_str());
+                Assert::AreEqual("1 hour ago",    timeAgo1h.c_str());
+                Assert::AreEqual("2 hours ago",   timeAgo2h.c_str());
+                Assert::AreEqual("1 day ago",     timeAgo1d.c_str());
+                Assert::AreEqual("2 days ago",    timeAgo2d.c_str());
+                Assert::AreEqual("1 week ago",    timeAgo1w.c_str());
+                Assert::AreEqual("2 weeks ago",   timeAgo2w.c_str());
+                Assert::AreEqual("1 month ago",   timeAgo1M.c_str());
+                Assert::AreEqual("2 months ago",  timeAgo2M.c_str());
+                Assert::AreEqual("1 year ago",    timeAgo1y.c_str());
+                Assert::AreEqual("2 years ago",   timeAgo2y.c_str());
+            }
+            catch (const std::exception& e)
+            {
+                Assert::Fail(ToString(e.what()).c_str());
+            }
+        }
+
         TEST_METHOD(GetMediaCodecName)
         {
             try

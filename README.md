@@ -5226,6 +5226,18 @@ std::string LSG_Text_GetFormattedTime();
 
 Returns a formatted string representing the current time as "HH:MM".
 
+### LSG_Text_GetFormattedTimeAgo
+
+```cpp
+std::string LSG_Text_GetFormattedTimeAgo(time_t timestamp);
+```
+
+Returns a formatted string representing the time that has passed since timestamp as seconds, minutes, hours, days, weeks, months or years.
+
+Parameters
+
+- **timestamp** The time to compare against
+
 ### LSG_Text_GetMediaCodecName
 
 ```cpp
