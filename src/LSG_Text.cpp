@@ -61,6 +61,65 @@ TTF_Font* LSG_Text::GetFontCJK(int size)
 	return font;
 }
 
+std::string LSG_Text::GetFormattedBitRate(size_t bitRate)
+{
+	if (bitRate >= LSG_ConstSize::TerraBit)
+		return std::format("{} Tbps", (bitRate / LSG_ConstSize::TerraBit));
+	else if (bitRate >= LSG_ConstSize::GigaBit)
+		return std::format("{} Gbps", (bitRate / LSG_ConstSize::GigaBit));
+	else if (bitRate >= LSG_ConstSize::MegaBit)
+		return std::format("{} Mbps", (bitRate / LSG_ConstSize::MegaBit));
+	else if (bitRate >= LSG_ConstSize::KiloBit)
+		return std::format("{} kbps", (bitRate / LSG_ConstSize::KiloBit));
+
+    return std::format("{} bps", bitRate);
+}
+
+std::string LSG_Text::GetFormattedCount(size_t count)
+{
+	if (count >= LSG_ConstCount::Trillion)
+		return std::format("{:.2f}T", ((float)count / (float)LSG_ConstCount::Trillion));
+	else if (count >= LSG_ConstCount::Billion)
+		return std::format("{:.2f}G", ((float)count / (float)LSG_ConstCount::Billion));
+	else if (count >= LSG_ConstCount::Million)
+		return std::format("{:.2f}M", ((float)count / (float)LSG_ConstCount::Million));
+	else if (count >= LSG_ConstCount::Thousand)
+		return std::format("{:.2f}K", ((float)count / (float)LSG_ConstCount::Thousand));
+
+    return std::to_string(count);
+}
+
+std::string LSG_Text::GetFormattedDuration(size_t seconds)
+{
+	auto remSec = (seconds % 3600);
+
+	auto min = (remSec / 60);
+	auto sec = (remSec % 60);
+
+	if (seconds >= 3600)
+		return std::format("{}h {}m {}s", (seconds / 3600), min, sec);
+	else if (seconds >= 60)
+		return std::format("{}m {}s", min, sec);
+	else if (seconds > 0)
+		return std::format("{}s", sec);
+
+	return "0s";
+}
+
+std::string LSG_Text::GetFormattedSize(size_t size)
+{
+	if (size >= LSG_ConstSize::TerraByte)
+		return std::format("{:.1f} TB", ((float)size / (float)LSG_ConstSize::TerraByte));
+	else if (size >= LSG_ConstSize::GigaByte)
+		return std::format("{:.1f} GB", ((float)size / (float)LSG_ConstSize::GigaByte));
+	else if (size >= LSG_ConstSize::MegaByte)
+		return std::format("{:.1f} MB", ((float)size / (float)LSG_ConstSize::MegaByte));
+	else if (size >= LSG_ConstSize::KiloByte)
+		return std::format("{:.1f} KB", ((float)size / (float)LSG_ConstSize::KiloByte));
+
+    return std::format("{} bytes", size);
+}
+
 std::string LSG_Text::GetFullPath(const std::string& path)
 {
 	#if defined _windows

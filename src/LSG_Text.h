@@ -21,6 +21,10 @@ public:
 	static bool                FontSupportsText(TTF_Font* font, uint16_t* text);
 	static TTF_Font*           GetFont(int size, uint16_t* text = nullptr);
 	static TTF_Font*           GetFontCJK(int size);
+	static std::string         GetFormattedBitRate(size_t bitRate);
+	static std::string         GetFormattedCount(size_t count);
+	static std::string         GetFormattedDuration(size_t seconds);
+	static std::string         GetFormattedSize(size_t size);
 	static std::string         GetFullPath(const std::string& path);
 	static LSG_TableRowCompare GetTableRowCompare(int column);
 	static SDL_Surface*        GetSurface(const std::string& text, int fontSize, int fontStyle, const SDL_Color& textColor, bool wrap);
