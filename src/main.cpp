@@ -2789,6 +2789,20 @@ std::string LSG_Text_GetFormattedBitRate(size_t bitRate)
     return std::format("{} bps", bitRate);
 }
 
+std::string LSG_Text_GetFormattedCount(size_t count)
+{
+	if (count >= LSG_ConstCount::Trillion)
+		return std::format("{:.2f}T", ((float)count / (float)LSG_ConstCount::Trillion));
+	else if (count >= LSG_ConstCount::Billion)
+		return std::format("{:.2f}G", ((float)count / (float)LSG_ConstCount::Billion));
+	else if (count >= LSG_ConstCount::Million)
+		return std::format("{:.2f}M", ((float)count / (float)LSG_ConstCount::Million));
+	else if (count >= LSG_ConstCount::Thousand)
+		return std::format("{:.2f}K", ((float)count / (float)LSG_ConstCount::Thousand));
+
+    return std::to_string(count);
+}
+
 std::string LSG_Text_GetFormattedSize(size_t size)
 {
 	if (size >= LSG_ConstSize::TerraByte)

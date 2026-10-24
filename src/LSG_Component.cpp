@@ -600,9 +600,9 @@ void LSG_Component::SetColors()
 	auto borderColor     = this->getXmlColor("border-color");
 	auto textColor       = this->getXmlColor("text-color");
 
-	this->backgroundColor = (!backgroundColor.empty() ? LSG_Graphics::ToSdlColor(backgroundColor) : LSG_ConstDefaultColor::Background);
-	this->borderColor     = (!borderColor.empty()     ? LSG_Graphics::ToSdlColor(borderColor)     : LSG_ConstDefaultColor::Border);
-	this->textColor       = (!textColor.empty()       ? LSG_Graphics::ToSdlColor(textColor)       : LSG_ConstDefaultColor::Text);
+	this->backgroundColor = (!backgroundColor.empty() ? LSG_Graphics::ToSdlColor(backgroundColor) : LSG_ConstColor::Background);
+	this->borderColor     = (!borderColor.empty()     ? LSG_Graphics::ToSdlColor(borderColor)     : LSG_ConstColor::Border);
+	this->textColor       = (!textColor.empty()       ? LSG_Graphics::ToSdlColor(textColor)       : LSG_ConstColor::Text);
 
 	for (auto child : this->children)
 		child->SetColors();

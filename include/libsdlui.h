@@ -1841,6 +1841,13 @@ DLLEXPORT void DLL LSG_SortTable(const std::string& id, LSG_SortOrder sortOrder,
  */
 DLLEXPORT std::string DLL LSG_Text_GetFormattedBitRate(size_t bitRate);
 
+
+/**
+ * @returns a formatted string representing the count as K, M, G or T
+ * @param count The numerical count
+ */
+DLLEXPORT std::string DLL LSG_Text_GetFormattedCount(size_t count);
+
 /**
  * @returns a formatted string representing the size as KB, MB, GB or TB
  * @param size The numerical size in bytes

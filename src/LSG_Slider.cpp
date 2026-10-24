@@ -439,7 +439,7 @@ void LSG_Slider::SetColors()
 	auto thumbBorderColor = this->getXmlColor("thumb-border-color", false);
 
 	this->thumb.color       = (!thumbColor.empty()       ? LSG_Graphics::ToSdlColor(thumbColor)       : LSG_Slider::DefaultThumbColor);
-	this->thumb.borderColor = (!thumbBorderColor.empty() ? LSG_Graphics::ToSdlColor(thumbBorderColor) : LSG_ConstDefaultColor::Border);
+	this->thumb.borderColor = (!thumbBorderColor.empty() ? LSG_Graphics::ToSdlColor(thumbBorderColor) : LSG_ConstColor::Border);
 }
 
 void LSG_Slider::SetOnHoverCallback(const LSG_OnHoverCallback& callback)

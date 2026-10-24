@@ -5174,6 +5174,18 @@ Parameters
 
 - **bitRate** The numerical bit rate in bps
 
+### LSG_Text_GetFormattedCount
+
+```cpp
+std::string LSG_Text_GetFormattedCount(size_t count);
+```
+
+Returns a formatted string representing the count as K, M, G or T.
+
+Parameters
+
+- **count** The numerical count
+
 ### LSG_Text_GetFormattedSize
 
 ```cpp

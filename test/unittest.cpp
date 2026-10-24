@@ -1288,6 +1288,28 @@ namespace LSG_UnitTest
             }
         }
 
+        TEST_METHOD(GetFormattedCount)
+        {
+            try
+            {
+                auto count  = LSG_Text_GetFormattedCount(500ull);
+                auto countK = LSG_Text_GetFormattedCount(1000ull);
+                auto countM = LSG_Text_GetFormattedCount(1000ull * 1000ull);
+                auto countG = LSG_Text_GetFormattedCount(1000ull * 1000ull * 1000ull);
+                auto countT = LSG_Text_GetFormattedCount(1000ull * 1000ull * 1000ull * 1000ull);
+
+                Assert::AreEqual("500",   count.c_str());
+                Assert::AreEqual("1.00K", countK.c_str());
+                Assert::AreEqual("1.00M", countM.c_str());
+                Assert::AreEqual("1.00G", countG.c_str());
+                Assert::AreEqual("1.00T", countT.c_str());
+            }
+            catch (const std::exception& e)
+            {
+                Assert::Fail(ToString(e.what()).c_str());
+            }
+        }
+
         TEST_METHOD(GetFormattedSize)
         {
             try

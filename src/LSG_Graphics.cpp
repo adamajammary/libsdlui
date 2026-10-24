@@ -1099,7 +1099,7 @@ void LSG_Graphics::RenderTooltip(SDL_Renderer* renderer, const std::string& text
 
 	auto fontSize  = LSG_Graphics::DefaultTooltipFontSize;
 	auto textId    = std::format("{}_text", id);
-	auto textColor = LSG_ConstDefaultColor::White;
+	auto textColor = LSG_ConstColor::White;
 
 	if (!LSG_Graphics::textures.contains(textId))
 		LSG_Graphics::textures[textId] = LSG_Text::GetTexture(text, fontSize, TTF_STYLE_NORMAL, textColor, false);
@@ -1130,8 +1130,8 @@ void LSG_Graphics::RenderTooltip(SDL_Renderer* renderer, const std::string& text
 
 	LSG_Graphics::RenderFillWithRoundedBorder(
 		renderer,
-		LSG_ConstDefaultColor::Black,
-		LSG_ConstDefaultColor::White,
+		LSG_ConstColor::Black,
+		LSG_ConstColor::White,
 		LSG_Window::GetDPIScaled(LSG_Graphics::DefaultTooltipBorderRadius),
 		LSG_Window::GetDPIScaled(LSG_Graphics::DefaultTooltipBorderWidth),
 		backgroundDestination,

@@ -163,12 +163,13 @@ struct LSG_ConstAndroid
 };
 #endif
 
-struct LSG_Cursor
+struct LSG_ConstClickTime
 {
-	static inline const int IBeamOffset = 3;
+	static inline const int DoubleClick = 500;
+	static inline const int LongPress   = 1000;
 };
 
-struct LSG_ConstDefaultColor
+struct LSG_ConstColor
 {
 	static inline const SDL_Color Black = { 0, 0, 0, 255 };
 	static inline const SDL_Color White = { 255, 255, 255, 255 };
@@ -178,10 +179,17 @@ struct LSG_ConstDefaultColor
 	static inline const SDL_Color Text       = Black;
 };
 
-struct LSG_ConstClickTime
+struct LSG_ConstCount
 {
-	static inline const int DoubleClick = 500;
-	static inline const int LongPress   = 1000;
+    static const size_t Thousand = 1000ull;
+    static const size_t Million  = (Thousand * 1000ull);
+    static const size_t Billion  = (Million * 1000ull);
+    static const size_t Trillion = (Billion * 1000ull);
+};
+
+struct LSG_Cursor
+{
+	static inline const int IBeamOffset = 3;
 };
 
 struct LSG_ConstOrientation
