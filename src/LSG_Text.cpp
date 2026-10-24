@@ -155,6 +155,34 @@ std::string LSG_Text::GetFullPath(const std::string& path)
 	#endif
 }
 
+std::string LSG_Text::GetMediaCodecName(const std::string& codecName)
+{
+	if (codecName.empty())
+		return "";
+
+	std::string codec;
+
+	if (codecName.starts_with("Windows Media Audio"))
+		codec = std::format("WMA{}", codecName.substr(19));
+	else if (codecName.starts_with("Windows Media Video"))
+		codec = std::format("WMV{}", codecName.substr(19));
+	else
+		codec = codecName;
+
+	auto description = codec.find(" (");
+
+	if (description == std::string::npos)
+		description = codec.find(" /");
+
+	if (description == std::string::npos)
+		description = codec.find(" decoder");
+
+	if (description != std::string::npos)
+		return codec.substr(0, description);
+
+	return codec;
+}
+
 LSG_TableRowCompare LSG_Text::GetTableRowCompare(int column)
 {
 	auto rowCompare = [column](const LSG_Strings& r1, const LSG_Strings& r2)

@@ -28,6 +28,7 @@ public:
 	static std::string         GetFormattedSize(size_t size);
 	static std::string         GetFormattedTime();
 	static std::string         GetFullPath(const std::string& path);
+	static std::string         GetMediaCodecName(const std::string& codecName);
 	static LSG_TableRowCompare GetTableRowCompare(int column);
 	static SDL_Surface*        GetSurface(const std::string& text, int fontSize, int fontStyle, const SDL_Color& textColor, bool wrap);
 	static SDL_Texture*        GetTexture(const std::string& text, int fontSize, int fontStyle, const SDL_Color& textColor, bool wrap);

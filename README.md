@@ -5226,6 +5226,20 @@ std::string LSG_Text_GetFormattedTime();
 
 Returns a formatted string representing the current time as "HH:MM".
 
+### LSG_Text_GetMediaCodecName
+
+```cpp
+std::string LSG_Text_GetMediaCodecName(const std::string& codecName);
+```
+
+Abbreviates and shortens long codec names: "Windows Media Audio v1 (description) / info" => "WMA v1".
+
+Returns a more readable codec name.
+
+Parameters
+
+- **codecName** The full codec name
+
 ### LSG_Text_Join
 
 ```cpp

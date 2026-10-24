@@ -2805,6 +2805,11 @@ std::string LSG_Text_GetFormattedTime()
 	return LSG_Text::GetFormattedTime();
 }
 
+std::string LSG_Text_GetMediaCodecName(const std::string& codecName)
+{
+	return LSG_Text::GetMediaCodecName(codecName);
+}
+
 std::string LSG_Text_Join(const LSG_Strings& strings, const std::string& separator)
 {
 	return LSG_Text::Join(strings, separator);

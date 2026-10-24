@@ -1871,6 +1871,13 @@ DLLEXPORT std::string DLL LSG_Text_GetFormattedSize(size_t size);
 DLLEXPORT std::string DLL LSG_Text_GetFormattedTime();
 
 /**
+ * @brief Abbreviates and shortens long codec names: "Windows Media Audio v1 (description) / info" => "WMA v1".
+ * @returns a more readable codec name
+ * @param codecName The full codec name
+ */
+DLLEXPORT std::string DLL LSG_Text_GetMediaCodecName(const std::string& codecName);
+
+/**
  * @brief Joins text strings together by separator.
  * @param strings   Strings to join
  * @param separator String to use as a separator

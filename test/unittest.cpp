@@ -1360,6 +1360,26 @@ namespace LSG_UnitTest
             }
         }
 
+        TEST_METHOD(GetMediaCodecName)
+        {
+            try
+            {
+                auto codecName1 = LSG_Text_GetMediaCodecName("Windows Media Audio v1");
+                auto codecName2 = LSG_Text_GetMediaCodecName("Windows Media Audio v2 (description)");
+                auto codecName3 = LSG_Text_GetMediaCodecName("Windows Media Video v3 / alternative name");
+                auto codecName4 = LSG_Text_GetMediaCodecName("Windows Media Video v4 decoder");
+
+                Assert::AreEqual("WMA v1", codecName1.c_str());
+                Assert::AreEqual("WMA v2", codecName2.c_str());
+                Assert::AreEqual("WMV v3", codecName3.c_str());
+                Assert::AreEqual("WMV v4", codecName4.c_str());
+            }
+            catch (const std::exception& e)
+            {
+                Assert::Fail(ToString(e.what()).c_str());
+            }
+        }
+
         TEST_METHOD(Join)
         {
             try
