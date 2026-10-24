@@ -1338,6 +1338,14 @@ Example
 LSG_FileSystem_CreateDirInPath("mysubdir", "/path/to/base/dir");
 ```
 
+### LSG_FileSystem_GetFile
+
+```cpp
+LSG_File LSG_FileSystem_GetFile(const std::string& filePath);
+```
+
+Returns a file structure based on filePath.
+
 ### LSG_FileSystem_GetUserDir
 
 ```cpp
@@ -1481,14 +1489,6 @@ Returns a scaled value relative to the display DPI factor.
 Exceptions
 
 - runtime_error
-
-### LSG_GetFile
-
-```cpp
-LSG_File LSG_GetFile(const std::string& filePath);
-```
-
-Returns a file structure based on filePath.
 
 ### LSG_GetFontStyle
 

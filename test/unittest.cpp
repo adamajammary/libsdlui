@@ -271,13 +271,13 @@ namespace LSG_UnitTest
         }
     };
 
-    TEST_CLASS(File)
+    TEST_CLASS(FileSystem)
     {
         TEST_METHOD(GetFile)
         {
             try
             {
-                auto file = LSG_GetFile("/path/file.ext");
+                auto file = LSG_FileSystem_GetFile("/path/file.ext");
 
                 Assert::AreEqual("ext",            file.ext.c_str());
                 Assert::AreEqual("file.ext",       file.file.c_str());
@@ -296,7 +296,7 @@ namespace LSG_UnitTest
         {
             try
             {
-                auto file = LSG_GetFile("C:\\path\\file.ext");
+                auto file = LSG_FileSystem_GetFile("C:\\path\\file.ext");
 
                 Assert::AreEqual("ext",                file.ext.c_str());
                 Assert::AreEqual("file.ext",           file.file.c_str());

@@ -269,6 +269,35 @@ void LSG_FileSystem_CreateDirInPath(const std::string& dir, const std::string& p
         throw std::runtime_error(std::format("Failed to create dir '{}' in path '{}'.", subDir, baseDir));
 }
 
+LSG_File LSG_FileSystem_GetFile(const std::string& filePath)
+{
+    LSG_File file = { .filePath = filePath };
+
+	auto lastSeparator = file.filePath.rfind('/');
+
+    if (lastSeparator == std::string::npos)
+        lastSeparator = file.filePath.rfind('\\');
+
+    if (lastSeparator != std::string::npos) {
+	    file.pathSep = file.filePath[lastSeparator];
+	    file.path    = file.filePath.substr(0, lastSeparator);
+        file.file    = file.filePath.substr(lastSeparator + 1);
+    } else {
+        file.file = file.filePath;
+    }
+
+    auto extension = file.file.rfind('.');
+
+    if (extension != std::string::npos) {
+        file.name = file.file.substr(0, extension);
+        file.ext  = LSG_Text_ToLower(file.file.substr(extension + 1));
+    } else {
+        file.name = file.file;
+    }
+
+    return file;
+}
+
 std::string LSG_FileSystem_GetUserDir(const std::string& appName)
 {
 	if (appName.empty())
@@ -382,35 +411,6 @@ int LSG_GetDPIScaled(int value, bool inverse)
 		throw std::runtime_error(ERROR_NOT_STARTED);
 
 	return LSG_Window::GetDPIScaled(value, inverse);
-}
-
-LSG_File LSG_GetFile(const std::string& filePath)
-{
-    LSG_File file = { .filePath = filePath };
-
-	auto lastSeparator = file.filePath.rfind('/');
-
-    if (lastSeparator == std::string::npos)
-        lastSeparator = file.filePath.rfind('\\');
-
-    if (lastSeparator != std::string::npos) {
-	    file.pathSep = file.filePath[lastSeparator];
-	    file.path    = file.filePath.substr(0, lastSeparator);
-        file.file    = file.filePath.substr(lastSeparator + 1);
-    } else {
-        file.file = file.filePath;
-    }
-
-    auto extension = file.file.rfind('.');
-
-    if (extension != std::string::npos) {
-        file.name = file.file.substr(0, extension);
-        file.ext  = LSG_Text_ToLower(file.file.substr(extension + 1));
-    } else {
-        file.name = file.file;
-    }
-
-    return file;
 }
 
 int LSG_GetFontStyle(const std::string& id)

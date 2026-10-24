@@ -294,6 +294,11 @@ DLLEXPORT void DLL LSG_CloseModal(const std::string& id);
 DLLEXPORT void DLL LSG_FileSystem_CreateDirInPath(const std::string& dir, const std::string& path);
 
 /**
+ * @returns a file structure based on filePath
+ */
+DLLEXPORT LSG_File DLL LSG_FileSystem_GetFile(const std::string& filePath);
+
+/**
  * @returns an app-specific location where files can be written
  * @param appName The name of your application
  * @throws invalid_argument
@@ -361,11 +366,6 @@ DLLEXPORT std::string DLL LSG_GetColorTheme();
  * @throws runtime_error
  */
 DLLEXPORT int DLL LSG_GetDPIScaled(int value, bool inverse = false);
-
-/**
- * @returns a file structure based on filePath
- */
-DLLEXPORT LSG_File DLL LSG_GetFile(const std::string& filePath);
 
 /**
  * @returns the font style of the component
