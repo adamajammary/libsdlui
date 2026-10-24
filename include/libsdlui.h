@@ -1849,6 +1849,11 @@ DLLEXPORT std::string DLL LSG_Text_GetFormattedBitRate(size_t bitRate);
 DLLEXPORT std::string DLL LSG_Text_GetFormattedCount(size_t count);
 
 /**
+ * @returns a formatted string representing the current date and time as "YYYY-MM-DD HH:MM:SS"
+ */
+DLLEXPORT std::string DLL LSG_Text_GetFormattedDateTime();
+
+/**
  * @returns a formatted string representing the duration as s, m and h
  * @param seconds The numerical duration in seconds
  */
@@ -1859,6 +1864,11 @@ DLLEXPORT std::string DLL LSG_Text_GetFormattedDuration(size_t seconds);
  * @param size The numerical size in bytes
  */
 DLLEXPORT std::string DLL LSG_Text_GetFormattedSize(size_t size);
+
+/**
+ * @returns a formatted string representing the current time as "HH:MM"
+ */
+DLLEXPORT std::string DLL LSG_Text_GetFormattedTime();
 
 /**
  * @brief Joins text strings together by separator.

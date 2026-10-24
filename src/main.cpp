@@ -2785,6 +2785,11 @@ std::string LSG_Text_GetFormattedCount(size_t count)
 	return LSG_Text::GetFormattedCount(count);
 }
 
+std::string LSG_Text_GetFormattedDateTime()
+{
+	return LSG_Text::GetFormattedDateTime();
+}
+
 std::string LSG_Text_GetFormattedDuration(size_t seconds)
 {
 	return LSG_Text::GetFormattedDuration(seconds);
@@ -2793,6 +2798,11 @@ std::string LSG_Text_GetFormattedDuration(size_t seconds)
 std::string LSG_Text_GetFormattedSize(size_t size)
 {
 	return LSG_Text::GetFormattedSize(size);
+}
+
+std::string LSG_Text_GetFormattedTime()
+{
+	return LSG_Text::GetFormattedTime();
 }
 
 std::string LSG_Text_Join(const LSG_Strings& strings, const std::string& separator)

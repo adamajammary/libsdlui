@@ -5186,6 +5186,14 @@ Parameters
 
 - **count** The numerical count
 
+### LSG_Text_GetFormattedDateTime
+
+```cpp
+std::string LSG_Text_GetFormattedDateTime();
+```
+
+Returns a formatted string representing the current date and time as "YYYY-MM-DD HH:MM:SS".
+
 ### LSG_Text_GetFormattedDuration
 
 ```cpp
@@ -5209,6 +5217,14 @@ Returns a formatted string representing the size as KB, MB, GB or TB.
 Parameters
 
 - **size** The numerical size in bytes
+
+### LSG_Text_GetFormattedTime
+
+```cpp
+std::string LSG_Text_GetFormattedTime();
+```
+
+Returns a formatted string representing the current time as "HH:MM".
 
 ### LSG_Text_Join
 

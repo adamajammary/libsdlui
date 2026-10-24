@@ -89,6 +89,19 @@ std::string LSG_Text::GetFormattedCount(size_t count)
     return std::to_string(count);
 }
 
+std::string LSG_Text::GetFormattedDateTime()
+{
+	// https://en.cppreference.com/cpp/chrono/c/strftime
+
+	auto currentTime = std::time(nullptr);
+	auto localTime   = std::localtime(&currentTime);
+
+	char buffer[20];
+	std::strftime(buffer, 20, "%F %T", localTime);
+
+	return std::string(buffer);
+}
+
 std::string LSG_Text::GetFormattedDuration(size_t seconds)
 {
 	auto remSec = (seconds % 3600);
@@ -118,6 +131,19 @@ std::string LSG_Text::GetFormattedSize(size_t size)
 		return std::format("{:.1f} KB", ((float)size / (float)LSG_ConstSize::KiloByte));
 
     return std::format("{} bytes", size);
+}
+
+std::string LSG_Text::GetFormattedTime()
+{
+	// https://en.cppreference.com/cpp/chrono/c/strftime
+
+	auto currentTime = std::time(nullptr);
+	auto localTime   = std::localtime(&currentTime);
+
+	char buffer[6];
+	std::strftime(buffer, 6, "%H:%M", localTime);
+
+	return std::string(buffer);
 }
 
 std::string LSG_Text::GetFullPath(const std::string& path)
