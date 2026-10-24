@@ -1849,6 +1849,12 @@ DLLEXPORT std::string DLL LSG_Text_GetFormattedBitRate(size_t bitRate);
 DLLEXPORT std::string DLL LSG_Text_GetFormattedCount(size_t count);
 
 /**
+ * @returns a formatted string representing the duration as s, m and h
+ * @param seconds The numerical duration in seconds
+ */
+DLLEXPORT std::string DLL LSG_Text_GetFormattedDuration(size_t seconds);
+
+/**
  * @returns a formatted string representing the size as KB, MB, GB or TB
  * @param size The numerical size in bytes
  */

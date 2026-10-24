@@ -5186,6 +5186,18 @@ Parameters
 
 - **count** The numerical count
 
+### LSG_Text_GetFormattedDuration
+
+```cpp
+std::string LSG_Text_GetFormattedDuration(size_t seconds);
+```
+
+Returns a formatted string representing the duration as s, m and h.
+
+Parameters
+
+- **seconds** The numerical duration in seconds
+
 ### LSG_Text_GetFormattedSize
 
 ```cpp

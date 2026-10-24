@@ -1310,6 +1310,34 @@ namespace LSG_UnitTest
             }
         }
 
+        TEST_METHOD(GetFormattedDuration)
+        {
+            try
+            {
+                auto duration0s      = LSG_Text_GetFormattedDuration(0ull);
+                auto duration1s      = LSG_Text_GetFormattedDuration(1ull);
+                auto duration1m      = LSG_Text_GetFormattedDuration(60ull);
+                auto duration1m1s    = LSG_Text_GetFormattedDuration(60ull + 1ull);
+                auto duration1h      = LSG_Text_GetFormattedDuration(3600ull);
+                auto duration1h1m1s  = LSG_Text_GetFormattedDuration(3600ull + 61ull);
+                auto duration10h     = LSG_Text_GetFormattedDuration(3600ull * 10ull);
+                auto duration10h1m1s = LSG_Text_GetFormattedDuration(3600ull * 10ull + 61ull);
+
+                Assert::AreEqual("0s",        duration0s.c_str());
+                Assert::AreEqual("1s",        duration1s.c_str());
+                Assert::AreEqual("1m 0s",     duration1m.c_str());
+                Assert::AreEqual("1m 1s",     duration1m1s.c_str());
+                Assert::AreEqual("1h 0m 0s",  duration1h.c_str());
+                Assert::AreEqual("1h 1m 1s",  duration1h1m1s.c_str());
+                Assert::AreEqual("10h 0m 0s", duration10h.c_str());
+                Assert::AreEqual("10h 1m 1s", duration10h1m1s.c_str());
+            }
+            catch (const std::exception& e)
+            {
+                Assert::Fail(ToString(e.what()).c_str());
+            }
+        }
+
         TEST_METHOD(GetFormattedSize)
         {
             try

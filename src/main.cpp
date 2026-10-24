@@ -2803,6 +2803,23 @@ std::string LSG_Text_GetFormattedCount(size_t count)
     return std::to_string(count);
 }
 
+std::string LSG_Text_GetFormattedDuration(size_t seconds)
+{
+	auto remSec = (seconds % 3600);
+
+	auto min = (remSec / 60);
+	auto sec = (remSec % 60);
+
+	if (seconds >= 3600)
+		return std::format("{}h {}m {}s", (seconds / 3600), min, sec);
+	else if (seconds >= 60)
+		return std::format("{}m {}s", min, sec);
+	else if (seconds > 0)
+		return std::format("{}s", sec);
+
+	return "0s";
+}
+
 std::string LSG_Text_GetFormattedSize(size_t size)
 {
 	if (size >= LSG_ConstSize::TerraByte)
