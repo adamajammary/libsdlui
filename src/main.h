@@ -202,7 +202,12 @@ struct LSG_ConstOrientation
 
 struct LSG_ConstSize
 {
-    static inline const size_t KiloByte  = 1024ull;
+    static inline const size_t KiloBit  = 1000ull;
+    static inline const size_t MegaBit  = (KiloBit * 1000ull);
+    static inline const size_t GigaBit  = (MegaBit * 1000ull);
+    static inline const size_t TerraBit = (GigaBit * 1000ull);
+
+	static inline const size_t KiloByte  = 1024ull;
     static inline const size_t MegaByte  = (KiloByte * 1024ull);
     static inline const size_t GigaByte  = (MegaByte * 1024ull);
     static inline const size_t TerraByte = (GigaByte * 1024ull);

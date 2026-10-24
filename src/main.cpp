@@ -2775,6 +2775,20 @@ void LSG_SortTable(const std::string& id, LSG_SortOrder sortOrder, int sortColum
 	static_cast<LSG_Table*>(component)->Sort(sortOrder, sortColumn);
 }
 
+std::string LSG_Text_GetFormattedBitRate(size_t bitRate)
+{
+	if (bitRate >= LSG_ConstSize::TerraBit)
+		return std::format("{} Tbps", (bitRate / LSG_ConstSize::TerraBit));
+	else if (bitRate >= LSG_ConstSize::GigaBit)
+		return std::format("{} Gbps", (bitRate / LSG_ConstSize::GigaBit));
+	else if (bitRate >= LSG_ConstSize::MegaBit)
+		return std::format("{} Mbps", (bitRate / LSG_ConstSize::MegaBit));
+	else if (bitRate >= LSG_ConstSize::KiloBit)
+		return std::format("{} kbps", (bitRate / LSG_ConstSize::KiloBit));
+
+    return std::format("{} bps", bitRate);
+}
+
 std::string LSG_Text_GetFormattedSize(size_t size)
 {
 	if (size >= LSG_ConstSize::TerraByte)

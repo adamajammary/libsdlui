@@ -1266,6 +1266,28 @@ namespace LSG_UnitTest
 
     TEST_CLASS(Text)
     {
+        TEST_METHOD(GetFormattedBitRate)
+        {
+            try
+            {
+                auto bitRate     = LSG_Text_GetFormattedBitRate(500ull);
+                auto bitRateKbps = LSG_Text_GetFormattedBitRate(1000ull);
+                auto bitRateMbps = LSG_Text_GetFormattedBitRate(1000ull * 1000ull);
+                auto bitRateGbps = LSG_Text_GetFormattedBitRate(1000ull * 1000ull * 1000ull);
+                auto bitRateTbps = LSG_Text_GetFormattedBitRate(1000ull * 1000ull * 1000ull * 1000ull);
+
+                Assert::AreEqual("500 bps", bitRate.c_str());
+                Assert::AreEqual("1 kbps",  bitRateKbps.c_str());
+                Assert::AreEqual("1 Mbps",  bitRateMbps.c_str());
+                Assert::AreEqual("1 Gbps",  bitRateGbps.c_str());
+                Assert::AreEqual("1 Tbps",  bitRateTbps.c_str());
+            }
+            catch (const std::exception& e)
+            {
+                Assert::Fail(ToString(e.what()).c_str());
+            }
+        }
+
         TEST_METHOD(GetFormattedSize)
         {
             try
@@ -1277,10 +1299,10 @@ namespace LSG_UnitTest
                 auto sizeTB = LSG_Text_GetFormattedSize(1024ull * 1024ull * 1024ull * 1024ull);
 
                 Assert::AreEqual("512 bytes", size.c_str());
-                Assert::AreEqual("1.0 KB", sizeKB.c_str());
-                Assert::AreEqual("1.0 MB", sizeMB.c_str());
-                Assert::AreEqual("1.0 GB", sizeGB.c_str());
-                Assert::AreEqual("1.0 TB", sizeTB.c_str());
+                Assert::AreEqual("1.0 KB",    sizeKB.c_str());
+                Assert::AreEqual("1.0 MB",    sizeMB.c_str());
+                Assert::AreEqual("1.0 GB",    sizeGB.c_str());
+                Assert::AreEqual("1.0 TB",    sizeTB.c_str());
             }
             catch (const std::exception& e)
             {

@@ -5162,6 +5162,18 @@ LSG_SortTable("Table", LSG_SORT_ORDER_ASCENDING, 0);
 LSG_SortTable("TableWithGroups", LSG_SORT_ORDER_DESCENDING, 1);
 ```
 
+### LSG_Text_GetFormattedBitRate
+
+```cpp
+std::string LSG_Text_GetFormattedBitRate(size_t bitRate);
+```
+
+Returns a formatted string representing the bit rate as kbps, Mbps, Gbps or Tbps.
+
+Parameters
+
+- **bitRate** The numerical bit rate in bps
+
 ### LSG_Text_GetFormattedSize
 
 ```cpp

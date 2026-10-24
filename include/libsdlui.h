@@ -1836,7 +1836,13 @@ DLLEXPORT void DLL LSG_SortList(const std::string& id, LSG_SortOrder sortOrder);
 DLLEXPORT void DLL LSG_SortTable(const std::string& id, LSG_SortOrder sortOrder, int sortColumn);
 
 /**
- * @returns a formatted string representing the size as KB, MB, GB or TB.
+ * @returns a formatted string representing the bit rate as kbps, Mbps, Gbps or Tbps
+ * @param bitRate The numerical bit rate in bps
+ */
+DLLEXPORT std::string DLL LSG_Text_GetFormattedBitRate(size_t bitRate);
+
+/**
+ * @returns a formatted string representing the size as KB, MB, GB or TB
  * @param size The numerical size in bytes
  */
 DLLEXPORT std::string DLL LSG_Text_GetFormattedSize(size_t size);
