@@ -1338,6 +1338,18 @@ Example
 LSG_FileSystem_CreateDirInPath("mysubdir", "/path/to/base/dir");
 ```
 
+### LSG_FileSystem_GetDirSize
+
+```cpp
+size_t LSG_FileSystem_GetDirSize(const std::string& dirPath);
+```
+
+Returns the byte size of all files recursively (including sub-directories) in the directory path.
+
+Parameters
+
+- **dirPath** The path of the directory
+
 ### LSG_FileSystem_GetFile
 
 ```cpp

@@ -256,6 +256,11 @@ void LSG_FileSystem_CreateDirInPath(const std::string& dir, const std::string& p
 	LSG_FileSystem::CreateDirInPath(dir, path);
 }
 
+size_t LSG_FileSystem_GetDirSize(const std::string& dirPath)
+{
+	return LSG_FileSystem::GetDirSize(dirPath);
+}
+
 LSG_File LSG_FileSystem_GetFile(const std::string& filePath)
 {
     return LSG_FileSystem::GetFile(filePath);

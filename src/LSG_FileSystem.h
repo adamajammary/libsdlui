@@ -11,6 +11,7 @@ private:
 
 public:
 	static void        CreateDirInPath(const std::string& dir, const std::string& path);
+	static size_t      GetDirSize(const std::string& dirPath);
 	static LSG_File    GetFile(const std::string& filePath);
 	static LSG_Strings GetFilesFromDir(const std::string& dirPath);
 	static std::string GetUserDir(const std::string& appName);

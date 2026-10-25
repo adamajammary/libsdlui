@@ -294,6 +294,12 @@ DLLEXPORT void DLL LSG_CloseModal(const std::string& id);
 DLLEXPORT void DLL LSG_FileSystem_CreateDirInPath(const std::string& dir, const std::string& path);
 
 /**
+ * @returns the byte size of all files recursively (including sub-directories) in the directory path
+ * @param dirPath The path of the directory
+ */
+DLLEXPORT size_t DLL LSG_FileSystem_GetDirSize(const std::string& dirPath);
+
+/**
  * @returns a file structure based on filePath
  */
 DLLEXPORT LSG_File DLL LSG_FileSystem_GetFile(const std::string& filePath);

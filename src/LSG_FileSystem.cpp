@@ -18,6 +18,20 @@ void LSG_FileSystem::CreateDirInPath(const std::string& dir, const std::string& 
         throw std::runtime_error(std::format("Failed to create dir '{}' in path '{}'.", subDir, baseDir));
 }
 
+size_t LSG_FileSystem::GetDirSize(const std::string& dirPath)
+{
+    auto directory = std::filesystem::recursive_directory_iterator(dirPath);
+
+    size_t size = 0;
+
+    for (const auto& dirEntry : directory) {
+        if (dirEntry.is_regular_file())
+            size += dirEntry.file_size();
+    }
+
+    return size;
+}
+
 LSG_File LSG_FileSystem::GetFile(const std::string& filePath)
 {
     LSG_File file = { .filePath = filePath };
