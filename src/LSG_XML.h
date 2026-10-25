@@ -10,19 +10,19 @@ private:
 	~LSG_XML() {}
 
 public:
-	static LibXml::xmlNode* AddChildNode(LibXml::xmlNode* xmlNode, const std::string& xmlName);
-	static void             Close(LibXml::xmlDoc* doc);
-	static std::string      GetAttribute(LibXml::xmlNode* xmlNode, const std::string& attribute);
-	static LSG_UMapStrStr   GetAttributes(LibXml::xmlNode* xmlNode);
-	static LSG_XmlNodes     GetChildNodes(LibXml::xmlNode* xmlNode);
-	static LibXml::xmlNode* GetNode(const std::string& xpath);
-	static std::string      GetValue(LibXml::xmlNode* node);
-	static LibXml::xmlDoc*  OpenFile(const std::string& filePath);
-	static LibXml::xmlDoc*  OpenXML(const std::string&  xmlContent);
-	static void             RemoveChildNodes(LibXml::xmlNode* xmlNode);
-	static void             RemoveNode(LibXml::xmlNode* xmlNode);
-	static void             SetAttribute(LibXml::xmlNode* xmlNode, const std::string& attribute, const std::string& value);
-	static void             SetValue(LibXml::xmlNode* node, const std::string& value);
+	static xmlNode*       AddChildNode(xmlNode* node, const std::string& xmlName);
+	static void           Close(xmlDoc* doc);
+	static std::string    GetAttribute(xmlNode* node, const std::string& attribute);
+	static LSG_UMapStrStr GetAttributes(xmlNode* node);
+	static LSG_XmlNodes   GetChildNodes(xmlNode* node);
+	static xmlNode*       GetNode(const std::string& xpath);
+	static std::string    GetValue(xmlNode* node);
+	static xmlDoc*        OpenFile(const std::string& filePath);
+	static xmlDoc*        OpenXML(const std::string&  xmlContent);
+	static void           RemoveChildNodes(xmlNode* node);
+	static void           RemoveNode(xmlNode* node);
+	static void           SetAttribute(xmlNode* node, const std::string& attribute, const std::string& value);
+	static void           SetValue(xmlNode* node, const std::string& value);
 };
 
 #endif

@@ -2812,24 +2812,24 @@ std::string LSG_TextUtils_Trim(const std::string& text)
 	return LSG_TextUtils::Trim(text);
 }
 
-void LSG_XML_Close(LibXml::xmlDoc* doc)
+void LSG_XML_Close(xmlDoc* doc)
 {
 	LSG_XML::Close(doc);
 }
 
-LibXml::xmlDoc* LSG_XML_OpenFile(const std::string& filePath)
+xmlDoc* LSG_XML_OpenFile(const std::string& filePath)
 {
 	return LSG_XML::OpenFile(filePath);
 }
 
-LibXml::xmlDoc* LSG_XML_OpenXML(const std::string& xmlContent)
+xmlDoc* LSG_XML_OpenXML(const std::string& xmlContent)
 {
 	return LSG_XML::OpenXML(xmlContent);
 }
 
 SDL_Renderer* LSG_Start(const std::string& xmlFile)
 {
-	LibXml::xmlInitParser();
+	xmlInitParser();
 
 	initBasePath();
 
@@ -2872,7 +2872,7 @@ SDL_Renderer* LSG_Start(const std::string& xmlFile)
 #if defined _windows && defined _DEBUG
 void LSG_StartTest(const std::string& xmlFile, const std::string& workingDir)
 {
-	LibXml::xmlInitParser();
+	xmlInitParser();
 
 	if (basePath.empty())
 		basePath = std::string(workingDir);

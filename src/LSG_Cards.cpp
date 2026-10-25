@@ -2,8 +2,8 @@
 
 std::mutex LSG_Cards::cardsLock;
 
-LSG_Cards::LSG_Cards(const std::string& id, int layer, LibXml::xmlNode* xmlNode, const std::string& xmlNodeName, LSG_Component* parent)
-	: LSG_Text(id, layer, xmlNode, xmlNodeName, parent)
+LSG_Cards::LSG_Cards(const std::string& id, int layer, xmlNode* node, const std::string& nodeName, LSG_Component* parent)
+	: LSG_Text(id, layer, node, nodeName, parent)
 {
 	this->borderWidth    = 0;
 	this->cardBorderType = LSG_CARD_BORDER_NONE;
@@ -21,7 +21,7 @@ LSG_Cards::LSG_Cards(const std::string& id, int layer, LibXml::xmlNode* xmlNode,
 	this->cardPadding     = LSG_Window::GetDPIScaled(LSG_Cards::DefaultCardPadding);
 	this->cardSpacing     = LSG_Window::GetDPIScaled(LSG_Cards::DefaultCardSpacing);
 
-	auto xmlAttributes = LSG_XML::GetAttributes(xmlNode);
+	auto xmlAttributes = LSG_XML::GetAttributes(node);
 
 	auto xmlCardHeight     = (xmlAttributes.contains("card-height")      ? xmlAttributes["card-height"] : "");
 	auto xmlCardBorderType = (xmlAttributes.contains("card-border-type") ? xmlAttributes["card-border-type"] : "");
@@ -72,7 +72,7 @@ void LSG_Cards::AddCard(const LSG_CardItem& cardItem)
 	this->setCards();
 }
 
-void LSG_Cards::AddCard(LibXml::xmlNode* node)
+void LSG_Cards::AddCard(xmlNode* node)
 {
 	auto xmlAttributes = LSG_XML::GetAttributes(node);
 

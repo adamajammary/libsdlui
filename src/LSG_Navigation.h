@@ -27,7 +27,7 @@ struct LSG_CanNavigate
 class LSG_Navigation : public LSG_Text
 {
 public:
-	LSG_Navigation(const std::string& id, int layer, LibXml::xmlNode* xmlNode, const std::string& xmlNodeName, LSG_Component* parent);
+	LSG_Navigation(const std::string& id, int layer, xmlNode* node, const std::string& nodeName, LSG_Component* parent);
 	~LSG_Navigation();
 
 private:

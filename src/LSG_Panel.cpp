@@ -1,7 +1,7 @@
 #include "LSG_Panel.h"
 
-LSG_Panel::LSG_Panel(const std::string& id, int layer, LibXml::xmlNode* xmlNode, const std::string& xmlNodeName, LSG_Component* parent)
-	: LSG_Component(id, layer, xmlNode, xmlNodeName, parent)
+LSG_Panel::LSG_Panel(const std::string& id, int layer, xmlNode* node, const std::string& nodeName, LSG_Component* parent)
+	: LSG_Component(id, layer, node, nodeName, parent)
 {
 	this->renderTarget = nullptr;
 	this->scrollable   = false;
@@ -150,7 +150,7 @@ void LSG_Panel::Render(SDL_Renderer* renderer)
 	if (!this->visible)
 		return;
 
-	auto scrollable = LSG_XML::GetAttribute(this->xmlNode, "scrollable");
+	auto scrollable = LSG_XML::GetAttribute(this->node, "scrollable");
 
 	if ((scrollable != "true") || this->children.empty()) {
 		LSG_Component::Render(renderer);

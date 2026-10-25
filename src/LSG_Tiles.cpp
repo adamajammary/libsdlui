@@ -2,8 +2,8 @@
 
 std::mutex LSG_Tiles::tilesLock;
 
-LSG_Tiles::LSG_Tiles(const std::string& id, int layer, LibXml::xmlNode* xmlNode, const std::string& xmlNodeName, LSG_Component* parent)
-	: LSG_Text(id, layer, xmlNode, xmlNodeName, parent)
+LSG_Tiles::LSG_Tiles(const std::string& id, int layer, xmlNode* node, const std::string& nodeName, LSG_Component* parent)
+	: LSG_Text(id, layer, node, nodeName, parent)
 {
 	this->borderWidth   = 0;
 	this->fillArea      = {};
@@ -24,7 +24,7 @@ LSG_Tiles::LSG_Tiles(const std::string& id, int layer, LibXml::xmlNode* xmlNode,
 	this->selectedBorderWidth = LSG_Window::GetDPIScaled(LSG_Tiles::DefaultSelectedBorderWidth);
 	this->textPadding         = LSG_Window::GetDPIScaled(LSG_Tiles::DefaultTextPadding);
 
-	auto xmlAttributes = LSG_XML::GetAttributes(xmlNode);
+	auto xmlAttributes = LSG_XML::GetAttributes(node);
 
 	this->textAlignment = this->getTextAlignment(xmlAttributes);
 
@@ -76,7 +76,7 @@ void LSG_Tiles::AddTile(const LSG_TileItem& tile)
 	this->setTiles();
 }
 
-void LSG_Tiles::AddTile(LibXml::xmlNode* node)
+void LSG_Tiles::AddTile(xmlNode* node)
 {
 	auto xmlAttributes = LSG_XML::GetAttributes(node);
 

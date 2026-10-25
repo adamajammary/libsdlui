@@ -16,11 +16,11 @@ private:
     static LSG_MapIntComponent  componentsByLayer;
     static int                  id;
     static LSG_Component*       root;
-    static LibXml::xmlNode*     windowNode;
-    static LibXml::xmlDoc*      xmlDocument;
+    static xmlNode*     windowNode;
+    static xmlDoc*      xmlDocument;
 
 public:
-    static LSG_Component*  AddXmlNode(LibXml::xmlNode* node, LSG_Component* parent);
+    static LSG_Component*  AddXmlNode(xmlNode* node, LSG_Component* parent);
     static void            Close();
     static void            CloseMenu();
     static void            CloseModals();
@@ -28,7 +28,7 @@ public:
     static SDL_Rect        GetBackgroundArea();
     static std::string     GetColorFromTheme(const std::string& componentID, const std::string& xmlAttribute);
     static std::string     GetColorTheme();
-    static LSG_Component*  GetComponent(const std::string& id, int layer, LibXml::xmlNode* xmlNode, const std::string& xmlNodeName, LSG_Component* parent);
+    static LSG_Component*  GetComponent(const std::string& id, int layer, xmlNode* node, const std::string& nodeName, LSG_Component* parent);
     static LSG_Component*  GetComponent(const std::string& id);
     static LSG_Component*  GetComponent(const SDL_Point& mousePosition);
     static LSG_Component*  GetComponentInModal(const std::string& id);
@@ -37,7 +37,7 @@ public:
     static int             GetNextId();
     static SDL_Rect        GetScrolledBackground(LSG_Component* component);
     static SDL_Point       GetScrolledPosition(const SDL_Point& mousePosition, LSG_Component* component);
-    static LibXml::xmlDoc* GetXmlDocument();
+    static xmlDoc* GetXmlDocument();
     static void            HighlightComponents(const SDL_Point& mousePosition);
     static bool            IsDarkMode();
     static void            Layout();
@@ -65,7 +65,7 @@ private:
     static void layoutRelative(LSG_Component*      component);
     static void layoutPositionAlign(LSG_Component* component, const LSG_Components& children);
     static void layoutSizeBlank(LSG_Component*     component, const LSG_Components& children);
-    static void loadXmlNodes(LibXml::xmlNode* parentNode, LSG_Component* parent);
+    static void loadXmlNodes(xmlNode* parentNode, LSG_Component* parent);
     static void renderMenu(SDL_Renderer*    renderer);
     static void renderModal(SDL_Renderer*   renderer);
     static void renderTooltip(SDL_Renderer* renderer);

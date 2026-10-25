@@ -1,34 +1,34 @@
 #include "LSG_XML.h"
 
-LibXml::xmlNode* LSG_XML::AddChildNode(LibXml::xmlNode* xmlNode, const std::string& xmlName)
+xmlNode* LSG_XML::AddChildNode(xmlNode* node, const std::string& xmlName)
 {
-	if (!xmlNode || xmlName.empty())
+	if (!node || xmlName.empty())
 		return nullptr;
 
-	auto xmlChildName = reinterpret_cast<const LibXml::xmlChar*>(xmlName.c_str());
-	auto xmlChildNode = LibXml::xmlNewNode(nullptr, xmlChildName);
+	auto xmlChildName = reinterpret_cast<const xmlChar*>(xmlName.c_str());
+	auto xmlChildNode = xmlNewNode(nullptr, xmlChildName);
 
 	if (xmlChildNode)
-		LibXml::xmlAddChild(xmlNode, xmlChildNode);
+		xmlAddChild(node, xmlChildNode);
 
 	return xmlChildNode;
 }
 
-void LSG_XML::Close(LibXml::xmlDoc* doc)
+void LSG_XML::Close(xmlDoc* doc)
 {
-	LibXml::xmlFreeDoc(doc);
+	xmlFreeDoc(doc);
 }
 
-std::string LSG_XML::GetAttribute(LibXml::xmlNode* xmlNode, const std::string& attribute)
+std::string LSG_XML::GetAttribute(xmlNode* node, const std::string& attribute)
 {
-	if (!xmlNode || attribute.empty())
+	if (!node || attribute.empty())
 		return "";
 
-	auto xmlAttribute = xmlNode->properties;
+	auto xmlAttribute = node->properties;
 
 	while (xmlAttribute)
 	{
-		if (LibXml::xmlStrcmp(xmlAttribute->name, reinterpret_cast<const LibXml::xmlChar*>(attribute.c_str())) == 0)
+		if (xmlStrcmp(xmlAttribute->name, reinterpret_cast<const xmlChar*>(attribute.c_str())) == 0)
 		{
 			auto value = std::string(reinterpret_cast<const char*>(xmlAttribute->xmlChildrenNode->content));
 
@@ -44,14 +44,14 @@ std::string LSG_XML::GetAttribute(LibXml::xmlNode* xmlNode, const std::string& a
 	return "";
 }
 
-LSG_UMapStrStr LSG_XML::GetAttributes(LibXml::xmlNode* xmlNode)
+LSG_UMapStrStr LSG_XML::GetAttributes(xmlNode* node)
 {
-	if (!xmlNode)
+	if (!node)
 		return {};
 
 	LSG_UMapStrStr attributes;
 
-	auto xmlAttribute = xmlNode->properties;
+	auto xmlAttribute = node->properties;
 
 	while (xmlAttribute)
 	{
@@ -69,14 +69,14 @@ LSG_UMapStrStr LSG_XML::GetAttributes(LibXml::xmlNode* xmlNode)
 	return attributes;
 }
 
-LSG_XmlNodes LSG_XML::GetChildNodes(LibXml::xmlNode* xmlNode)
+LSG_XmlNodes LSG_XML::GetChildNodes(xmlNode* node)
 {
-	if (!xmlNode)
+	if (!node)
 		return {};
 
 	LSG_XmlNodes nodes = {};
 
-	auto xmlChildNode = xmlNode->xmlChildrenNode;
+	auto xmlChildNode = node->xmlChildrenNode;
 
 	while (xmlChildNode)
 	{
@@ -88,46 +88,46 @@ LSG_XmlNodes LSG_XML::GetChildNodes(LibXml::xmlNode* xmlNode)
 	return nodes;
 }
 
-LibXml::xmlNode* LSG_XML::GetNode(const std::string& xpath)
+xmlNode* LSG_XML::GetNode(const std::string& xpath)
 {
 	auto xmlDoc = LSG_UI::GetXmlDocument();
 
 	if (xpath.empty() || !xmlDoc)
 		return nullptr;
 
-	auto pathContext = LibXml::xmlXPathNewContext(xmlDoc);
+	auto pathContext = xmlXPathNewContext(xmlDoc);
 
 	if (!pathContext)
 		return nullptr;
 
-	auto pathObject = LibXml::xmlXPathEvalExpression(reinterpret_cast<const LibXml::xmlChar*>(xpath.c_str()), pathContext);
+	auto pathObject = xmlXPathEvalExpression(reinterpret_cast<const xmlChar*>(xpath.c_str()), pathContext);
 
-	LibXml::xmlXPathFreeContext(pathContext);
+	xmlXPathFreeContext(pathContext);
 
 	if (!pathObject)
 		return nullptr;
 
-	LibXml::xmlNode* result = nullptr;
+	xmlNode* result = nullptr;
 
 	if (pathObject->nodesetval->nodeNr > 0)
 		result = pathObject->nodesetval->nodeTab[0];
 
-	LibXml::xmlXPathFreeObject(pathObject);
+	xmlXPathFreeObject(pathObject);
 
 	return result;
 }
 
-std::string LSG_XML::GetValue(LibXml::xmlNode* node)
+std::string LSG_XML::GetValue(xmlNode* node)
 {
 	auto xmlDoc = LSG_UI::GetXmlDocument();
 
 	if (!node || !xmlDoc)
 		return "";
 
-	auto xmlValue = LibXml::xmlNodeListGetString(xmlDoc, node->children, 1);
+	auto xmlValue = xmlNodeListGetString(xmlDoc, node->children, 1);
 	auto value    = (xmlValue ? std::string(reinterpret_cast<char*>(xmlValue)) : "");
 
-	LibXml::xmlFree(xmlValue);
+	xmlFree(xmlValue);
 
 	if (!value.empty())
 		value = LSG_TextUtils::Replace(value, "\\n", "\n");
@@ -135,55 +135,55 @@ std::string LSG_XML::GetValue(LibXml::xmlNode* node)
 	return value;
 }
 
-LibXml::xmlDoc* LSG_XML::OpenFile(const std::string& filePath)
+xmlDoc* LSG_XML::OpenFile(const std::string& filePath)
 {
-	return LibXml::xmlReadFile(filePath.c_str(), nullptr, 0);
+	return xmlReadFile(filePath.c_str(), nullptr, 0);
 }
 
-LibXml::xmlDoc* LSG_XML::OpenXML(const std::string& xmlContent)
+xmlDoc* LSG_XML::OpenXML(const std::string& xmlContent)
 {
-	return LibXml::xmlReadMemory(xmlContent.c_str(), xmlContent.size(), nullptr, nullptr, 0);
+	return xmlReadMemory(xmlContent.c_str(), xmlContent.size(), nullptr, nullptr, 0);
 }
 
-void LSG_XML::RemoveChildNodes(LibXml::xmlNode* xmlNode)
-{
-	if (!xmlNode)
-		return;
-
-	auto xmlChildNode = xmlNode->children;
-
-	while (xmlChildNode) {
-		LSG_XML::RemoveNode(xmlChildNode);
-		xmlChildNode = xmlChildNode->next;
-	}
-}
-
-void LSG_XML::RemoveNode(LibXml::xmlNode* xmlNode)
-{
-	if (!xmlNode)
-		return;
-
-	LibXml::xmlUnlinkNode(xmlNode);
-	LibXml::xmlFreeNode(xmlNode);
-}
-
-void LSG_XML::SetAttribute(LibXml::xmlNode* xmlNode, const std::string& attribute, const std::string& value)
-{
-	if (!xmlNode || attribute.empty())
-		return;
-
-	auto xmlAttribute = reinterpret_cast<const LibXml::xmlChar*>(attribute.c_str());
-	auto xmlValue     = reinterpret_cast<const LibXml::xmlChar*>(value.c_str());
-
-	LibXml::xmlSetProp(xmlNode, xmlAttribute, xmlValue);
-}
-
-void LSG_XML::SetValue(LibXml::xmlNode* node, const std::string& value)
+void LSG_XML::RemoveChildNodes(xmlNode* node)
 {
 	if (!node)
 		return;
 
-	auto xmlValue = reinterpret_cast<const LibXml::xmlChar*>(value.c_str());
+	auto childNode = node->children;
 
-	LibXml::xmlNodeSetContent(node, xmlValue);
+	while (childNode) {
+		LSG_XML::RemoveNode(childNode);
+		childNode = childNode->next;
+	}
+}
+
+void LSG_XML::RemoveNode(xmlNode* node)
+{
+	if (!node)
+		return;
+
+	xmlUnlinkNode(node);
+	xmlFreeNode(node);
+}
+
+void LSG_XML::SetAttribute(xmlNode* node, const std::string& attribute, const std::string& value)
+{
+	if (!node || attribute.empty())
+		return;
+
+	auto xmlAttribute = reinterpret_cast<const xmlChar*>(attribute.c_str());
+	auto xmlValue     = reinterpret_cast<const xmlChar*>(value.c_str());
+
+	xmlSetProp(node, xmlAttribute, xmlValue);
+}
+
+void LSG_XML::SetValue(xmlNode* node, const std::string& value)
+{
+	if (!node)
+		return;
+
+	auto xmlValue = reinterpret_cast<const xmlChar*>(value.c_str());
+
+	xmlNodeSetContent(node, xmlValue);
 }

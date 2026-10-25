@@ -1,7 +1,7 @@
 #include "LSG_Image.h"
 
-LSG_Image::LSG_Image(const std::string& id, int layer, LibXml::xmlNode* xmlNode, const std::string& xmlNodeName, LSG_Component* parent)
-	: LSG_Component(id, layer, xmlNode, xmlNodeName, parent)
+LSG_Image::LSG_Image(const std::string& id, int layer, xmlNode* node, const std::string& nodeName, LSG_Component* parent)
+	: LSG_Component(id, layer, node, nodeName, parent)
 {
 	this->aspectRatio  = {};
 	this->borderRadius = 0;
@@ -9,7 +9,7 @@ LSG_Image::LSG_Image(const std::string& id, int layer, LibXml::xmlNode* xmlNode,
 	this->orientation  = {};
 	this->scaleFactor  = {};
 
-	auto xmlAttributes = LSG_XML::GetAttributes(this->xmlNode);
+	auto xmlAttributes = LSG_XML::GetAttributes(this->node);
 
 	this->file = (xmlAttributes.contains("file") ? xmlAttributes["file"] : "");
 

@@ -1,7 +1,7 @@
 #include "LSG_MenuSub.h"
 
-LSG_MenuSub::LSG_MenuSub(const std::string& id, int layer, LibXml::xmlNode* xmlNode, const std::string& xmlNodeName, LSG_Component* parent)
-	: LSG_MenuItem(id, layer, xmlNode, xmlNodeName, parent)
+LSG_MenuSub::LSG_MenuSub(const std::string& id, int layer, xmlNode* node, const std::string& nodeName, LSG_Component* parent)
+	: LSG_MenuItem(id, layer, node, nodeName, parent)
 {
 	this->textures.resize(NR_OF_SUB_MENU_TEXTURES);
 }
@@ -11,7 +11,7 @@ void LSG_MenuSub::AddItem(const std::string& item, const std::string& itemId)
 	if (item.empty() || itemId.empty())
 		return;
 
-	auto itemNode = LSG_XML::AddChildNode(this->xmlNode, "menu-item");
+	auto itemNode = LSG_XML::AddChildNode(this->node, "menu-item");
 
 	if (!itemNode)
 		return;
@@ -106,7 +106,7 @@ void LSG_MenuSub::Set()
 
 	this->textures.resize(NR_OF_SUB_MENU_TEXTURES);
 
-	auto xmlText = LSG_XML::GetAttribute(this->xmlNode, "title");
+	auto xmlText = LSG_XML::GetAttribute(this->node, "title");
 
 	if (!xmlText.empty())
 		this->textures[LSG_SUB_MENU_TEXTURE_TEXT] = this->getTexture(xmlText);

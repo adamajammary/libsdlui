@@ -45,10 +45,8 @@ extern "C" {
 
 #ifndef LIB_XML_H
 #define LIB_XML_H
-namespace LibXml {
-	extern "C" {
-		#include <libxml/xpath.h>
-	}
+extern "C" {
+	#include <libxml/xpath.h>
 }
 #endif
 
@@ -1960,19 +1958,19 @@ DLLEXPORT std::string DLL LSG_TextUtils_Trim(const std::string& text);
  * @brief Closes the XML document and cleans up allocated resources.
  * @param doc The XML document
  */
-DLLEXPORT void DLL LSG_XML_Close(LibXml::xmlDoc* doc);
+DLLEXPORT void DLL LSG_XML_Close(xmlDoc* doc);
 
 /**
  * @brief Tries to open filePath and returns an XML document if valid, otherwise NULL.
  * @param filePath The path of the XML file
  */
-DLLEXPORT LibXml::xmlDoc* DLL LSG_XML_OpenFile(const std::string& filePath);
+DLLEXPORT xmlDoc* DLL LSG_XML_OpenFile(const std::string& filePath);
 
 /**
  * @brief Tries to read xmlContent and returns an XML document if valid, otherwise NULL.
  * @param xmlContent The XML content
  */
-DLLEXPORT LibXml::xmlDoc* DLL LSG_XML_OpenXML(const std::string& xmlContent);
+DLLEXPORT xmlDoc* DLL LSG_XML_OpenXML(const std::string& xmlContent);
 
 /**
  * @brief Tries to initialize the library and open a new window based on layout from XML file.

@@ -1,7 +1,7 @@
 #include "LSG_Line.h"
 
-LSG_Line::LSG_Line(const std::string& id, int layer, LibXml::xmlNode* xmlNode, const std::string& xmlNodeName, LSG_Component* parent)
-	: LSG_Component(id, layer, xmlNode, xmlNodeName, parent)
+LSG_Line::LSG_Line(const std::string& id, int layer, xmlNode* node, const std::string& nodeName, LSG_Component* parent)
+	: LSG_Component(id, layer, node, nodeName, parent)
 {}
 
 void LSG_Line::Render(SDL_Renderer* renderer, const SDL_Point& position)
@@ -23,7 +23,7 @@ void LSG_Line::Render(SDL_Renderer* renderer)
 
 void LSG_Line::render(SDL_Renderer* renderer) const
 {
-	auto xmlColor = LSG_XML::GetAttribute(this->xmlNode, "color");
+	auto xmlColor = LSG_XML::GetAttribute(this->node, "color");
 	auto color    = (!xmlColor.empty() ? LSG_Graphics::ToSdlColor(xmlColor) : LSG_Graphics::GetThumbColor(this->backgroundColor));
 
 	SDL_SetRenderDrawBlendMode(renderer, (color.a < 255 ? SDL_BLENDMODE_BLEND : SDL_BLENDMODE_NONE));

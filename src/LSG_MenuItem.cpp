@@ -1,7 +1,7 @@
 #include "LSG_MenuItem.h"
 
-LSG_MenuItem::LSG_MenuItem(const std::string& id, int layer, LibXml::xmlNode* xmlNode, const std::string& xmlNodeName, LSG_Component* parent)
-	: LSG_Text(id, layer, xmlNode, xmlNodeName, parent)
+LSG_MenuItem::LSG_MenuItem(const std::string& id, int layer, xmlNode* node, const std::string& nodeName, LSG_Component* parent)
+	: LSG_Text(id, layer, node, nodeName, parent)
 {
 	this->closed          = true;
 	this->iconOrientation = {};
@@ -219,7 +219,7 @@ void LSG_MenuItem::Set()
 
 	this->textures.resize(NR_OF_MENU_ITEM_TEXTURES);
 
-	auto xmlIcon = LSG_XML::GetAttribute(this->xmlNode, "icon");
+	auto xmlIcon = LSG_XML::GetAttribute(this->node, "icon");
 
 	if (!xmlIcon.empty())
 	{
@@ -233,7 +233,7 @@ void LSG_MenuItem::Set()
 	if (!this->text.empty())
 		this->textures[LSG_MENU_ITEM_TEXTURE_TEXT] = this->getTexture(this->text);
 
-	auto xmlKey = LSG_XML::GetAttribute(this->xmlNode, "key");
+	auto xmlKey = LSG_XML::GetAttribute(this->node, "key");
 
 	if (!xmlKey.empty())
 		this->textures[LSG_MENU_ITEM_TEXTURE_KEY] = this->getTexture(xmlKey);

@@ -20,7 +20,7 @@ struct LSG_Tile
 class LSG_Tiles : public LSG_Pagination, public LSG_ScrollBar, public LSG_Text
 {
 public:
-	LSG_Tiles(const std::string& id, int layer, LibXml::xmlNode* xmlNode, const std::string& xmlNodeName, LSG_Component* parent);
+	LSG_Tiles(const std::string& id, int layer, xmlNode* node, const std::string& nodeName, LSG_Component* parent);
 	~LSG_Tiles();
 
 private:
@@ -58,7 +58,7 @@ public:
 	void             Activate() const;
 	void             Activate(const SDL_Point& mousePosition);
 	void             AddTile(const LSG_TileItem& tile);
-	void             AddTile(LibXml::xmlNode* node);
+	void             AddTile(xmlNode* node);
 	std::vector<int> GetSelectedTiles() const;
 	SDL_Size         GetSize() const;
 	LSG_TileItem     GetTile(int index) const;

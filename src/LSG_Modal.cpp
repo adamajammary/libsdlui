@@ -1,7 +1,7 @@
 #include "LSG_Modal.h"
 
-LSG_Modal::LSG_Modal(const std::string& id, int layer, LibXml::xmlNode* xmlNode, const std::string& xmlNodeName, LSG_Component* parent)
-	: LSG_Text(id, layer, xmlNode, xmlNodeName, parent)
+LSG_Modal::LSG_Modal(const std::string& id, int layer, xmlNode* node, const std::string& nodeName, LSG_Component* parent)
+	: LSG_Text(id, layer, node, nodeName, parent)
 {
 	this->components        = {};
 	this->componentsByLayer = {};
@@ -11,7 +11,7 @@ LSG_Modal::LSG_Modal(const std::string& id, int layer, LibXml::xmlNode* xmlNode,
 
 	this->textures.resize(NR_OF_MODAL_TEXTURES);
 
-	auto xmlAttributes = LSG_XML::GetAttributes(this->xmlNode);
+	auto xmlAttributes = LSG_XML::GetAttributes(this->node);
 
 	this->hideCloseIcon = (xmlAttributes.contains("hide-close-icon") && xmlAttributes["hide-close-icon"] == "true");
 }
@@ -19,12 +19,12 @@ LSG_Modal::LSG_Modal(const std::string& id, int layer, LibXml::xmlNode* xmlNode,
 /**
  * @throws invalid_argument
  */
-LSG_Component* LSG_Modal::addNode(LibXml::xmlNode* node, LSG_Component* parent)
+LSG_Component* LSG_Modal::addNode(xmlNode* node, LSG_Component* parent)
 {
 	if (!node)
 		throw std::invalid_argument("XML node cannot be null.");
 
-	if (node->type != LibXml::XML_ELEMENT_NODE)
+	if (node->type != XML_ELEMENT_NODE)
 		return nullptr;
 
 	auto name  = std::string(reinterpret_cast<const char*>(node->name));
@@ -55,7 +55,7 @@ LSG_Component* LSG_Modal::addNode(LibXml::xmlNode* node, LSG_Component* parent)
 /**
  * @throws invalid_argument
  */
-void LSG_Modal::addNodes(LibXml::xmlNode* parentNode, LSG_Component* parent)
+void LSG_Modal::addNodes(xmlNode* parentNode, LSG_Component* parent)
 {
 	if (!parentNode)
 		throw std::invalid_argument("Parent node cannot be null.");
@@ -378,7 +378,7 @@ void LSG_Modal::Open()
 
 	this->visible = true;
 
-	this->addNodes(this->xmlNode, this);
+	this->addNodes(this->node, this);
 
 	for (auto child : this->children)
 		child->SetColors();
@@ -541,7 +541,7 @@ void LSG_Modal::Set()
 		);
 	}
 
-	auto title = LSG_XML::GetAttribute(this->xmlNode, "title");
+	auto title = LSG_XML::GetAttribute(this->node, "title");
 
 	if (!title.empty())
 		this->textures[LSG_MODAL_TEXTURE_TITLE] = LSG_TextUtils::GetTexture(title, LSG_Modal::TitleFontSize, this->getFontStyle(), this->textColor, this->wrap);
@@ -555,7 +555,7 @@ void LSG_Modal::SetBackground()
 		return;
 
 	auto background    = LSG_UI::GetBackgroundArea();
-	auto xmlAttributes = LSG_XML::GetAttributes(this->xmlNode);
+	auto xmlAttributes = LSG_XML::GetAttributes(this->node);
 
 	auto width  = (xmlAttributes.contains("width")  ? xmlAttributes.at("width")  : "");
 	auto height = (xmlAttributes.contains("height") ? xmlAttributes.at("height") : "");

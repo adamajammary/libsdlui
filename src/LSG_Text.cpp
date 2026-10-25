@@ -1,12 +1,12 @@
 #include "LSG_Text.h"
 
-LSG_Text::LSG_Text(const std::string& id, int layer, LibXml::xmlNode* xmlNode, const std::string& xmlNodeName, LSG_Component* parent)
-	: LSG_Component(id, layer, xmlNode, xmlNodeName, parent)
+LSG_Text::LSG_Text(const std::string& id, int layer, xmlNode* node, const std::string& nodeName, LSG_Component* parent)
+	: LSG_Component(id, layer, node, nodeName, parent)
 {
 	this->ellipsisTexture = nullptr;
 	this->textOverflow    = LSG_TEXT_OVERFLOW_NONE;
 
-	auto xmlAttributes = LSG_XML::GetAttributes(xmlNode);
+	auto xmlAttributes = LSG_XML::GetAttributes(node);
 
 	this->wrap = (xmlAttributes.contains("wrap") && (xmlAttributes["wrap"] == "true"));
 
@@ -22,7 +22,7 @@ LSG_Text::LSG_Text(const std::string& id, int layer, LibXml::xmlNode* xmlNode, c
 //	auto xmlText = this->GetXmlValue();
 //
 //	//if (xmlText.empty())
-//	//	xmlText = LSG_XML::GetAttribute(this->xmlNode, "text");
+//	//	xmlText = LSG_XML::GetAttribute(this->node, "text");
 //
 //	//if (!xmlText.empty() && (xmlText[0] == '%')
 //	//	xmlText = LSG_Window::Labels[xmlText.substr(1)];

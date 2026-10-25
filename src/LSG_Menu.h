@@ -6,7 +6,7 @@
 class LSG_Menu : public LSG_ScrollBar, public LSG_Text
 {
 public:
-	LSG_Menu(const std::string& id, int layer, LibXml::xmlNode* xmlNode, const std::string& xmlNodeName, LSG_Component* parent);
+	LSG_Menu(const std::string& id, int layer, xmlNode* node, const std::string& nodeName, LSG_Component* parent);
 	~LSG_Menu();
 
 public:

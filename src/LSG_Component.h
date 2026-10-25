@@ -8,7 +8,7 @@ class LSG_Button;
 class LSG_Component
 {
 public:
-	LSG_Component(const std::string& id, int layer, LibXml::xmlNode* xmlNode, const std::string& xmlNodeName, LSG_Component* parent);
+	LSG_Component(const std::string& id, int layer, xmlNode* node, const std::string& nodeName, LSG_Component* parent);
 	~LSG_Component();
 
 public:
@@ -29,16 +29,16 @@ public:
 	bool        visible;
 
 protected:
-	LSG_Components   children;
-	std::string      id;
-	int              layer;
-	std::string      orientation;
-	LSG_Component*   parent;
-	SDL_Texture*     texture;
-	LSG_Textures     textures;
-	std::string      tooltip;
-	LibXml::xmlNode* xmlNode;
-	std::string      xmlNodeName;
+	LSG_Components children;
+	std::string    id;
+	int            layer;
+	xmlNode*       node;
+	std::string    nodeName;
+	std::string    orientation;
+	LSG_Component* parent;
+	SDL_Texture*   texture;
+	LSG_Textures   textures;
+	std::string    tooltip;
 
 public:
 	size_t           GetChildCount() const;
@@ -54,7 +54,7 @@ public:
 	std::string      GetTooltip() const;
 	std::string      GetXmlAttribute(const std::string& attribute) const;
 	LSG_UMapStrStr   GetXmlAttributes() const;
-	LibXml::xmlNode* GetXmlNode() const;
+	xmlNode*         GetXmlNode() const;
 	bool             IsButton() const;
 	bool             IsCards() const;
 	bool             IsImage() const;

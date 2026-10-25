@@ -31,7 +31,7 @@ struct LSG_SliderTooltip
 class LSG_Slider : public LSG_ProgressBar
 {
 public:
-	LSG_Slider(const std::string& id, int layer, LibXml::xmlNode* xmlNode, const std::string& xmlNodeName, LSG_Component* parent);
+	LSG_Slider(const std::string& id, int layer, xmlNode* node, const std::string& nodeName, LSG_Component* parent);
 	~LSG_Slider() {}
 
 private:
@@ -51,7 +51,7 @@ private:
 	LSG_SliderThumb     thumb;
 
 public:
-	void            AddPart(LibXml::xmlNode* node);
+	void            AddPart(xmlNode* node);
 	LSG_SliderParts GetParts() const;
 	double          GetValue(const SDL_Point& mousePosition) const;
 	void            OnMouseClick(const SDL_Point& mousePosition);

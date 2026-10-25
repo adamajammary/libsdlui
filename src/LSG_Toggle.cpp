@@ -1,12 +1,12 @@
 #include "LSG_Toggle.h"
 
-LSG_Toggle::LSG_Toggle(const std::string& id, int layer, LibXml::xmlNode* xmlNode, const std::string& xmlNodeName, LSG_Component* parent)
-	: LSG_Component(id, layer, xmlNode, xmlNodeName, parent)
+LSG_Toggle::LSG_Toggle(const std::string& id, int layer, xmlNode* node, const std::string& nodeName, LSG_Component* parent)
+	: LSG_Component(id, layer, node, nodeName, parent)
 {
 	this->borderRadius = 0;
 	this->borderWidth  = 0;
 
-	this->on = (LSG_XML::GetAttribute(this->xmlNode, "on") == "true");
+	this->on = (LSG_XML::GetAttribute(this->node, "on") == "true");
 }
 
 SDL_Rect LSG_Toggle::getDestination() const

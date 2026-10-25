@@ -1,6 +1,6 @@
 #include "LSG_Component.h"
 
-LSG_Component::LSG_Component(const std::string& id, int layer, LibXml::xmlNode* xmlNode, const std::string& xmlNodeName, LSG_Component* parent)
+LSG_Component::LSG_Component(const std::string& id, int layer, xmlNode* node, const std::string& nodeName, LSG_Component* parent)
 {
 	this->background      = {};
 	this->backgroundColor = {};
@@ -16,12 +16,12 @@ LSG_Component::LSG_Component(const std::string& id, int layer, LibXml::xmlNode* 
 	this->textColor       = {};
 	this->texture         = nullptr;
 	this->tooltip         = "";
-	this->xmlNode         = xmlNode;
-	this->xmlNodeName     = xmlNodeName;
+	this->node            = node;
+	this->nodeName        = nodeName;
 
-	this->text = LSG_XML::GetValue(this->xmlNode);
+	this->text = LSG_XML::GetValue(this->node);
 
-	auto xmlAttributes = LSG_XML::GetAttributes(this->xmlNode);
+	auto xmlAttributes = LSG_XML::GetAttributes(this->node);
 
 	this->orientation = (xmlAttributes.contains("orientation") ? xmlAttributes["orientation"] : "");
 	this->tooltip     = (xmlAttributes.contains("tooltip")     ? xmlAttributes["tooltip"] : "");
@@ -152,7 +152,7 @@ SDL_Rect LSG_Component::getFillArea() const
 
 int LSG_Component::getFontSize() const
 {
-	auto xmlFontSize = LSG_XML::GetAttribute(this->xmlNode, "font-size");
+	auto xmlFontSize = LSG_XML::GetAttribute(this->node, "font-size");
 
 	if (!xmlFontSize.empty())
 		return std::atoi(xmlFontSize.c_str());
@@ -170,7 +170,7 @@ int LSG_Component::GetFontStyle() const
 
 int LSG_Component::getFontStyle(bool checkParent) const
 {
-	auto xmlAttributes = LSG_XML::GetAttributes(this->xmlNode);
+	auto xmlAttributes = LSG_XML::GetAttributes(this->node);
 
 	auto bold          = (xmlAttributes.contains("bold")           ? xmlAttributes["bold"] : "");
 	auto italic        = (xmlAttributes.contains("italic")         ? xmlAttributes["italic"] : "");
@@ -230,7 +230,7 @@ LSG_Alignment LSG_Component::getParentAlignment() const
 
 int LSG_Component::GetSpacing() const
 {
-	auto spacing = LSG_XML::GetAttribute(this->xmlNode, "spacing");
+	auto spacing = LSG_XML::GetAttribute(this->node, "spacing");
 
 	return (!spacing.empty() ? std::atoi(spacing.c_str()) : 0);
 }
@@ -261,12 +261,12 @@ std::string LSG_Component::GetTooltip() const
 
 std::string LSG_Component::GetXmlAttribute(const std::string& attribute) const
 {
-	return LSG_XML::GetAttribute(this->xmlNode, attribute);
+	return LSG_XML::GetAttribute(this->node, attribute);
 }
 
 LSG_UMapStrStr LSG_Component::GetXmlAttributes() const
 {
-	return LSG_XML::GetAttributes(this->xmlNode);
+	return LSG_XML::GetAttributes(this->node);
 }
 
 std::string LSG_Component::getXmlColor(const std::string& xmlAttribute, bool recursive) const
@@ -276,7 +276,7 @@ std::string LSG_Component::getXmlColor(const std::string& xmlAttribute, bool rec
 	if (!color.empty())
 		return color;
 
-	auto xmlAttribColor = LSG_XML::GetAttribute(this->xmlNode, xmlAttribute.c_str());
+	auto xmlAttribColor = LSG_XML::GetAttribute(this->node, xmlAttribute.c_str());
 
 	if (!xmlAttribColor.empty())
 		return xmlAttribColor;
@@ -287,9 +287,9 @@ std::string LSG_Component::getXmlColor(const std::string& xmlAttribute, bool rec
 	return "";
 }
 
-LibXml::xmlNode* LSG_Component::GetXmlNode() const
+xmlNode* LSG_Component::GetXmlNode() const
 {
-	return this->xmlNode;
+	return this->node;
 }
 
 LSG_Component* LSG_Component::GetScrollableParent()
@@ -302,57 +302,57 @@ LSG_Component* LSG_Component::GetScrollableParent()
 
 bool LSG_Component::IsButton() const
 {
-	return (this->xmlNodeName == "button");
+	return (this->nodeName == "button");
 }
 
 bool LSG_Component::IsCards() const
 {
-	return (this->xmlNodeName == "cards");
+	return (this->nodeName == "cards");
 }
 
 bool LSG_Component::IsImage() const
 {
-	return (this->xmlNodeName == "image");
+	return (this->nodeName == "image");
 }
 
 bool LSG_Component::IsLine() const
 {
-	return (this->xmlNodeName == "line");
+	return (this->nodeName == "line");
 }
 
 bool LSG_Component::IsList() const
 {
-	return (this->xmlNodeName == "list");
+	return (this->nodeName == "list");
 }
 
 bool LSG_Component::IsMenu() const
 {
-	return (this->xmlNodeName == "menu");
+	return (this->nodeName == "menu");
 }
 
 bool LSG_Component::IsMenuItem() const
 {
-	return (this->xmlNodeName == "menu-item");
+	return (this->nodeName == "menu-item");
 }
 
 bool LSG_Component::IsModal() const
 {
-	return (this->xmlNodeName == "modal");
+	return (this->nodeName == "modal");
 }
 
 bool LSG_Component::IsNavigation() const
 {
-	return (this->xmlNodeName == "navigation");
+	return (this->nodeName == "navigation");
 }
 
 bool LSG_Component::IsPanel() const
 {
-	return (this->xmlNodeName == "panel");
+	return (this->nodeName == "panel");
 }
 
 bool LSG_Component::IsProgressBar() const
 {
-	return (this->xmlNodeName == "progress-bar");
+	return (this->nodeName == "progress-bar");
 }
 
 bool LSG_Component::IsScrollable() const
@@ -362,7 +362,7 @@ bool LSG_Component::IsScrollable() const
 
 bool LSG_Component::IsScrollablePanel(bool includeParents) const
 {
-	if (this->IsPanel() && (LSG_XML::GetAttribute(this->xmlNode, "scrollable") == "true"))
+	if (this->IsPanel() && (LSG_XML::GetAttribute(this->node, "scrollable") == "true"))
 		return true;
 
 	return (includeParents && this->parent ? this->parent->IsScrollablePanel(true) : false);
@@ -370,37 +370,37 @@ bool LSG_Component::IsScrollablePanel(bool includeParents) const
 
 bool LSG_Component::IsSlider() const
 {
-	return (this->xmlNodeName == "slider");
+	return (this->nodeName == "slider");
 }
 
 bool LSG_Component::IsSubMenu() const
 {
-	return (this->xmlNodeName == "menu-sub");
+	return (this->nodeName == "menu-sub");
 }
 
 bool LSG_Component::IsTable() const
 {
-	return (this->xmlNodeName == "table");
+	return (this->nodeName == "table");
 }
 
 bool LSG_Component::IsTextInput() const
 {
-	return (this->xmlNodeName == "text-input");
+	return (this->nodeName == "text-input");
 }
 
 bool LSG_Component::IsTextLabel() const
 {
-	return (this->xmlNodeName == "text");
+	return (this->nodeName == "text");
 }
 
 bool LSG_Component::IsTiles() const
 {
-	return (this->xmlNodeName == "tiles");
+	return (this->nodeName == "tiles");
 }
 
 bool LSG_Component::IsToggle() const
 {
-	return (this->xmlNodeName == "toggle");
+	return (this->nodeName == "toggle");
 }
 
 bool LSG_Component::IsVertical() const
@@ -550,7 +550,7 @@ void LSG_Component::SetAlignmentHorizontal(LSG_HAlign alignment)
 		default: break;
 	}
 
-	LSG_XML::SetAttribute(this->xmlNode, "halign", value);
+	LSG_XML::SetAttribute(this->node, "halign", value);
 }
 
 void LSG_Component::SetAlignmentVertical(LSG_VAlign alignment)
@@ -563,7 +563,7 @@ void LSG_Component::SetAlignmentVertical(LSG_VAlign alignment)
 		default: break;
 	}
 
-	LSG_XML::SetAttribute(this->xmlNode, "valign", value);
+	LSG_XML::SetAttribute(this->node, "valign", value);
 }
 
 void LSG_Component::SetBackgroundColor(const SDL_Color& color)
@@ -631,7 +631,7 @@ void LSG_Component::SetPadding(int padding)
 
 void LSG_Component::SetPositionAlign(int x, int y)
 {
-	auto xmlAttributes = LSG_XML::GetAttributes(this->xmlNode);
+	auto xmlAttributes = LSG_XML::GetAttributes(this->node);
 
 	auto positionX = (xmlAttributes.contains("x") ? xmlAttributes["x"] : "");
 	auto positionY = (xmlAttributes.contains("y") ? xmlAttributes["y"] : "");
@@ -656,7 +656,7 @@ void LSG_Component::SetPositionAlign(int x, int y)
 void LSG_Component::SetSizeBlank(int sizeX, int sizeY, int componentsX, int componentsY)
 {
 	auto margin2x      = (this->margin * 2);
-	auto xmlAttributes = LSG_XML::GetAttributes(this->xmlNode);
+	auto xmlAttributes = LSG_XML::GetAttributes(this->node);
 
 	auto width  = (xmlAttributes.contains("width")  ? xmlAttributes["width"]  : "");
 	auto height = (xmlAttributes.contains("height") ? xmlAttributes["height"] : "");
@@ -675,7 +675,7 @@ void LSG_Component::SetSizeBlank(int sizeX, int sizeY, int componentsX, int comp
 
 void LSG_Component::SetSizeFixed()
 {
-	auto xmlAttributes = LSG_XML::GetAttributes(this->xmlNode);
+	auto xmlAttributes = LSG_XML::GetAttributes(this->node);
 
 	auto width  = (xmlAttributes.contains("width")  ? xmlAttributes["width"]  : "");
 	auto height = (xmlAttributes.contains("height") ? xmlAttributes["height"] : "");
@@ -725,7 +725,7 @@ void LSG_Component::SetSizePercent(LSG_Component* parent)
 
 void LSG_Component::setSizePercent(const SDL_Rect& parentBackground)
 {
-	auto xmlAttributes = LSG_XML::GetAttributes(this->xmlNode);
+	auto xmlAttributes = LSG_XML::GetAttributes(this->node);
 
 	auto width  = (xmlAttributes.contains("width")  ? xmlAttributes["width"]  : "");
 	auto height = (xmlAttributes.contains("height") ? xmlAttributes["height"] : "");
@@ -745,7 +745,7 @@ void LSG_Component::setSizePercent(const SDL_Rect& parentBackground)
 
 void LSG_Component::SetSpacing(int spacing)
 {
-	LSG_XML::SetAttribute(this->xmlNode, "spacing", std::to_string(spacing));
+	LSG_XML::SetAttribute(this->node, "spacing", std::to_string(spacing));
 }
 
 void LSG_Component::SetTooltip(const std::string& tooltip)

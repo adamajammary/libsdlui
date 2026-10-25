@@ -1,7 +1,7 @@
 #include "LSG_TextInput.h"
 
-LSG_TextInput::LSG_TextInput(const std::string& id, int layer, LibXml::xmlNode* xmlNode, const std::string& xmlNodeName, LSG_Component* parent)
-	: LSG_Text(id, layer, xmlNode, xmlNodeName, parent)
+LSG_TextInput::LSG_TextInput(const std::string& id, int layer, xmlNode* node, const std::string& nodeName, LSG_Component* parent)
+	: LSG_Text(id, layer, node, nodeName, parent)
 {
 	this->active                = false;
 	this->cursorPosition        = 0;

@@ -6,7 +6,7 @@
 class LSG_MenuItem : public LSG_Text
 {
 public:
-	LSG_MenuItem(const std::string& id, int layer, LibXml::xmlNode* xmlNode, const std::string& xmlNodeName, LSG_Component* parent);
+	LSG_MenuItem(const std::string& id, int layer, xmlNode* node, const std::string& nodeName, LSG_Component* parent);
 	~LSG_MenuItem() {}
 
 public:

@@ -1,7 +1,7 @@
 #include "LSG_ProgressBar.h"
 
-LSG_ProgressBar::LSG_ProgressBar(const std::string& id, int layer, LibXml::xmlNode* xmlNode, const std::string& xmlNodeName, LSG_Component* parent)
-	: LSG_Component(id, layer, xmlNode, xmlNodeName, parent)
+LSG_ProgressBar::LSG_ProgressBar(const std::string& id, int layer, xmlNode* node, const std::string& nodeName, LSG_Component* parent)
+	: LSG_Component(id, layer, node, nodeName, parent)
 {
 	this->lastProgressWidth = 0;
 	this->progressColor     = {};

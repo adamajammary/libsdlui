@@ -1,7 +1,7 @@
 #include "LSG_Slider.h"
 
-LSG_Slider::LSG_Slider(const std::string& id, int layer, LibXml::xmlNode* xmlNode, const std::string& xmlNodeName, LSG_Component* parent)
-	: LSG_ProgressBar(id, layer, xmlNode, xmlNodeName, parent)
+LSG_Slider::LSG_Slider(const std::string& id, int layer, xmlNode* node, const std::string& nodeName, LSG_Component* parent)
+	: LSG_ProgressBar(id, layer, node, nodeName, parent)
 {
 	this->barWidth      = 0;
 	this->fillProgress  = false;
@@ -28,7 +28,7 @@ LSG_Slider::LSG_Slider(const std::string& id, int layer, LibXml::xmlNode* xmlNod
 	this->SetColors();
 }
 
-void LSG_Slider::AddPart(LibXml::xmlNode* node)
+void LSG_Slider::AddPart(xmlNode* node)
 {
 	auto xmlAttributes = LSG_XML::GetAttributes(node);
 

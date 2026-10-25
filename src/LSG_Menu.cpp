@@ -1,7 +1,7 @@
 #include "LSG_Menu.h"
 
-LSG_Menu::LSG_Menu(const std::string& id, int layer, LibXml::xmlNode* xmlNode, const std::string& xmlNodeName, LSG_Component* parent)
-	: LSG_Text(id, layer, xmlNode, xmlNodeName, parent)
+LSG_Menu::LSG_Menu(const std::string& id, int layer, xmlNode* node, const std::string& nodeName, LSG_Component* parent)
+	: LSG_Text(id, layer, node, nodeName, parent)
 {
 	this->borderRadius         = 0;
 	this->borderWidth          = 0;
@@ -13,7 +13,7 @@ LSG_Menu::LSG_Menu(const std::string& id, int layer, LibXml::xmlNode* xmlNode, c
 
 	this->textures.resize(NR_OF_MENU_TEXTURES);
 
-	auto padding = LSG_XML::GetAttribute(this->xmlNode, "padding");
+	auto padding = LSG_XML::GetAttribute(this->node, "padding");
 
 	if (padding.empty())
 		this->padding = LSG_Window::GetDPIScaled(LSG_Menu::DefaultPadding);
@@ -67,7 +67,7 @@ SDL_Rect LSG_Menu::getIconOpen() const
 
 SDL_Rect LSG_Menu::getMenu(const SDL_Rect& window) const
 {
-	auto width     = LSG_XML::GetAttribute(this->xmlNode, "width");
+	auto width     = LSG_XML::GetAttribute(this->node, "width");
 	bool isPercent = (!width.empty() && width.ends_with('%'));
 
 	SDL_Rect menu = window;
@@ -531,7 +531,7 @@ void LSG_Menu::setMenuOpened()
 
 		navTitle = LSG_XML::GetAttribute(this->subMenu->GetXmlNode(), "title");
 	} else if (this->IsMenu()) {
-		navTitle = LSG_XML::GetAttribute(this->xmlNode, "title");
+		navTitle = LSG_XML::GetAttribute(this->node, "title");
 	}
 
 	if (!navTitle.empty())

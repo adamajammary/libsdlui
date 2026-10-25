@@ -6,7 +6,7 @@
 class LSG_List : public LSG_Pagination, public LSG_ScrollBar, public LSG_Text
 {
 public:
-	LSG_List(const std::string& id, int layer, LibXml::xmlNode* xmlNode, const std::string& xmlNodeName, LSG_Component* parent);
+	LSG_List(const std::string& id, int layer, xmlNode* node, const std::string& nodeName, LSG_Component* parent);
 	~LSG_List() {}
 
 public:

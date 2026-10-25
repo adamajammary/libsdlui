@@ -6,7 +6,7 @@
 class LSG_Text : public LSG_Component
 {
 public:
-	LSG_Text(const std::string& id, int layer, LibXml::xmlNode* xmlNode, const std::string& xmlNodeName, LSG_Component* parent);
+	LSG_Text(const std::string& id, int layer, xmlNode* node, const std::string& nodeName, LSG_Component* parent);
 	~LSG_Text() {}
 
 protected:

@@ -1,7 +1,7 @@
 #include "LSG_Table.h"
 
-LSG_Table::LSG_Table(const std::string& id, int layer, LibXml::xmlNode* xmlNode, const std::string& xmlNodeName, LSG_Component* parent)
-	: LSG_List(id, layer, xmlNode, xmlNodeName, parent)
+LSG_Table::LSG_Table(const std::string& id, int layer, xmlNode* node, const std::string& nodeName, LSG_Component* parent)
+	: LSG_List(id, layer, node, nodeName, parent)
 {
 	this->borderRadius      = 0;
 	this->borderWidth       = 0;
@@ -16,7 +16,7 @@ void LSG_Table::AddGroup(const LSG_TableGroup& group)
 	this->SetRows();
 }
 
-void LSG_Table::AddGroup(LibXml::xmlNode* node)
+void LSG_Table::AddGroup(xmlNode* node)
 {
 	LSG_TableGroup group = { .group = LSG_XML::GetAttribute(node, "group") };
 
@@ -50,7 +50,7 @@ void LSG_Table::AddRow(const LSG_Strings& row)
 	this->SetRows();
 }
 
-void LSG_Table::AddRow(LibXml::xmlNode* node)
+void LSG_Table::AddRow(xmlNode* node)
 {
 	LSG_Strings row;
 
@@ -608,7 +608,7 @@ void LSG_Table::SetHeader(const LSG_Strings& header)
 	this->Update();
 }
 
-void LSG_Table::SetHeader(LibXml::xmlNode* node)
+void LSG_Table::SetHeader(xmlNode* node)
 {
 	LSG_Strings header;
 
@@ -785,8 +785,8 @@ void LSG_Table::Sort(LSG_SortOrder sortOrder, int sortColumn)
 	if ((sortOrder == this->GetSortOrder()) && (sortColumn == this->GetSortColumn()))
 		return;
 
-	LSG_XML::SetAttribute(this->xmlNode, "sort",        LSG_ConstSortOrder::ToString(sortOrder));
-	LSG_XML::SetAttribute(this->xmlNode, "sort-column", std::to_string(sortColumn));
+	LSG_XML::SetAttribute(this->node, "sort",        LSG_ConstSortOrder::ToString(sortOrder));
+	LSG_XML::SetAttribute(this->node, "sort-column", std::to_string(sortColumn));
 
 	this->resetScroll();
 

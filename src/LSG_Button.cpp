@@ -1,15 +1,15 @@
 #include "LSG_Button.h"
 
-LSG_Button::LSG_Button(const std::string& id, int layer, LibXml::xmlNode* xmlNode, const std::string& xmlNodeName, LSG_Component* parent)
-	: LSG_Text(id, layer, xmlNode, xmlNodeName, parent)
+LSG_Button::LSG_Button(const std::string& id, int layer, xmlNode* node, const std::string& nodeName, LSG_Component* parent)
+	: LSG_Text(id, layer, node, nodeName, parent)
 {
-	auto xmlAttributes = LSG_XML::GetAttributes(this->xmlNode);
+	auto xmlAttributes = LSG_XML::GetAttributes(this->node);
 
 	this->iconPath = (xmlAttributes.contains("icon") ? xmlAttributes["icon"] : "");
 	this->text     = (xmlAttributes.contains("text") ? xmlAttributes["text"] : "");
 
 	if (this->text.empty())
-		this->text = LSG_XML::GetValue(this->xmlNode);
+		this->text = LSG_XML::GetValue(this->node);
 
 	this->textures.resize(NR_OF_BUTTON_TEXTURES);
 }

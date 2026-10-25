@@ -6,18 +6,18 @@ LSG_UMapStrComponent LSG_UI::components        = {};
 LSG_MapIntComponent  LSG_UI::componentsByLayer = {};
 int                  LSG_UI::id                = 0;
 LSG_Component*       LSG_UI::root              = nullptr;
-LibXml::xmlNode*     LSG_UI::windowNode        = nullptr;
-LibXml::xmlDoc*      LSG_UI::xmlDocument       = nullptr;
+xmlNode*             LSG_UI::windowNode        = nullptr;
+xmlDoc*              LSG_UI::xmlDocument       = nullptr;
 
 /**
  * @throws invalid_argument
  */
-LSG_Component* LSG_UI::AddXmlNode(LibXml::xmlNode* node, LSG_Component* parent)
+LSG_Component* LSG_UI::AddXmlNode(xmlNode* node, LSG_Component* parent)
 {
 	if (!node)
 		throw std::invalid_argument("XML node cannot be null.");
 
-	if (node->type != LibXml::XML_ELEMENT_NODE)
+	if (node->type != XML_ELEMENT_NODE)
 		return nullptr;
 
 	auto name  = std::string(reinterpret_cast<const char*>(node->name));
@@ -68,7 +68,7 @@ void LSG_UI::Close()
 		LSG_UI::xmlDocument = nullptr;
 	}
 
-	LibXml::xmlCleanupParser();
+	xmlCleanupParser();
 }
 
 void LSG_UI::CloseMenu()
@@ -194,60 +194,60 @@ std::string LSG_UI::GetColorTheme()
 	return LSG_UI::colorThemeFile;
 }
 
-LSG_Component* LSG_UI::GetComponent(const std::string& id, int layer, LibXml::xmlNode* xmlNode, const std::string& xmlNodeName, LSG_Component* parent)
+LSG_Component* LSG_UI::GetComponent(const std::string& id, int layer, xmlNode* node, const std::string& nodeName, LSG_Component* parent)
 {
 	LSG_Component* component = nullptr;
 
-	if (xmlNodeName == "button")
-		component = new LSG_Button(id, layer, xmlNode, xmlNodeName, parent);
-	else if (xmlNodeName == "cards")
-		component = new LSG_Cards(id, layer, xmlNode, xmlNodeName, parent);
-	else if (xmlNodeName == "card")
-		static_cast<LSG_Cards*>(parent)->AddCard(xmlNode);
-	else if (xmlNodeName == "image")
-		component = new LSG_Image(id, layer, xmlNode, xmlNodeName, parent);
-	else if (xmlNodeName == "line")
-		component = new LSG_Line(id, layer, xmlNode, xmlNodeName, parent);
-	else if (xmlNodeName == "list")
-		component = new LSG_List(id, layer, xmlNode, xmlNodeName, parent);
-	else if (xmlNodeName == "list-item")
-		static_cast<LSG_List*>(parent)->AddItem(LSG_XML::GetValue(xmlNode));
-	else if (xmlNodeName == "menu")
-		component = new LSG_Menu(id, layer, xmlNode, xmlNodeName, parent);
-	else if (xmlNodeName == "menu-item")
-		component = new LSG_MenuItem(id, layer, xmlNode, xmlNodeName, parent);
-	else if (xmlNodeName == "menu-sub")
-		component = new LSG_MenuSub(id, layer, xmlNode, xmlNodeName, parent);
-	else if (xmlNodeName == "modal")
-		component = new LSG_Modal(id, layer, xmlNode, xmlNodeName, parent);
-	else if (xmlNodeName == "navigation")
-		component = new LSG_Navigation(id, layer, xmlNode, xmlNodeName, parent);
-	else if (xmlNodeName == "panel")
-		component = new LSG_Panel(id, layer, xmlNode, xmlNodeName, parent);
-	else if (xmlNodeName == "progress-bar")
-		component = new LSG_ProgressBar(id, layer, xmlNode, xmlNodeName, parent);
-	else if (xmlNodeName == "slider")
-		component = new LSG_Slider(id, layer, xmlNode, xmlNodeName, parent);
-	else if (xmlNodeName == "slider-part")
-		static_cast<LSG_Slider*>(parent)->AddPart(xmlNode);
-	else if (xmlNodeName == "table")
-		component = new LSG_Table(id, layer, xmlNode, xmlNodeName, parent);
-	else if (xmlNodeName == "table-group")
-		static_cast<LSG_Table*>(parent)->AddGroup(xmlNode);
-	else if (xmlNodeName == "table-header")
-		static_cast<LSG_Table*>(parent)->SetHeader(xmlNode);
-	else if (xmlNodeName == "table-row")
-		static_cast<LSG_Table*>(parent)->AddRow(xmlNode);
-	else if (xmlNodeName == "text-input")
-		component = new LSG_TextInput(id, layer, xmlNode, xmlNodeName, parent);
-	else if (xmlNodeName == "text")
-		component = new LSG_TextLabel(id, layer, xmlNode, xmlNodeName, parent);
-	else if (xmlNodeName == "tiles")
-		component = new LSG_Tiles(id, layer, xmlNode, xmlNodeName, parent);
-	else if (xmlNodeName == "tile")
-		static_cast<LSG_Tiles*>(parent)->AddTile(xmlNode);
-	else if (xmlNodeName == "toggle")
-		component = new LSG_Toggle(id, layer, xmlNode, xmlNodeName, parent);
+	if (nodeName == "button")
+		component = new LSG_Button(id, layer, node, nodeName, parent);
+	else if (nodeName == "cards")
+		component = new LSG_Cards(id, layer, node, nodeName, parent);
+	else if (nodeName == "card")
+		static_cast<LSG_Cards*>(parent)->AddCard(node);
+	else if (nodeName == "image")
+		component = new LSG_Image(id, layer, node, nodeName, parent);
+	else if (nodeName == "line")
+		component = new LSG_Line(id, layer, node, nodeName, parent);
+	else if (nodeName == "list")
+		component = new LSG_List(id, layer, node, nodeName, parent);
+	else if (nodeName == "list-item")
+		static_cast<LSG_List*>(parent)->AddItem(LSG_XML::GetValue(node));
+	else if (nodeName == "menu")
+		component = new LSG_Menu(id, layer, node, nodeName, parent);
+	else if (nodeName == "menu-item")
+		component = new LSG_MenuItem(id, layer, node, nodeName, parent);
+	else if (nodeName == "menu-sub")
+		component = new LSG_MenuSub(id, layer, node, nodeName, parent);
+	else if (nodeName == "modal")
+		component = new LSG_Modal(id, layer, node, nodeName, parent);
+	else if (nodeName == "navigation")
+		component = new LSG_Navigation(id, layer, node, nodeName, parent);
+	else if (nodeName == "panel")
+		component = new LSG_Panel(id, layer, node, nodeName, parent);
+	else if (nodeName == "progress-bar")
+		component = new LSG_ProgressBar(id, layer, node, nodeName, parent);
+	else if (nodeName == "slider")
+		component = new LSG_Slider(id, layer, node, nodeName, parent);
+	else if (nodeName == "slider-part")
+		static_cast<LSG_Slider*>(parent)->AddPart(node);
+	else if (nodeName == "table")
+		component = new LSG_Table(id, layer, node, nodeName, parent);
+	else if (nodeName == "table-group")
+		static_cast<LSG_Table*>(parent)->AddGroup(node);
+	else if (nodeName == "table-header")
+		static_cast<LSG_Table*>(parent)->SetHeader(node);
+	else if (nodeName == "table-row")
+		static_cast<LSG_Table*>(parent)->AddRow(node);
+	else if (nodeName == "text-input")
+		component = new LSG_TextInput(id, layer, node, nodeName, parent);
+	else if (nodeName == "text")
+		component = new LSG_TextLabel(id, layer, node, nodeName, parent);
+	else if (nodeName == "tiles")
+		component = new LSG_Tiles(id, layer, node, nodeName, parent);
+	else if (nodeName == "tile")
+		static_cast<LSG_Tiles*>(parent)->AddTile(node);
+	else if (nodeName == "toggle")
+		component = new LSG_Toggle(id, layer, node, nodeName, parent);
 
 	return component;
 }
@@ -436,7 +436,7 @@ SDL_Point LSG_UI::GetScrolledPosition(const SDL_Point& mousePosition, LSG_Compon
 	return scrolledPosition;
 }
 
-LibXml::xmlDoc* LSG_UI::GetXmlDocument()
+xmlDoc* LSG_UI::GetXmlDocument()
 {
 	return LSG_UI::xmlDocument;
 }
@@ -1057,7 +1057,7 @@ void LSG_UI::Load(const std::string& colorThemeFile)
 /**
  * @throws invalid_argument
  */
-void LSG_UI::loadXmlNodes(LibXml::xmlNode* parentNode, LSG_Component* parent)
+void LSG_UI::loadXmlNodes(xmlNode* parentNode, LSG_Component* parent)
 {
 	if (!parentNode)
 		throw std::invalid_argument("Parent node cannot be null.");
@@ -1117,10 +1117,10 @@ void LSG_UI::RemoveXmlChildNodes(LSG_Component* component)
 		component->RemoveChild(child);
 	}
 
-	auto xmlNode = component->GetXmlNode();
+	auto node = component->GetXmlNode();
 
-	if (xmlNode)
-		LSG_XML::RemoveChildNodes(xmlNode);
+	if (node)
+		LSG_XML::RemoveChildNodes(node);
 }
 
 void LSG_UI::RemoveXmlNode(LSG_Component* component)
@@ -1128,10 +1128,10 @@ void LSG_UI::RemoveXmlNode(LSG_Component* component)
 	if (!component)
 		throw std::invalid_argument("UI component cannot be null.");
 
-	auto xmlNode = component->GetXmlNode();
+	auto node = component->GetXmlNode();
 
-	if (xmlNode)
-		LSG_XML::RemoveNode(xmlNode);
+	if (node)
+		LSG_XML::RemoveNode(node);
 	
 	LSG_UI::components.erase(component->GetID());
 	LSG_UI::componentsByLayer.erase(component->GetLayer());

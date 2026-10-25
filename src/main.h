@@ -56,7 +56,7 @@ using LSG_ColorThemes      = std::unordered_map<std::string, LSG_UMapStrStr>;
 using LSG_Components       = std::vector<LSG_Component*>;
 using LSG_TableRowCompare  = std::function<bool(const LSG_Strings& row1, const LSG_Strings& row2)>;
 using LSG_Textures         = std::vector<SDL_Texture*>;
-using LSG_XmlNodes         = std::vector<LibXml::xmlNode*>;
+using LSG_XmlNodes         = std::vector<xmlNode*>;
 
 using LSG_MapIntComponent = std::map<int, LSG_Component*>;
 

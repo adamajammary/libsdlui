@@ -1,7 +1,7 @@
 #include "LSG_List.h"
 
-LSG_List::LSG_List(const std::string& id, int layer, LibXml::xmlNode* xmlNode, const std::string& xmlNodeName, LSG_Component* parent)
-	: LSG_Text(id, layer, xmlNode, xmlNodeName, parent)
+LSG_List::LSG_List(const std::string& id, int layer, xmlNode* node, const std::string& nodeName, LSG_Component* parent)
+	: LSG_Text(id, layer, node, nodeName, parent)
 {
 	this->borderRadius = 0;
 	this->borderWidth  = 0;
@@ -549,7 +549,7 @@ void LSG_List::Sort(LSG_SortOrder sortOrder)
 	if (sortOrder == this->GetSortOrder())
 		return;
 
-	LSG_XML::SetAttribute(this->xmlNode, "sort", LSG_ConstSortOrder::ToString(sortOrder));
+	LSG_XML::SetAttribute(this->node, "sort", LSG_ConstSortOrder::ToString(sortOrder));
 
 	this->resetScroll();
 

@@ -14,7 +14,7 @@ struct LSG_Card
 class LSG_Cards : public LSG_Pagination, public LSG_ScrollBar, public LSG_Text
 {
 public:
-	LSG_Cards(const std::string& id, int layer, LibXml::xmlNode* xmlNode, const std::string& xmlNodeName, LSG_Component* parent);
+	LSG_Cards(const std::string& id, int layer, xmlNode* node, const std::string& nodeName, LSG_Component* parent);
 	~LSG_Cards();
 
 public:
@@ -46,7 +46,7 @@ public:
 	void             Activate();
 	void             Activate(const SDL_Point& mousePosition);
 	void             AddCard(const LSG_CardItem& cardItem);
-	void             AddCard(LibXml::xmlNode* node);
+	void             AddCard(xmlNode* node);
 	LSG_CardItem     GetCard(int row) const;
 	LSG_CardItems    GetCards() const;
 	size_t           GetCardsCount() const;

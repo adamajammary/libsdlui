@@ -1,7 +1,7 @@
 #include "LSG_Navigation.h"
 
-LSG_Navigation::LSG_Navigation(const std::string& id, int layer, LibXml::xmlNode* xmlNode, const std::string& xmlNodeName, LSG_Component* parent)
-	: LSG_Text(id, layer, xmlNode, xmlNodeName, parent)
+LSG_Navigation::LSG_Navigation(const std::string& id, int layer, xmlNode* node, const std::string& nodeName, LSG_Component* parent)
+	: LSG_Text(id, layer, node, nodeName, parent)
 {
 	this->arrow        = {};
 	this->borderRadius = 0;
@@ -9,7 +9,7 @@ LSG_Navigation::LSG_Navigation(const std::string& id, int layer, LibXml::xmlNode
 	this->position     = 0;
 	this->textSize     = {};
 
-	auto xmlAttributes = LSG_XML::GetAttributes(this->xmlNode);
+	auto xmlAttributes = LSG_XML::GetAttributes(this->node);
 
 	auto xmlItemsPerNavigation = (xmlAttributes.contains("items-per-navigation") ? xmlAttributes["items-per-navigation"] : "");
 	auto xmlItemsTotal         = (xmlAttributes.contains("items-total")          ? xmlAttributes["items-total"]          : "");

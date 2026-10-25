@@ -6,7 +6,7 @@
 class LSG_Modal : public LSG_Text
 {
 public:
-	LSG_Modal(const std::string& id, int layer, LibXml::xmlNode* xmlNode, const std::string& xmlNodeName, LSG_Component* parent);
+	LSG_Modal(const std::string& id, int layer, xmlNode* node, const std::string& nodeName, LSG_Component* parent);
 	~LSG_Modal() {}
 
 public:
@@ -38,8 +38,8 @@ public:
 	void           SetBackground();
 
 private:
-	LSG_Component* addNode(LibXml::xmlNode* node, LSG_Component* parent);
-	void           addNodes(LibXml::xmlNode* parentNode, LSG_Component* parent);
+	LSG_Component* addNode(xmlNode* node, LSG_Component* parent);
+	void           addNodes(xmlNode* parentNode, LSG_Component* parent);
 	SDL_Rect       getCloseIcon() const;
 	LSG_Component* getComponent(const SDL_Point& mousePosition) const;
 	LSG_Component* getComponentInScrollablePanel(const SDL_Point& mousePosition, LSG_Component* component) const;

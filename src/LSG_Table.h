@@ -6,7 +6,7 @@
 class LSG_Table : public LSG_List
 {
 public:
-	LSG_Table(const std::string& id, int layer, LibXml::xmlNode* xmlNode, const std::string& xmlNodeName, LSG_Component* parent);
+	LSG_Table(const std::string& id, int layer, xmlNode* node, const std::string& nodeName, LSG_Component* parent);
 	~LSG_Table() {}
 
 public:
@@ -20,9 +20,9 @@ private:
 
 public:
 	void         AddGroup(const LSG_TableGroup& group);
-	void         AddGroup(LibXml::xmlNode* node);
+	void         AddGroup(xmlNode* node);
 	void         AddRow(const LSG_Strings& row);
-	void         AddRow(LibXml::xmlNode* node);
+	void         AddRow(xmlNode* node);
 	int          GetColumnWidth(int column) const;
 	int          GetSortColumn() const;
 	SDL_Size     GetSize() const;
@@ -40,7 +40,7 @@ public:
 	void         SetGroup(const LSG_TableGroup& group);
 	void         SetGroups(const LSG_TableGroups& groups);
 	void         SetHeader(const LSG_Strings& header);
-	void         SetHeader(LibXml::xmlNode* node);
+	void         SetHeader(xmlNode* node);
 	void         SetPageRow(int row, const LSG_Strings& columns);
 	void         SetRow(int row, const LSG_Strings& columns);
 	void         SetRows(const LSG_TableRows& rows);
