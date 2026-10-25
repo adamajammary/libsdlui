@@ -23,6 +23,7 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <unordered_map>
 
 #if defined _ios
     #include <MediaPlayer/MediaPlayer.h> // MPMediaItem, MPMediaPickerController
@@ -1959,6 +1960,12 @@ DLLEXPORT std::string DLL LSG_TextUtils_Trim(const std::string& text);
  * @param doc The XML document
  */
 DLLEXPORT void DLL LSG_XML_Close(xmlDoc* doc);
+
+/**
+ * @returns a key-value pair of attribute names and values of the XML node
+ * @param node The XML node
+ */
+DLLEXPORT std::unordered_map<std::string, std::string> DLL LSG_XML_GetAttributes(xmlNode* node);
 
 /**
  * @brief Tries to open filePath and returns an XML document if valid, otherwise NULL.

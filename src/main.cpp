@@ -2817,6 +2817,11 @@ void LSG_XML_Close(xmlDoc* doc)
 	LSG_XML::Close(doc);
 }
 
+std::unordered_map<std::string, std::string> LSG_XML_GetAttributes(xmlNode* node)
+{
+	return LSG_XML::GetAttributes(node);
+}
+
 xmlDoc* LSG_XML_OpenFile(const std::string& filePath)
 {
 	return LSG_XML::OpenFile(filePath);

@@ -5388,6 +5388,18 @@ Parameters
 
 - **doc** The XML document
 
+### LSG_XML_GetAttributes
+
+```cpp
+std::unordered_map<std::string, std::string> LSG_XML_GetAttributes(xmlNode* node);
+```
+
+Returns a key-value pair of attribute names and values of the XML node.
+
+Parameters
+
+- **node** The XML node
+
 ### LSG_XML_OpenFile
 
 ```cpp

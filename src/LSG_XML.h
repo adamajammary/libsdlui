@@ -23,6 +23,9 @@ public:
 	static void           RemoveNode(xmlNode* node);
 	static void           SetAttribute(xmlNode* node, const std::string& attribute, const std::string& value);
 	static void           SetValue(xmlNode* node, const std::string& value);
+
+private:
+	static std::string getAttributeValue(xmlChar* content);
 };
 
 #endif

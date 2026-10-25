@@ -15,7 +15,6 @@
 #include <set>
 #include <sstream> // stringstream
 #include <thread>
-#include <unordered_map>
 
 #if defined _android
 	#include <android/asset_manager_jni.h> // AAsset*, JNI*, j*
