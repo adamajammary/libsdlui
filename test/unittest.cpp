@@ -1795,33 +1795,68 @@ namespace LSG_UnitTest
 
     TEST_CLASS(XML)
     {
+        TEST_METHOD(GetNodes)
+        {
+            try
+            {
+                auto doc = LSG_XML_OpenXML("<root><item1 attrib1=\"value1\" /><item2 attrib2=\"value2\" /></root>");
+
+                Assert::IsNotNull(doc);
+
+                auto nodes = LSG_XML_GetNodes(doc, "/root");
+
+                Assert::AreEqual(2, (int)nodes.size());
+
+                for (size_t i = 0; i < nodes.size(); i++)
+                {
+                    auto attribs = LSG_XML_GetAttributes(nodes[i]);
+
+                    auto key   = ("attrib" + std::to_string(i + 1));
+                    auto value = ("value"  + std::to_string(i + 1));
+
+                    Assert::IsTrue(attribs.contains(key));
+                    Assert::AreEqual(value.c_str(), attribs[key].c_str());
+
+                    auto name = ("item" + std::to_string(i + 1));
+
+                    Assert::AreEqual(name.c_str(), (const char*)nodes[i]->name);
+                }
+
+                LSG_XML_Close(doc);
+            }
+            catch (const std::exception& e)
+            {
+                Assert::Fail(ToString(e.what()).c_str());
+            }
+        }
+
         TEST_METHOD(OpenXML)
         {
             try
             {
-                auto xmlDocInvalid1 = LSG_XML_OpenXML("");
+                auto docInvalid1 = LSG_XML_OpenXML("");
 
-                Assert::IsNull(xmlDocInvalid1);
+                Assert::IsNull(docInvalid1);
 
-                LSG_XML_Close(xmlDocInvalid1);
+                LSG_XML_Close(docInvalid1);
 
-                auto xmlDocInvalid2 = LSG_XML_OpenXML("<xml>");
+                auto docInvalid2 = LSG_XML_OpenXML("<root>");
 
-                Assert::IsNull(xmlDocInvalid2);
+                Assert::IsNull(docInvalid2);
 
-                LSG_XML_Close(xmlDocInvalid2);
+                LSG_XML_Close(docInvalid2);
 
-                auto xmlDocValid1 = LSG_XML_OpenXML("<xml />");
+                auto docValid1 = LSG_XML_OpenXML("<root />");
 
-                Assert::IsNotNull(xmlDocValid1);
+                Assert::IsNotNull(docValid1);
 
-                LSG_XML_Close(xmlDocValid1);
+                LSG_XML_Close(docValid1);
 
-                auto xmlDocValid2 = LSG_XML_OpenXML("<xml><item attrib=\"value\" /></xml>");
+                auto docValid2 = LSG_XML_OpenXML("<root><item attrib=\"value\" /></root>");
 
-                Assert::IsNotNull(xmlDocValid2);
+                Assert::IsNotNull(docValid2);
 
-                LSG_XML_Close(xmlDocValid2);
+                LSG_XML_Close(docValid2);
             }
             catch (const std::exception& e)
             {

@@ -76,7 +76,7 @@ std::string LSG_XML::getAttributeValue(xmlChar* content)
 	return (!value.empty() ? LSG_TextUtils::Replace(value, "\\n", "\n") : value);
 }
 
-LSG_XmlNodes LSG_XML::GetChildNodes(xmlNode* node)
+LSG_XmlNodes LSG_XML::GetChildNodes(xmlNode* node, xmlElementType type)
 {
 	if (!node)
 		return {};
@@ -87,7 +87,8 @@ LSG_XmlNodes LSG_XML::GetChildNodes(xmlNode* node)
 
 	while (xmlChildNode)
 	{
-		nodes.push_back(xmlChildNode);
+		if ((type == 0) || (xmlChildNode->type == type))
+			nodes.push_back(xmlChildNode);
 
 		xmlChildNode = xmlChildNode->next;
 	}
@@ -97,12 +98,22 @@ LSG_XmlNodes LSG_XML::GetChildNodes(xmlNode* node)
 
 xmlNode* LSG_XML::GetNode(const std::string& xpath)
 {
-	auto xmlDoc = LSG_UI::GetXmlDocument();
+	return LSG_XML::getPathNode(LSG_UI::GetXmlDocument(), xpath);
+}
 
-	if (xpath.empty() || !xmlDoc)
+LSG_XmlNodes LSG_XML::GetNodes(xmlDoc* doc, const std::string& xpath, xmlElementType type)
+{
+	auto pathNode = LSG_XML::getPathNode(doc, xpath);
+
+	return (pathNode ? LSG_XML::GetChildNodes(pathNode, type) : LSG_XmlNodes());
+}
+
+xmlNode* LSG_XML::getPathNode(xmlDoc* doc, const std::string& xpath)
+{
+	if (!doc || xpath.empty())
 		return nullptr;
 
-	auto pathContext = xmlXPathNewContext(xmlDoc);
+	auto pathContext = xmlXPathNewContext(doc);
 
 	if (!pathContext)
 		return nullptr;
@@ -114,14 +125,11 @@ xmlNode* LSG_XML::GetNode(const std::string& xpath)
 	if (!pathObject)
 		return nullptr;
 
-	xmlNode* result = nullptr;
-
-	if (pathObject->nodesetval->nodeNr > 0)
-		result = pathObject->nodesetval->nodeTab[0];
+	auto pathNode = (pathObject->nodesetval->nodeNr > 0 ? pathObject->nodesetval->nodeTab[0] : nullptr);
 
 	xmlXPathFreeObject(pathObject);
 
-	return result;
+	return pathNode;
 }
 
 std::string LSG_XML::GetValue(xmlNode* node)

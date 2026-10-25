@@ -1968,6 +1968,14 @@ DLLEXPORT void DLL LSG_XML_Close(xmlDoc* doc);
 DLLEXPORT std::unordered_map<std::string, std::string> DLL LSG_XML_GetAttributes(xmlNode* node);
 
 /**
+ * @returns a list of XML nodes found in the XML document by searching xpath
+ * @param doc The XML document
+ * @param xpath The XML search path
+ * @param [type=0] Optional. If set, will only return nodes of type, otherwise all nodes.
+ */
+DLLEXPORT std::vector<xmlNode*> DLL LSG_XML_GetNodes(xmlDoc* doc, const std::string& xpath, xmlElementType type = (xmlElementType)0);
+
+/**
  * @brief Tries to open filePath and returns an XML document if valid, otherwise NULL.
  * @param filePath The path of the XML file
  */

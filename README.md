@@ -5400,6 +5400,20 @@ Parameters
 
 - **node** The XML node
 
+### LSG_XML_GetNodes
+
+```cpp
+std::vector<xmlNode*> LSG_XML_GetNodes(xmlDoc* doc, const std::string& xpath, xmlElementType type = 0);
+```
+
+Returns a list of XML nodes found in the XML document by searching xpath.
+
+Parameters
+
+- **doc** The XML document
+- **xpath** The XML search path
+- **[type=0]** Optional. If set, will only return nodes of type, otherwise all nodes.
+
 ### LSG_XML_OpenFile
 
 ```cpp

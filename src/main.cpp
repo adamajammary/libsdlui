@@ -2822,6 +2822,11 @@ std::unordered_map<std::string, std::string> LSG_XML_GetAttributes(xmlNode* node
 	return LSG_XML::GetAttributes(node);
 }
 
+std::vector<xmlNode*> LSG_XML_GetNodes(xmlDoc* doc, const std::string& xpath, xmlElementType type)
+{
+	return LSG_XML::GetNodes(doc, xpath, type);
+}
+
 xmlDoc* LSG_XML_OpenFile(const std::string& filePath)
 {
 	return LSG_XML::OpenFile(filePath);

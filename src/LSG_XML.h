@@ -14,8 +14,9 @@ public:
 	static void           Close(xmlDoc* doc);
 	static std::string    GetAttribute(xmlNode* node, const std::string& attribute);
 	static LSG_UMapStrStr GetAttributes(xmlNode* node);
-	static LSG_XmlNodes   GetChildNodes(xmlNode* node);
+	static LSG_XmlNodes   GetChildNodes(xmlNode* node, xmlElementType type = (xmlElementType)0);
 	static xmlNode*       GetNode(const std::string& xpath);
+	static LSG_XmlNodes   GetNodes(xmlDoc* doc, const std::string& xpath, xmlElementType type = (xmlElementType)0);
 	static std::string    GetValue(xmlNode* node);
 	static xmlDoc*        OpenFile(const std::string& filePath);
 	static xmlDoc*        OpenXML(const std::string&  xmlContent);
@@ -26,6 +27,7 @@ public:
 
 private:
 	static std::string getAttributeValue(xmlChar* content);
+	static xmlNode*    getPathNode(xmlDoc* doc, const std::string& xpath);
 };
 
 #endif
