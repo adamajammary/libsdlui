@@ -762,7 +762,7 @@ void LSG_Table::setRows(bool sort)
 			std::string headerValue = (i < this->header.size() && !this->header[i].empty() ? this->header[i] : " ");
 
 			auto column  = std::format("\n{}{}\n\n", arrow, headerValue);
-			auto texture = LSG_Text::GetTexture(column, this->getFontSize(), TTF_STYLE_BOLD, this->textColor, this->wrap);
+			auto texture = LSG_TextUtils::GetTexture(column, this->getFontSize(), TTF_STYLE_BOLD, this->textColor, this->wrap);
 
 			this->headerTextures.push_back(texture);
 		}
@@ -796,7 +796,7 @@ void LSG_Table::Sort(LSG_SortOrder sortOrder, int sortColumn)
 void LSG_Table::sort()
 {
 	auto sortColumn = std::max(0, this->GetSortColumn());
-	auto compare    = LSG_Text::GetTableRowCompare(sortColumn);
+	auto compare    = LSG_TextUtils::GetTableRowCompare(sortColumn);
 
 	if (this->GetXmlAttribute("sort") == LSG_ConstSortOrder::Descending)
 	{

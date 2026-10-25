@@ -870,10 +870,10 @@ void LSG_Cards::setCardSurfaces()
 void LSG_Cards::setCardSurfacesForCard(LSG_Card& card, std::latch& threadCount)
 {
 	if (!card.thumbnail.filePath.empty())
-		card.thumbnail.surface = IMG_Load(LSG_Text::GetFullPath(card.thumbnail.filePath).c_str());
+		card.thumbnail.surface = IMG_Load(LSG_TextUtils::GetFullPath(card.thumbnail.filePath).c_str());
 
 	if (!card.title.text.empty())
-		card.title.surface = LSG_Text::GetSurface(card.title.text, this->getTitleFontSize(), this->getFontStyle(), this->textColor, this->wrap);
+		card.title.surface = LSG_TextUtils::GetSurface(card.title.text, this->getTitleFontSize(), this->getFontStyle(), this->textColor, this->wrap);
 
 	if (!card.description.text.empty())
 		card.description.surface = this->getSurface(card.description.text);

@@ -1266,252 +1266,6 @@ namespace LSG_UnitTest
 
     TEST_CLASS(Text)
     {
-        TEST_METHOD(GetFormattedBitRate)
-        {
-            try
-            {
-                auto bitRate     = LSG_Text_GetFormattedBitRate(500ull);
-                auto bitRateKbps = LSG_Text_GetFormattedBitRate(1000ull);
-                auto bitRateMbps = LSG_Text_GetFormattedBitRate(1000ull * 1000ull);
-                auto bitRateGbps = LSG_Text_GetFormattedBitRate(1000ull * 1000ull * 1000ull);
-                auto bitRateTbps = LSG_Text_GetFormattedBitRate(1000ull * 1000ull * 1000ull * 1000ull);
-
-                Assert::AreEqual("500 bps", bitRate.c_str());
-                Assert::AreEqual("1 kbps",  bitRateKbps.c_str());
-                Assert::AreEqual("1 Mbps",  bitRateMbps.c_str());
-                Assert::AreEqual("1 Gbps",  bitRateGbps.c_str());
-                Assert::AreEqual("1 Tbps",  bitRateTbps.c_str());
-            }
-            catch (const std::exception& e)
-            {
-                Assert::Fail(ToString(e.what()).c_str());
-            }
-        }
-
-        TEST_METHOD(GetFormattedCount)
-        {
-            try
-            {
-                auto count  = LSG_Text_GetFormattedCount(500ull);
-                auto countK = LSG_Text_GetFormattedCount(1000ull);
-                auto countM = LSG_Text_GetFormattedCount(1000ull * 1000ull);
-                auto countG = LSG_Text_GetFormattedCount(1000ull * 1000ull * 1000ull);
-                auto countT = LSG_Text_GetFormattedCount(1000ull * 1000ull * 1000ull * 1000ull);
-
-                Assert::AreEqual("500",   count.c_str());
-                Assert::AreEqual("1.00K", countK.c_str());
-                Assert::AreEqual("1.00M", countM.c_str());
-                Assert::AreEqual("1.00G", countG.c_str());
-                Assert::AreEqual("1.00T", countT.c_str());
-            }
-            catch (const std::exception& e)
-            {
-                Assert::Fail(ToString(e.what()).c_str());
-            }
-        }
-
-        TEST_METHOD(GetFormattedDuration)
-        {
-            try
-            {
-                auto duration0s      = LSG_Text_GetFormattedDuration(0ull);
-                auto duration1s      = LSG_Text_GetFormattedDuration(1ull);
-                auto duration1m      = LSG_Text_GetFormattedDuration(60ull);
-                auto duration1m1s    = LSG_Text_GetFormattedDuration(60ull + 1ull);
-                auto duration1h      = LSG_Text_GetFormattedDuration(3600ull);
-                auto duration1h1m1s  = LSG_Text_GetFormattedDuration(3600ull + 61ull);
-                auto duration10h     = LSG_Text_GetFormattedDuration(3600ull * 10ull);
-                auto duration10h1m1s = LSG_Text_GetFormattedDuration(3600ull * 10ull + 61ull);
-
-                Assert::AreEqual("0s",        duration0s.c_str());
-                Assert::AreEqual("1s",        duration1s.c_str());
-                Assert::AreEqual("1m 0s",     duration1m.c_str());
-                Assert::AreEqual("1m 1s",     duration1m1s.c_str());
-                Assert::AreEqual("1h 0m 0s",  duration1h.c_str());
-                Assert::AreEqual("1h 1m 1s",  duration1h1m1s.c_str());
-                Assert::AreEqual("10h 0m 0s", duration10h.c_str());
-                Assert::AreEqual("10h 1m 1s", duration10h1m1s.c_str());
-            }
-            catch (const std::exception& e)
-            {
-                Assert::Fail(ToString(e.what()).c_str());
-            }
-        }
-
-        TEST_METHOD(GetFormattedSize)
-        {
-            try
-            {
-                auto size   = LSG_Text_GetFormattedSize(512ull);
-                auto sizeKB = LSG_Text_GetFormattedSize(1024ull);
-                auto sizeMB = LSG_Text_GetFormattedSize(1024ull * 1024ull);
-                auto sizeGB = LSG_Text_GetFormattedSize(1024ull * 1024ull * 1024ull);
-                auto sizeTB = LSG_Text_GetFormattedSize(1024ull * 1024ull * 1024ull * 1024ull);
-
-                Assert::AreEqual("512 bytes", size.c_str());
-                Assert::AreEqual("1.0 KB",    sizeKB.c_str());
-                Assert::AreEqual("1.0 MB",    sizeMB.c_str());
-                Assert::AreEqual("1.0 GB",    sizeGB.c_str());
-                Assert::AreEqual("1.0 TB",    sizeTB.c_str());
-            }
-            catch (const std::exception& e)
-            {
-                Assert::Fail(ToString(e.what()).c_str());
-            }
-        }
-
-        TEST_METHOD(GetFormattedTimeAgo)
-        {
-            try
-            {
-                auto timeAgo0s = LSG_Text_GetFormattedTimeAgo(std::time(nullptr));
-                auto timeAgo1s = LSG_Text_GetFormattedTimeAgo(std::time(nullptr) - 1ll);
-                auto timeAgo2s = LSG_Text_GetFormattedTimeAgo(std::time(nullptr) - 1ll * 2ll);
-                auto timeAgo1m = LSG_Text_GetFormattedTimeAgo(std::time(nullptr) - 60ll);
-                auto timeAgo2m = LSG_Text_GetFormattedTimeAgo(std::time(nullptr) - 60ll * 2ll);
-                auto timeAgo1h = LSG_Text_GetFormattedTimeAgo(std::time(nullptr) - 3600ll);
-                auto timeAgo2h = LSG_Text_GetFormattedTimeAgo(std::time(nullptr) - 3600ll * 2ll);
-                auto timeAgo1d = LSG_Text_GetFormattedTimeAgo(std::time(nullptr) - 86400ll);
-                auto timeAgo2d = LSG_Text_GetFormattedTimeAgo(std::time(nullptr) - 86400ll * 2ll);
-                auto timeAgo1w = LSG_Text_GetFormattedTimeAgo(std::time(nullptr) - 604800ll);
-                auto timeAgo2w = LSG_Text_GetFormattedTimeAgo(std::time(nullptr) - 604800ll * 2ll);
-                auto timeAgo1M = LSG_Text_GetFormattedTimeAgo(std::time(nullptr) - 2628000ll);
-                auto timeAgo2M = LSG_Text_GetFormattedTimeAgo(std::time(nullptr) - 2628000ll * 2ll);
-                auto timeAgo1y = LSG_Text_GetFormattedTimeAgo(std::time(nullptr) - 31536000ll);
-                auto timeAgo2y = LSG_Text_GetFormattedTimeAgo(std::time(nullptr) - 31536000ll * 2ll);
-
-                Assert::AreEqual("now",           timeAgo0s.c_str());
-                Assert::AreEqual("1 second ago",  timeAgo1s.c_str());
-                Assert::AreEqual("2 seconds ago", timeAgo2s.c_str());
-                Assert::AreEqual("1 minute ago",  timeAgo1m.c_str());
-                Assert::AreEqual("2 minutes ago", timeAgo2m.c_str());
-                Assert::AreEqual("1 hour ago",    timeAgo1h.c_str());
-                Assert::AreEqual("2 hours ago",   timeAgo2h.c_str());
-                Assert::AreEqual("1 day ago",     timeAgo1d.c_str());
-                Assert::AreEqual("2 days ago",    timeAgo2d.c_str());
-                Assert::AreEqual("1 week ago",    timeAgo1w.c_str());
-                Assert::AreEqual("2 weeks ago",   timeAgo2w.c_str());
-                Assert::AreEqual("1 month ago",   timeAgo1M.c_str());
-                Assert::AreEqual("2 months ago",  timeAgo2M.c_str());
-                Assert::AreEqual("1 year ago",    timeAgo1y.c_str());
-                Assert::AreEqual("2 years ago",   timeAgo2y.c_str());
-            }
-            catch (const std::exception& e)
-            {
-                Assert::Fail(ToString(e.what()).c_str());
-            }
-        }
-
-        TEST_METHOD(GetMediaCodecName)
-        {
-            try
-            {
-                auto codecName1 = LSG_Text_GetMediaCodecName("Windows Media Audio v1");
-                auto codecName2 = LSG_Text_GetMediaCodecName("Windows Media Audio v2 (description)");
-                auto codecName3 = LSG_Text_GetMediaCodecName("Windows Media Video v3 / alternative name");
-                auto codecName4 = LSG_Text_GetMediaCodecName("Windows Media Video v4 decoder");
-
-                Assert::AreEqual("WMA v1", codecName1.c_str());
-                Assert::AreEqual("WMA v2", codecName2.c_str());
-                Assert::AreEqual("WMV v3", codecName3.c_str());
-                Assert::AreEqual("WMV v4", codecName4.c_str());
-            }
-            catch (const std::exception& e)
-            {
-                Assert::Fail(ToString(e.what()).c_str());
-            }
-        }
-
-        TEST_METHOD(Join)
-        {
-            try
-            {
-                LSG_Strings strings = { "str1", "str2", "str3" };
-
-                auto result = LSG_Text_Join(strings, ", ");
-
-                Assert::AreEqual("str1, str2, str3", result.c_str());
-            }
-            catch (const std::exception& e)
-            {
-                Assert::Fail(ToString(e.what()).c_str());
-            }
-        }
-
-        TEST_METHOD(Replace)
-        {
-            try
-            {
-                auto result = LSG_Text_Replace("str1, str2, str3", ", ", " | ");
-
-                Assert::AreEqual("str1 | str2 | str3", result.c_str());
-            }
-            catch (const std::exception& e)
-            {
-                Assert::Fail(ToString(e.what()).c_str());
-            }
-        }
-
-        TEST_METHOD(Split)
-        {
-            try
-            {
-                auto strings = LSG_Text_Split("str1,str2,str3", ',');
-
-                Assert::AreEqual(3ull, strings.size());
-
-                Assert::AreEqual("str1", strings[0].c_str());
-                Assert::AreEqual("str2", strings[1].c_str());
-                Assert::AreEqual("str3", strings[2].c_str());
-            }
-            catch (const std::exception& e)
-            {
-                Assert::Fail(ToString(e.what()).c_str());
-            }
-        }
-
-        TEST_METHOD(ToLower)
-        {
-            try
-            {
-                auto result = LSG_Text_ToLower("MiXeD 123");
-
-                Assert::AreEqual("mixed 123", result.c_str());
-            }
-            catch (const std::exception& e)
-            {
-                Assert::Fail(ToString(e.what()).c_str());
-            }
-        }
-
-        TEST_METHOD(ToUpper)
-        {
-            try
-            {
-                auto result = LSG_Text_ToUpper("MiXeD 123");
-
-                Assert::AreEqual("MIXED 123", result.c_str());
-            }
-            catch (const std::exception& e)
-            {
-                Assert::Fail(ToString(e.what()).c_str());
-            }
-        }
-
-        TEST_METHOD(Trim)
-        {
-            try
-            {
-                auto result = LSG_Text_Trim("   str   1 2 3   ");
-
-                Assert::AreEqual("str   1 2 3", result.c_str());
-            }
-            catch (const std::exception& e)
-            {
-                Assert::Fail(ToString(e.what()).c_str());
-            }
-        }
-
         TEST_METHOD(SetText)
         {
             try
@@ -1562,6 +1316,255 @@ namespace LSG_UnitTest
                 auto value = LSG_GetTextInputValue("TextInput");
 
                 Assert::AreEqual("New test value", value.c_str());
+            }
+            catch (const std::exception& e)
+            {
+                Assert::Fail(ToString(e.what()).c_str());
+            }
+        }
+    };
+
+    TEST_CLASS(LSG_TextUtils)
+    {
+        TEST_METHOD(GetFormattedBitRate)
+        {
+            try
+            {
+                auto bitRate     = LSG_TextUtils_GetFormattedBitRate(500ull);
+                auto bitRateKbps = LSG_TextUtils_GetFormattedBitRate(1000ull);
+                auto bitRateMbps = LSG_TextUtils_GetFormattedBitRate(1000ull * 1000ull);
+                auto bitRateGbps = LSG_TextUtils_GetFormattedBitRate(1000ull * 1000ull * 1000ull);
+                auto bitRateTbps = LSG_TextUtils_GetFormattedBitRate(1000ull * 1000ull * 1000ull * 1000ull);
+
+                Assert::AreEqual("500 bps", bitRate.c_str());
+                Assert::AreEqual("1 kbps",  bitRateKbps.c_str());
+                Assert::AreEqual("1 Mbps",  bitRateMbps.c_str());
+                Assert::AreEqual("1 Gbps",  bitRateGbps.c_str());
+                Assert::AreEqual("1 Tbps",  bitRateTbps.c_str());
+            }
+            catch (const std::exception& e)
+            {
+                Assert::Fail(ToString(e.what()).c_str());
+            }
+        }
+
+        TEST_METHOD(GetFormattedCount)
+        {
+            try
+            {
+                auto count  = LSG_TextUtils_GetFormattedCount(500ull);
+                auto countK = LSG_TextUtils_GetFormattedCount(1000ull);
+                auto countM = LSG_TextUtils_GetFormattedCount(1000ull * 1000ull);
+                auto countG = LSG_TextUtils_GetFormattedCount(1000ull * 1000ull * 1000ull);
+                auto countT = LSG_TextUtils_GetFormattedCount(1000ull * 1000ull * 1000ull * 1000ull);
+
+                Assert::AreEqual("500",   count.c_str());
+                Assert::AreEqual("1.00K", countK.c_str());
+                Assert::AreEqual("1.00M", countM.c_str());
+                Assert::AreEqual("1.00G", countG.c_str());
+                Assert::AreEqual("1.00T", countT.c_str());
+            }
+            catch (const std::exception& e)
+            {
+                Assert::Fail(ToString(e.what()).c_str());
+            }
+        }
+
+        TEST_METHOD(GetFormattedDuration)
+        {
+            try
+            {
+                auto duration0s      = LSG_TextUtils_GetFormattedDuration(0ull);
+                auto duration1s      = LSG_TextUtils_GetFormattedDuration(1ull);
+                auto duration1m      = LSG_TextUtils_GetFormattedDuration(60ull);
+                auto duration1m1s    = LSG_TextUtils_GetFormattedDuration(60ull + 1ull);
+                auto duration1h      = LSG_TextUtils_GetFormattedDuration(3600ull);
+                auto duration1h1m1s  = LSG_TextUtils_GetFormattedDuration(3600ull + 61ull);
+                auto duration10h     = LSG_TextUtils_GetFormattedDuration(3600ull * 10ull);
+                auto duration10h1m1s = LSG_TextUtils_GetFormattedDuration(3600ull * 10ull + 61ull);
+
+                Assert::AreEqual("0s",        duration0s.c_str());
+                Assert::AreEqual("1s",        duration1s.c_str());
+                Assert::AreEqual("1m 0s",     duration1m.c_str());
+                Assert::AreEqual("1m 1s",     duration1m1s.c_str());
+                Assert::AreEqual("1h 0m 0s",  duration1h.c_str());
+                Assert::AreEqual("1h 1m 1s",  duration1h1m1s.c_str());
+                Assert::AreEqual("10h 0m 0s", duration10h.c_str());
+                Assert::AreEqual("10h 1m 1s", duration10h1m1s.c_str());
+            }
+            catch (const std::exception& e)
+            {
+                Assert::Fail(ToString(e.what()).c_str());
+            }
+        }
+
+        TEST_METHOD(GetFormattedSize)
+        {
+            try
+            {
+                auto size   = LSG_TextUtils_GetFormattedSize(512ull);
+                auto sizeKB = LSG_TextUtils_GetFormattedSize(1024ull);
+                auto sizeMB = LSG_TextUtils_GetFormattedSize(1024ull * 1024ull);
+                auto sizeGB = LSG_TextUtils_GetFormattedSize(1024ull * 1024ull * 1024ull);
+                auto sizeTB = LSG_TextUtils_GetFormattedSize(1024ull * 1024ull * 1024ull * 1024ull);
+
+                Assert::AreEqual("512 bytes", size.c_str());
+                Assert::AreEqual("1.0 KB",    sizeKB.c_str());
+                Assert::AreEqual("1.0 MB",    sizeMB.c_str());
+                Assert::AreEqual("1.0 GB",    sizeGB.c_str());
+                Assert::AreEqual("1.0 TB",    sizeTB.c_str());
+            }
+            catch (const std::exception& e)
+            {
+                Assert::Fail(ToString(e.what()).c_str());
+            }
+        }
+
+        TEST_METHOD(GetFormattedTimeAgo)
+        {
+            try
+            {
+                auto timeAgo0s = LSG_TextUtils_GetFormattedTimeAgo(std::time(nullptr));
+                auto timeAgo1s = LSG_TextUtils_GetFormattedTimeAgo(std::time(nullptr) - 1ll);
+                auto timeAgo2s = LSG_TextUtils_GetFormattedTimeAgo(std::time(nullptr) - 1ll * 2ll);
+                auto timeAgo1m = LSG_TextUtils_GetFormattedTimeAgo(std::time(nullptr) - 60ll);
+                auto timeAgo2m = LSG_TextUtils_GetFormattedTimeAgo(std::time(nullptr) - 60ll * 2ll);
+                auto timeAgo1h = LSG_TextUtils_GetFormattedTimeAgo(std::time(nullptr) - 3600ll);
+                auto timeAgo2h = LSG_TextUtils_GetFormattedTimeAgo(std::time(nullptr) - 3600ll * 2ll);
+                auto timeAgo1d = LSG_TextUtils_GetFormattedTimeAgo(std::time(nullptr) - 86400ll);
+                auto timeAgo2d = LSG_TextUtils_GetFormattedTimeAgo(std::time(nullptr) - 86400ll * 2ll);
+                auto timeAgo1w = LSG_TextUtils_GetFormattedTimeAgo(std::time(nullptr) - 604800ll);
+                auto timeAgo2w = LSG_TextUtils_GetFormattedTimeAgo(std::time(nullptr) - 604800ll * 2ll);
+                auto timeAgo1M = LSG_TextUtils_GetFormattedTimeAgo(std::time(nullptr) - 2628000ll);
+                auto timeAgo2M = LSG_TextUtils_GetFormattedTimeAgo(std::time(nullptr) - 2628000ll * 2ll);
+                auto timeAgo1y = LSG_TextUtils_GetFormattedTimeAgo(std::time(nullptr) - 31536000ll);
+                auto timeAgo2y = LSG_TextUtils_GetFormattedTimeAgo(std::time(nullptr) - 31536000ll * 2ll);
+
+                Assert::AreEqual("now",           timeAgo0s.c_str());
+                Assert::AreEqual("1 second ago",  timeAgo1s.c_str());
+                Assert::AreEqual("2 seconds ago", timeAgo2s.c_str());
+                Assert::AreEqual("1 minute ago",  timeAgo1m.c_str());
+                Assert::AreEqual("2 minutes ago", timeAgo2m.c_str());
+                Assert::AreEqual("1 hour ago",    timeAgo1h.c_str());
+                Assert::AreEqual("2 hours ago",   timeAgo2h.c_str());
+                Assert::AreEqual("1 day ago",     timeAgo1d.c_str());
+                Assert::AreEqual("2 days ago",    timeAgo2d.c_str());
+                Assert::AreEqual("1 week ago",    timeAgo1w.c_str());
+                Assert::AreEqual("2 weeks ago",   timeAgo2w.c_str());
+                Assert::AreEqual("1 month ago",   timeAgo1M.c_str());
+                Assert::AreEqual("2 months ago",  timeAgo2M.c_str());
+                Assert::AreEqual("1 year ago",    timeAgo1y.c_str());
+                Assert::AreEqual("2 years ago",   timeAgo2y.c_str());
+            }
+            catch (const std::exception& e)
+            {
+                Assert::Fail(ToString(e.what()).c_str());
+            }
+        }
+
+        TEST_METHOD(GetMediaCodecName)
+        {
+            try
+            {
+                auto codecName1 = LSG_TextUtils_GetMediaCodecName("Windows Media Audio v1");
+                auto codecName2 = LSG_TextUtils_GetMediaCodecName("Windows Media Audio v2 (description)");
+                auto codecName3 = LSG_TextUtils_GetMediaCodecName("Windows Media Video v3 / alternative name");
+                auto codecName4 = LSG_TextUtils_GetMediaCodecName("Windows Media Video v4 decoder");
+
+                Assert::AreEqual("WMA v1", codecName1.c_str());
+                Assert::AreEqual("WMA v2", codecName2.c_str());
+                Assert::AreEqual("WMV v3", codecName3.c_str());
+                Assert::AreEqual("WMV v4", codecName4.c_str());
+            }
+            catch (const std::exception& e)
+            {
+                Assert::Fail(ToString(e.what()).c_str());
+            }
+        }
+
+        TEST_METHOD(Join)
+        {
+            try
+            {
+                LSG_Strings strings = { "str1", "str2", "str3" };
+
+                auto result = LSG_TextUtils_Join(strings, ", ");
+
+                Assert::AreEqual("str1, str2, str3", result.c_str());
+            }
+            catch (const std::exception& e)
+            {
+                Assert::Fail(ToString(e.what()).c_str());
+            }
+        }
+
+        TEST_METHOD(Replace)
+        {
+            try
+            {
+                auto result = LSG_TextUtils_Replace("str1, str2, str3", ", ", " | ");
+
+                Assert::AreEqual("str1 | str2 | str3", result.c_str());
+            }
+            catch (const std::exception& e)
+            {
+                Assert::Fail(ToString(e.what()).c_str());
+            }
+        }
+
+        TEST_METHOD(Split)
+        {
+            try
+            {
+                auto strings = LSG_TextUtils_Split("str1,str2,str3", ',');
+
+                Assert::AreEqual(3ull, strings.size());
+
+                Assert::AreEqual("str1", strings[0].c_str());
+                Assert::AreEqual("str2", strings[1].c_str());
+                Assert::AreEqual("str3", strings[2].c_str());
+            }
+            catch (const std::exception& e)
+            {
+                Assert::Fail(ToString(e.what()).c_str());
+            }
+        }
+
+        TEST_METHOD(ToLower)
+        {
+            try
+            {
+                auto result = LSG_TextUtils_ToLower("MiXeD 123");
+
+                Assert::AreEqual("mixed 123", result.c_str());
+            }
+            catch (const std::exception& e)
+            {
+                Assert::Fail(ToString(e.what()).c_str());
+            }
+        }
+
+        TEST_METHOD(ToUpper)
+        {
+            try
+            {
+                auto result = LSG_TextUtils_ToUpper("MiXeD 123");
+
+                Assert::AreEqual("MIXED 123", result.c_str());
+            }
+            catch (const std::exception& e)
+            {
+                Assert::Fail(ToString(e.what()).c_str());
+            }
+        }
+
+        TEST_METHOD(Trim)
+        {
+            try
+            {
+                auto result = LSG_TextUtils_Trim("   str   1 2 3   ");
+
+                Assert::AreEqual("str   1 2 3", result.c_str());
             }
             catch (const std::exception& e)
             {

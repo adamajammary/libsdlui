@@ -194,7 +194,7 @@ SDL_Renderer* LSG_Window::Open(const std::string& title, int width, int height)
 		throw std::runtime_error(std::format("Failed to create a window: {}", SDL_GetError()));
 
 	#if defined _linux || defined _macosx || defined _windows
-		auto iconFile    = LSG_Text::GetFullPath("img/icon.png");
+		auto iconFile    = LSG_TextUtils::GetFullPath("img/icon.png");
 		auto iconSurface = IMG_Load(iconFile.c_str());
 
 		SDL_SetWindowIcon(LSG_Window::window, iconSurface);
@@ -994,7 +994,7 @@ SDL_Texture* LSG_Window::ToTexture(const std::string& imageFile)
 	if (imageFile.empty())
 		return nullptr;
 
-	auto filePath = LSG_Text::GetFullPath(imageFile);
+	auto filePath = LSG_TextUtils::GetFullPath(imageFile);
 	auto texture  = IMG_LoadTexture(LSG_Window::renderer, filePath.c_str());
 	
 	if (!texture)

@@ -319,6 +319,7 @@ std::string LSG_GetBasePath();
 #include "LSG_Navigation.h"
 #include "LSG_Table.h"
 #include "LSG_TextInput.h"
+#include "LSG_TextUtils.h"
 #include "LSG_Toggle.h"
 #include "LSG_UI.h"
 #include "LSG_Window.h"

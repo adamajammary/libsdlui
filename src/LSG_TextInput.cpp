@@ -131,7 +131,7 @@ size_t LSG_TextInput::getIndex(int mousePositionX)
 {
 	TTF_Font* fontCJK     = nullptr;
 	auto      fontSize    = this->getFontSize();
-	auto      fontDefault = LSG_Text::GetFont(fontSize);
+	auto      fontDefault = LSG_TextUtils::GetFont(fontSize);
 
 	size_t index;
 	int    positionX = 0;
@@ -143,13 +143,13 @@ size_t LSG_TextInput::getIndex(int mousePositionX)
 		if (this->value[index] < 0)
 		{
 			auto text  = this->value.substr(index, 2);
-			auto utf16 = LSG_Text::ToUTF16(text);
+			auto utf16 = LSG_TextUtils::ToUTF16(text);
 			auto font  = fontDefault;
 
-			if (!LSG_Text::FontSupportsText(font, utf16))
+			if (!LSG_TextUtils::FontSupportsText(font, utf16))
 			{
 				if (!fontCJK)
-					fontCJK = LSG_Text::GetFontCJK(fontSize);
+					fontCJK = LSG_TextUtils::GetFontCJK(fontSize);
 
 				font = fontCJK;
 			}
@@ -648,16 +648,16 @@ void LSG_TextInput::setCursor()
 	auto fontSize = this->getFontSize();
 
 	auto cursorText      = this->value.substr(0, this->cursorPosition);
-	auto cursorTextUTF16 = LSG_Text::ToUTF16(cursorText);
-	auto cursorFont      = LSG_Text::GetFont(fontSize, cursorTextUTF16);
+	auto cursorTextUTF16 = LSG_TextUtils::ToUTF16(cursorText);
+	auto cursorFont      = LSG_TextUtils::GetFont(fontSize, cursorTextUTF16);
 
 	TTF_GetStringSize(cursorFont, cursorText.c_str(), cursorText.size(), &this->cursorTextWidth, nullptr);
 
 	TTF_CloseFont(cursorFont);
 	SDL_free(cursorTextUTF16);
 
-	auto textUTF16 = LSG_Text::ToUTF16(this->value);
-	auto font      = LSG_Text::GetFont(fontSize, textUTF16);
+	auto textUTF16 = LSG_TextUtils::ToUTF16(this->value);
+	auto font      = LSG_TextUtils::GetFont(fontSize, textUTF16);
 
 	TTF_GetStringSize(font, this->value.c_str(), this->value.size(), &this->textSize.width, &this->textSize.height);
 
@@ -670,8 +670,8 @@ void LSG_TextInput::setCursor()
 		auto length = std::abs(this->highlightedTextLength);
 
 		auto highlightedText      = this->value.substr(start, length);
-		auto highlightedTextUTF16 = LSG_Text::ToUTF16(highlightedText);
-		auto highlightedFont      = LSG_Text::GetFont(fontSize, highlightedTextUTF16);
+		auto highlightedTextUTF16 = LSG_TextUtils::ToUTF16(highlightedText);
+		auto highlightedFont      = LSG_TextUtils::GetFont(fontSize, highlightedTextUTF16);
 
 		TTF_GetStringSize(
 			highlightedFont,
@@ -714,7 +714,7 @@ void LSG_TextInput::setPlaceholder()
 	auto textColor = SDL_Color(this->textColor);
 	textColor.a    = (uint8_t)((double)textColor.a * 0.8);
 
-	this->textures[LSG_TEXT_INPUT_TEXTURE_PLACEHOLDER] = LSG_Text::GetTexture(this->placeholder, this->getFontSize(), this->getFontStyle(), textColor, this->wrap);
+	this->textures[LSG_TEXT_INPUT_TEXTURE_PLACEHOLDER] = LSG_TextUtils::GetTexture(this->placeholder, this->getFontSize(), this->getFontStyle(), textColor, this->wrap);
 }
 
 void LSG_TextInput::SetText()

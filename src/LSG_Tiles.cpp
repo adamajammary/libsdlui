@@ -1231,7 +1231,7 @@ void LSG_Tiles::setTileSurfaces()
 void LSG_Tiles::setTileSurfacesForTile(LSG_Tile& tile, std::latch& threadCount)
 {
 	if (!tile.image.filePath.empty())
-		tile.image.surface = IMG_Load(LSG_Text::GetFullPath(tile.image.filePath).c_str());
+		tile.image.surface = IMG_Load(LSG_TextUtils::GetFullPath(tile.image.filePath).c_str());
 
 	if (!tile.text.text.empty())
 		tile.text.surface = this->getSurface(tile.text.text);

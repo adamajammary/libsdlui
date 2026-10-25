@@ -1078,7 +1078,7 @@ void LSG_UI::loadXmlNodes(LibXml::xmlNode* parentNode, LSG_Component* parent)
  */
 LSG_UMapStrStr LSG_UI::OpenWindow(const std::string& xmlFile)
 {
-	auto filePath = LSG_Text::GetFullPath(xmlFile);
+	auto filePath = LSG_TextUtils::GetFullPath(xmlFile);
 
 	LSG_UI::xmlDocument = LSG_XML::Open(filePath);
 
@@ -1215,7 +1215,7 @@ void LSG_UI::SetColorTheme(const std::string& colorThemeFile, bool sort)
 
 	if (!colorThemeFile.empty() && !LSG_UI::colorThemes.contains(colorThemeFile))
 	{
-		auto filePath = LSG_Text::GetFullPath(colorThemeFile);
+		auto filePath = LSG_TextUtils::GetFullPath(colorThemeFile);
 		auto file     = std::ifstream(filePath);
 
 		if (!file.is_open())

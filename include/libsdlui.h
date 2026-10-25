@@ -1845,56 +1845,56 @@ DLLEXPORT void DLL LSG_SortTable(const std::string& id, LSG_SortOrder sortOrder,
  * @returns a formatted string representing the bit rate as kbps, Mbps, Gbps or Tbps
  * @param bitRate The numerical bit rate in bps
  */
-DLLEXPORT std::string DLL LSG_Text_GetFormattedBitRate(size_t bitRate);
+DLLEXPORT std::string DLL LSG_TextUtils_GetFormattedBitRate(size_t bitRate);
 
 
 /**
  * @returns a formatted string representing the count as K, M, G or T
  * @param count The numerical count
  */
-DLLEXPORT std::string DLL LSG_Text_GetFormattedCount(size_t count);
+DLLEXPORT std::string DLL LSG_TextUtils_GetFormattedCount(size_t count);
 
 /**
  * @returns a formatted string representing the current date and time as "YYYY-MM-DD HH:MM:SS"
  */
-DLLEXPORT std::string DLL LSG_Text_GetFormattedDateTime();
+DLLEXPORT std::string DLL LSG_TextUtils_GetFormattedDateTime();
 
 /**
  * @returns a formatted string representing the duration as s, m and h
  * @param seconds The numerical duration in seconds
  */
-DLLEXPORT std::string DLL LSG_Text_GetFormattedDuration(size_t seconds);
+DLLEXPORT std::string DLL LSG_TextUtils_GetFormattedDuration(size_t seconds);
 
 /**
  * @returns a formatted string representing the size as KB, MB, GB or TB
  * @param size The numerical size in bytes
  */
-DLLEXPORT std::string DLL LSG_Text_GetFormattedSize(size_t size);
+DLLEXPORT std::string DLL LSG_TextUtils_GetFormattedSize(size_t size);
 
 /**
  * @returns a formatted string representing the current time as "HH:MM"
  */
-DLLEXPORT std::string DLL LSG_Text_GetFormattedTime();
+DLLEXPORT std::string DLL LSG_TextUtils_GetFormattedTime();
 
 /**
  * @returns a formatted string representing the time that has passed since timestamp as seconds, minutes, hours, days, weeks, months or years
  * @param timestamp The time to compare against
  */
-DLLEXPORT std::string DLL LSG_Text_GetFormattedTimeAgo(time_t timestamp);
+DLLEXPORT std::string DLL LSG_TextUtils_GetFormattedTimeAgo(time_t timestamp);
 
 /**
  * @brief Abbreviates and shortens long codec names: "Windows Media Audio v1 (description) / info" => "WMA v1".
  * @returns a more readable codec name
  * @param codecName The full codec name
  */
-DLLEXPORT std::string DLL LSG_Text_GetMediaCodecName(const std::string& codecName);
+DLLEXPORT std::string DLL LSG_TextUtils_GetMediaCodecName(const std::string& codecName);
 
 /**
  * @brief Joins text strings together by separator.
  * @param strings   Strings to join
  * @param separator String to use as a separator
  */
-DLLEXPORT std::string DLL LSG_Text_Join(const LSG_Strings& strings, const std::string& separator);
+DLLEXPORT std::string DLL LSG_TextUtils_Join(const LSG_Strings& strings, const std::string& separator);
 
 /**
  * @brief Replaces all occurrences of oldSubstring in text with newSubstring.
@@ -1902,44 +1902,44 @@ DLLEXPORT std::string DLL LSG_Text_Join(const LSG_Strings& strings, const std::s
  * @param oldSubstring String to be replaced
  * @param newSubstring String to use as replacement
  */
-DLLEXPORT std::string DLL LSG_Text_Replace(const std::string& text, const std::string& oldSubstring, const std::string& newSubstring);
+DLLEXPORT std::string DLL LSG_TextUtils_Replace(const std::string& text, const std::string& oldSubstring, const std::string& newSubstring);
 
 /**
  * @brief Splits text by separator.
  * @param text      String to split
  * @param separator Character to use as a separator
  */
-DLLEXPORT LSG_Strings DLL LSG_Text_Split(const std::string& text, char separator);
+DLLEXPORT LSG_Strings DLL LSG_TextUtils_Split(const std::string& text, char separator);
 
 /**
  * @brief Converts text to lowercase.
  * @param text Text string
  */
-DLLEXPORT std::string DLL LSG_Text_ToLower(const std::string& text);
+DLLEXPORT std::string DLL LSG_TextUtils_ToLower(const std::string& text);
 
 /**
  * @brief Converts text to uppercase.
  * @param text Text string
  */
-DLLEXPORT std::string DLL LSG_Text_ToUpper(const std::string& text);
+DLLEXPORT std::string DLL LSG_TextUtils_ToUpper(const std::string& text);
 
 /**
  * @brief Converts wide string to standard string with UTF-8 character encoding.
  * @param wide Wide text string
  */
-DLLEXPORT std::string DLL LSG_Text_ToUTF8(const std::wstring& wide);
+DLLEXPORT std::string DLL LSG_TextUtils_ToUTF8(const std::wstring& wide);
 
 /**
  * @brief Converts standard string to wide string.
  * @param text Text string
  */
-DLLEXPORT std::wstring DLL LSG_Text_ToWide(const std::string& text);
+DLLEXPORT std::wstring DLL LSG_TextUtils_ToWide(const std::string& text);
 
 /**
  * @brief Removes whitespaces from beginning and end of text.
  * @param text Text string
  */
-DLLEXPORT std::string DLL LSG_Text_Trim(const std::string& text);
+DLLEXPORT std::string DLL LSG_TextUtils_Trim(const std::string& text);
 
 /**
  * @brief Tries to initialize the library and open a new window based on layout from XML file.

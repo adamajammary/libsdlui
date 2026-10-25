@@ -5174,10 +5174,10 @@ LSG_SortTable("Table", LSG_SORT_ORDER_ASCENDING, 0);
 LSG_SortTable("TableWithGroups", LSG_SORT_ORDER_DESCENDING, 1);
 ```
 
-### LSG_Text_GetFormattedBitRate
+### LSG_TextUtils_GetFormattedBitRate
 
 ```cpp
-std::string LSG_Text_GetFormattedBitRate(size_t bitRate);
+std::string LSG_TextUtils_GetFormattedBitRate(size_t bitRate);
 ```
 
 Returns a formatted string representing the bit rate as kbps, Mbps, Gbps or Tbps.
@@ -5186,10 +5186,10 @@ Parameters
 
 - **bitRate** The numerical bit rate in bps
 
-### LSG_Text_GetFormattedCount
+### LSG_TextUtils_GetFormattedCount
 
 ```cpp
-std::string LSG_Text_GetFormattedCount(size_t count);
+std::string LSG_TextUtils_GetFormattedCount(size_t count);
 ```
 
 Returns a formatted string representing the count as K, M, G or T.
@@ -5198,18 +5198,18 @@ Parameters
 
 - **count** The numerical count
 
-### LSG_Text_GetFormattedDateTime
+### LSG_TextUtils_GetFormattedDateTime
 
 ```cpp
-std::string LSG_Text_GetFormattedDateTime();
+std::string LSG_TextUtils_GetFormattedDateTime();
 ```
 
 Returns a formatted string representing the current date and time as "YYYY-MM-DD HH:MM:SS".
 
-### LSG_Text_GetFormattedDuration
+### LSG_TextUtils_GetFormattedDuration
 
 ```cpp
-std::string LSG_Text_GetFormattedDuration(size_t seconds);
+std::string LSG_TextUtils_GetFormattedDuration(size_t seconds);
 ```
 
 Returns a formatted string representing the duration as s, m and h.
@@ -5218,10 +5218,10 @@ Parameters
 
 - **seconds** The numerical duration in seconds
 
-### LSG_Text_GetFormattedSize
+### LSG_TextUtils_GetFormattedSize
 
 ```cpp
-std::string LSG_Text_GetFormattedSize(size_t size);
+std::string LSG_TextUtils_GetFormattedSize(size_t size);
 ```
 
 Returns a formatted string representing the size as KB, MB, GB or TB.
@@ -5230,18 +5230,18 @@ Parameters
 
 - **size** The numerical size in bytes
 
-### LSG_Text_GetFormattedTime
+### LSG_TextUtils_GetFormattedTime
 
 ```cpp
-std::string LSG_Text_GetFormattedTime();
+std::string LSG_TextUtils_GetFormattedTime();
 ```
 
 Returns a formatted string representing the current time as "HH:MM".
 
-### LSG_Text_GetFormattedTimeAgo
+### LSG_TextUtils_GetFormattedTimeAgo
 
 ```cpp
-std::string LSG_Text_GetFormattedTimeAgo(time_t timestamp);
+std::string LSG_TextUtils_GetFormattedTimeAgo(time_t timestamp);
 ```
 
 Returns a formatted string representing the time that has passed since timestamp as seconds, minutes, hours, days, weeks, months or years.
@@ -5250,10 +5250,10 @@ Parameters
 
 - **timestamp** The time to compare against
 
-### LSG_Text_GetMediaCodecName
+### LSG_TextUtils_GetMediaCodecName
 
 ```cpp
-std::string LSG_Text_GetMediaCodecName(const std::string& codecName);
+std::string LSG_TextUtils_GetMediaCodecName(const std::string& codecName);
 ```
 
 Abbreviates and shortens long codec names: "Windows Media Audio v1 (description) / info" => "WMA v1".
@@ -5264,10 +5264,10 @@ Parameters
 
 - **codecName** The full codec name
 
-### LSG_Text_Join
+### LSG_TextUtils_Join
 
 ```cpp
-std::string LSG_Text_Join(const LSG_Strings& strings, const std::string& separator);
+std::string LSG_TextUtils_Join(const LSG_Strings& strings, const std::string& separator);
 ```
 
 Joins text strings together by separator.
@@ -5277,10 +5277,10 @@ Parameters
 - **strings** Strings to join
 - **separator** String to use as a separator
 
-### LSG_Text_Replace
+### LSG_TextUtils_Replace
 
 ```cpp
-std::string LSG_Text_Replace(const std::string& text, const std::string& oldSubstring, const std::string& newSubstring);
+std::string LSG_TextUtils_Replace(const std::string& text, const std::string& oldSubstring, const std::string& newSubstring);
 ```
 
 Replaces all occurrences of oldSubstring in text with newSubstring.
@@ -5291,10 +5291,10 @@ Parameters
 - **oldSubstring** String to be replaced
 - **newSubstring** String to use as replacement
 
-### LSG_Text_Split
+### LSG_TextUtils_Split
 
 ```cpp
-LSG_Strings LSG_Text_Split(const std::string& text, char separator);
+LSG_Strings LSG_TextUtils_Split(const std::string& text, char separator);
 ```
 
 Splits text by separator.
@@ -5304,10 +5304,10 @@ Parameters
 - **text** String to split
 - **separator** Character to use as a separator
 
-### LSG_Text_ToLower
+### LSG_TextUtils_ToLower
 
 ```cpp
-std::string LSG_Text_ToLower(const std::string& text);
+std::string LSG_TextUtils_ToLower(const std::string& text);
 ```
 
 Converts text to lowercase.
@@ -5316,10 +5316,10 @@ Parameters
 
 - **text** Text string
 
-### LSG_Text_ToUpper
+### LSG_TextUtils_ToUpper
 
 ```cpp
-std::string LSG_Text_ToUpper(const std::string& text);
+std::string LSG_TextUtils_ToUpper(const std::string& text);
 ```
 
 Converts text to uppercase.
@@ -5328,10 +5328,10 @@ Parameters
 
 - **text** Text string
 
-### LSG_Text_ToUTF8
+### LSG_TextUtils_ToUTF8
 
 ```cpp
-std::string LSG_Text_ToUTF8(const std::wstring& wide);
+std::string LSG_TextUtils_ToUTF8(const std::wstring& wide);
 ```
 
 Converts wide string to standard string with UTF-8 character encoding.
@@ -5340,10 +5340,10 @@ Parameters
 
 - **wide** Wide text string
 
-### LSG_Text_ToWide
+### LSG_TextUtils_ToWide
 
 ```cpp
-std::wstring LSG_Text_ToWide(const std::string& text);
+std::wstring LSG_TextUtils_ToWide(const std::string& text);
 ```
 
 Converts standard string to wide string.
@@ -5352,10 +5352,10 @@ Parameters
 
 - **text** Text string
 
-### LSG_Text_Trim
+### LSG_TextUtils_Trim
 
 ```cpp
-std::string LSG_Text_Trim(const std::string& text);
+std::string LSG_TextUtils_Trim(const std::string& text);
 ```
 
 Removes whitespaces from beginning and end of text.

@@ -2727,84 +2727,84 @@ void LSG_SortTable(const std::string& id, LSG_SortOrder sortOrder, int sortColum
 	static_cast<LSG_Table*>(component)->Sort(sortOrder, sortColumn);
 }
 
-std::string LSG_Text_GetFormattedBitRate(size_t bitRate)
+std::string LSG_TextUtils_GetFormattedBitRate(size_t bitRate)
 {
-	return LSG_Text::GetFormattedBitRate(bitRate);
+	return LSG_TextUtils::GetFormattedBitRate(bitRate);
 }
 
-std::string LSG_Text_GetFormattedCount(size_t count)
+std::string LSG_TextUtils_GetFormattedCount(size_t count)
 {
-	return LSG_Text::GetFormattedCount(count);
+	return LSG_TextUtils::GetFormattedCount(count);
 }
 
-std::string LSG_Text_GetFormattedDateTime()
+std::string LSG_TextUtils_GetFormattedDateTime()
 {
-	return LSG_Text::GetFormattedDateTime();
+	return LSG_TextUtils::GetFormattedDateTime();
 }
 
-std::string LSG_Text_GetFormattedDuration(size_t seconds)
+std::string LSG_TextUtils_GetFormattedDuration(size_t seconds)
 {
-	return LSG_Text::GetFormattedDuration(seconds);
+	return LSG_TextUtils::GetFormattedDuration(seconds);
 }
 
-std::string LSG_Text_GetFormattedSize(size_t size)
+std::string LSG_TextUtils_GetFormattedSize(size_t size)
 {
-	return LSG_Text::GetFormattedSize(size);
+	return LSG_TextUtils::GetFormattedSize(size);
 }
 
-std::string LSG_Text_GetFormattedTime()
+std::string LSG_TextUtils_GetFormattedTime()
 {
-	return LSG_Text::GetFormattedTime();
+	return LSG_TextUtils::GetFormattedTime();
 }
 
-std::string LSG_Text_GetFormattedTimeAgo(time_t timestamp)
+std::string LSG_TextUtils_GetFormattedTimeAgo(time_t timestamp)
 {
-	return LSG_Text::GetFormattedTimeAgo(timestamp);
+	return LSG_TextUtils::GetFormattedTimeAgo(timestamp);
 }
 
-std::string LSG_Text_GetMediaCodecName(const std::string& codecName)
+std::string LSG_TextUtils_GetMediaCodecName(const std::string& codecName)
 {
-	return LSG_Text::GetMediaCodecName(codecName);
+	return LSG_TextUtils::GetMediaCodecName(codecName);
 }
 
-std::string LSG_Text_Join(const LSG_Strings& strings, const std::string& separator)
+std::string LSG_TextUtils_Join(const LSG_Strings& strings, const std::string& separator)
 {
-	return LSG_Text::Join(strings, separator);
+	return LSG_TextUtils::Join(strings, separator);
 }
 
-std::string LSG_Text_Replace(const std::string& text, const std::string& oldSubstring, const std::string& newSubstring)
+std::string LSG_TextUtils_Replace(const std::string& text, const std::string& oldSubstring, const std::string& newSubstring)
 {
-	return LSG_Text::Replace(text, oldSubstring, newSubstring);
+	return LSG_TextUtils::Replace(text, oldSubstring, newSubstring);
 }
 
-LSG_Strings LSG_Text_Split(const std::string& text, char separator)
+LSG_Strings LSG_TextUtils_Split(const std::string& text, char separator)
 {
-	return LSG_Text::Split(text, separator);
+	return LSG_TextUtils::Split(text, separator);
 }
 
-std::string LSG_Text_ToLower(const std::string& text)
+std::string LSG_TextUtils_ToLower(const std::string& text)
 {
-	return LSG_Text::ToLower(text);
+	return LSG_TextUtils::ToLower(text);
 }
 
-std::string LSG_Text_ToUpper(const std::string& text)
+std::string LSG_TextUtils_ToUpper(const std::string& text)
 {
-	return LSG_Text::ToUpper(text);
+	return LSG_TextUtils::ToUpper(text);
 }
 
-std::string LSG_Text_ToUTF8(const std::wstring& wide)
+std::string LSG_TextUtils_ToUTF8(const std::wstring& wide)
 {
-	return LSG_Text::ToUTF8(wide);
+	return LSG_TextUtils::ToUTF8(wide);
 }
 
-std::wstring LSG_Text_ToWide(const std::string& text)
+std::wstring LSG_TextUtils_ToWide(const std::string& text)
 {
-	return LSG_Text::ToWide(text);
+	return LSG_TextUtils::ToWide(text);
 }
 
-std::string LSG_Text_Trim(const std::string& text)
+std::string LSG_TextUtils_Trim(const std::string& text)
 {
-	return LSG_Text::Trim(text);
+	return LSG_TextUtils::Trim(text);
 }
 
 SDL_Renderer* LSG_Start(const std::string& xmlFile)

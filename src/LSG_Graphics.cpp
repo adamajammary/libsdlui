@@ -85,7 +85,7 @@ SDL_Surface* LSG_Graphics::getDownScaledSurface(const std::string& imageFile, co
 	if (imageFile.empty() || ((downscaleFactor.x < 2) && (downscaleFactor.y < 2)))
 		return nullptr;
 
-	auto filePath = LSG_Text::GetFullPath(imageFile);
+	auto filePath = LSG_TextUtils::GetFullPath(imageFile);
 	auto surface  = IMG_Load(filePath.c_str());
 
 	if (!surface)
@@ -379,7 +379,7 @@ SDL_Surface* LSG_Graphics::GetThumbnail(const std::string& imageFile, const SDL_
 	if (imageFile.empty())
 		return nullptr;
 
-	auto filePath = LSG_Text::GetFullPath(imageFile);
+	auto filePath = LSG_TextUtils::GetFullPath(imageFile);
 	auto surface  = IMG_Load(filePath.c_str());
 
 	if (!surface)
@@ -1102,7 +1102,7 @@ void LSG_Graphics::RenderTooltip(SDL_Renderer* renderer, const std::string& text
 	auto textColor = LSG_ConstColor::White;
 
 	if (!LSG_Graphics::textures.contains(textId))
-		LSG_Graphics::textures[textId] = LSG_Text::GetTexture(text, fontSize, TTF_STYLE_NORMAL, textColor, false);
+		LSG_Graphics::textures[textId] = LSG_TextUtils::GetTexture(text, fontSize, TTF_STYLE_NORMAL, textColor, false);
 
 	auto textSize = LSG_Graphics::GetTextureSize(LSG_Graphics::textures[textId]);
 
@@ -1152,7 +1152,7 @@ void LSG_Graphics::RenderTooltip(SDL_Renderer* renderer, const std::string& text
 
 void LSG_Graphics::Rotate(LSG_ItemImage& image)
 {
-	auto exif        = LSG_Exif::Get(LSG_Text::GetFullPath(image.filePath));
+	auto exif        = LSG_Exif::Get(LSG_TextUtils::GetFullPath(image.filePath));
 	auto orientation = LSG_Exif::GetOrientation(exif.tags);
 
 	if (orientation.rotation > 0.0)

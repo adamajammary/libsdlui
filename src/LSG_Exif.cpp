@@ -24,7 +24,7 @@ LSG_ExifData LSG_Exif::Get(const std::string& filePath)
 	LSG_ExifState state = {};
 
 	#if defined _windows
-		state.file = _wfopen(LSG_Text::ToWide(filePath).c_str(), L"rb");
+		state.file = _wfopen(LSG_TextUtils::ToWide(filePath).c_str(), L"rb");
 	#else
 		state.file = std::fopen(filePath.c_str(), "rb");
 	#endif
@@ -231,7 +231,7 @@ LSG_IFD LSG_Exif::getIFD(LSG_ExifState& state)
 	}
 
 	if (ifd.dataValue.strings.size() > 1)
-		ifd.dataValue.string = LSG_Text::Join(ifd.dataValue.strings, ";");
+		ifd.dataValue.string = LSG_TextUtils::Join(ifd.dataValue.strings, ";");
 	else if (!ifd.dataValue.strings.empty())
 		ifd.dataValue.string = ifd.dataValue.strings[0];
 

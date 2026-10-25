@@ -28,7 +28,7 @@ std::string LSG_XML::GetAttribute(LibXml::xmlNode* xmlNode, const std::string& a
 			auto value = std::string(reinterpret_cast<const char*>(xmlAttribute->xmlChildrenNode->content));
 
 			if (!value.empty())
-				value = LSG_Text::Replace(value, "\\n", "\n");
+				value = LSG_TextUtils::Replace(value, "\\n", "\n");
 
 			return value;
 		}
@@ -54,7 +54,7 @@ LSG_UMapStrStr LSG_XML::GetAttributes(LibXml::xmlNode* xmlNode)
 		auto value = std::string(reinterpret_cast<const char*>(xmlAttribute->xmlChildrenNode->content));
 
 		if (!value.empty())
-			value = LSG_Text::Replace(value, "\\n", "\n");
+			value = LSG_TextUtils::Replace(value, "\\n", "\n");
 
 		attributes[key] = value;
 
@@ -125,7 +125,7 @@ std::string LSG_XML::GetValue(LibXml::xmlNode* node)
 	LibXml::xmlFree(xmlValue);
 
 	if (!value.empty())
-		value = LSG_Text::Replace(value, "\\n", "\n");
+		value = LSG_TextUtils::Replace(value, "\\n", "\n");
 
 	return value;
 }

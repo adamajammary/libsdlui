@@ -544,7 +544,7 @@ void LSG_Modal::Set()
 	auto title = LSG_XML::GetAttribute(this->xmlNode, "title");
 
 	if (!title.empty())
-		this->textures[LSG_MODAL_TEXTURE_TITLE] = LSG_Text::GetTexture(title, LSG_Modal::TitleFontSize, this->getFontStyle(), this->textColor, this->wrap);
+		this->textures[LSG_MODAL_TEXTURE_TITLE] = LSG_TextUtils::GetTexture(title, LSG_Modal::TitleFontSize, this->getFontStyle(), this->textColor, this->wrap);
 
 	this->ellipsisTexture = this->getTexture("...");
 }

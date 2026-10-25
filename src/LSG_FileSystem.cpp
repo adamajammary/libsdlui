@@ -9,7 +9,7 @@ void LSG_FileSystem::CreateDirInPath(const std::string& dir, const std::string& 
 	auto baseDir = (path.ends_with('/')  || path.ends_with('\\')  ? path.substr(0, path.size() - 1) : path);
 
 	#if defined _windows
-        auto result = _wmkdir(std::format(L"{}\\{}", LSG_Text_ToWide(baseDir), LSG_Text_ToWide(subDir)).c_str());
+        auto result = _wmkdir(std::format(L"{}\\{}", LSG_TextUtils_ToWide(baseDir), LSG_TextUtils_ToWide(subDir)).c_str());
     #else
         auto result = mkdir(std::format("{}/{}", baseDir, subDir).c_str(), (S_IRWXU | S_IRWXG));
     #endif
@@ -39,7 +39,7 @@ LSG_File LSG_FileSystem::GetFile(const std::string& filePath)
 
     if (extension != std::string::npos) {
         file.name = file.file.substr(0, extension);
-        file.ext  = LSG_Text_ToLower(file.file.substr(extension + 1));
+        file.ext  = LSG_TextUtils_ToLower(file.file.substr(extension + 1));
     } else {
         file.name = file.file;
     }
@@ -58,7 +58,7 @@ LSG_Strings LSG_FileSystem::GetFilesFromDir(const std::string& dirPath)
 
     for (const auto& dirEntry : directory) {
         if (dirEntry.is_regular_file())
-            files.push_back(LSG_Text_ToUTF8(dirEntry.path().wstring()));
+            files.push_back(LSG_TextUtils_ToUTF8(dirEntry.path().wstring()));
     }
 
     return files;
