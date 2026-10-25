@@ -5376,6 +5376,42 @@ Parameters
 
 - **text** Text string
 
+### LSG_XML_Close
+
+```cpp
+void LSG_XML_Close(xmlDoc* doc);
+```
+
+Closes the XML document and cleans up allocated resources.
+
+Parameters
+
+- **doc** The XML document
+
+### LSG_XML_OpenFile
+
+```cpp
+xmlDoc* LSG_XML_OpenFile(const std::string& filePath);
+```
+
+Tries to open filePath and returns an XML document if valid, otherwise NULL.
+
+Parameters
+
+- **filePath** The path of the XML file
+
+### LSG_XML_OpenXML
+
+```cpp
+xmlDoc* LSG_XML_OpenXML(const std::string& xmlContent);
+```
+
+Tries to read xmlContent and returns an XML document if valid, otherwise NULL.
+
+Parameters
+
+- **xmlContent** The XML content
+
 ### LSG_Start
 
 ```cpp

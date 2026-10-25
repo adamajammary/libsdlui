@@ -64,7 +64,7 @@ void LSG_UI::Close()
 	}
 
 	if (LSG_UI::xmlDocument) {
-		LibXml::xmlFreeDoc(LSG_UI::xmlDocument);
+		LSG_XML::Close(LSG_UI::xmlDocument);
 		LSG_UI::xmlDocument = nullptr;
 	}
 
@@ -1080,7 +1080,7 @@ LSG_UMapStrStr LSG_UI::OpenWindow(const std::string& xmlFile)
 {
 	auto filePath = LSG_TextUtils::GetFullPath(xmlFile);
 
-	LSG_UI::xmlDocument = LSG_XML::Open(filePath);
+	LSG_UI::xmlDocument = LSG_XML::OpenFile(filePath);
 
 	if (!LSG_UI::xmlDocument)
 		throw std::runtime_error(std::format("Failed to load XML file: {}", filePath));

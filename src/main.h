@@ -42,15 +42,6 @@ extern "C" {
 }
 #endif
 
-#ifndef LIB_XML_H
-#define LIB_XML_H
-namespace LibXml {
-	extern "C" {
-		#include <libxml/xpath.h>
-	}
-}
-#endif
-
 #include <libsdlui.h>
 
 #if defined _windows

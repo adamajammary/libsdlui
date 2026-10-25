@@ -11,12 +11,14 @@ private:
 
 public:
 	static LibXml::xmlNode* AddChildNode(LibXml::xmlNode* xmlNode, const std::string& xmlName);
+	static void             Close(LibXml::xmlDoc* doc);
 	static std::string      GetAttribute(LibXml::xmlNode* xmlNode, const std::string& attribute);
 	static LSG_UMapStrStr   GetAttributes(LibXml::xmlNode* xmlNode);
 	static LSG_XmlNodes     GetChildNodes(LibXml::xmlNode* xmlNode);
 	static LibXml::xmlNode* GetNode(const std::string& xpath);
 	static std::string      GetValue(LibXml::xmlNode* node);
-	static LibXml::xmlDoc*  Open(const std::string& xmlFile);
+	static LibXml::xmlDoc*  OpenFile(const std::string& filePath);
+	static LibXml::xmlDoc*  OpenXML(const std::string&  xmlContent);
 	static void             RemoveChildNodes(LibXml::xmlNode* xmlNode);
 	static void             RemoveNode(LibXml::xmlNode* xmlNode);
 	static void             SetAttribute(LibXml::xmlNode* xmlNode, const std::string& attribute, const std::string& value);

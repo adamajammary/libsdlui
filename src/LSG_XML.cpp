@@ -14,6 +14,11 @@ LibXml::xmlNode* LSG_XML::AddChildNode(LibXml::xmlNode* xmlNode, const std::stri
 	return xmlChildNode;
 }
 
+void LSG_XML::Close(LibXml::xmlDoc* doc)
+{
+	LibXml::xmlFreeDoc(doc);
+}
+
 std::string LSG_XML::GetAttribute(LibXml::xmlNode* xmlNode, const std::string& attribute)
 {
 	if (!xmlNode || attribute.empty())
@@ -130,9 +135,14 @@ std::string LSG_XML::GetValue(LibXml::xmlNode* node)
 	return value;
 }
 
-LibXml::xmlDoc* LSG_XML::Open(const std::string& xmlFile)
+LibXml::xmlDoc* LSG_XML::OpenFile(const std::string& filePath)
 {
-	return LibXml::xmlReadFile(xmlFile.c_str(), nullptr, 0);
+	return LibXml::xmlReadFile(filePath.c_str(), nullptr, 0);
+}
+
+LibXml::xmlDoc* LSG_XML::OpenXML(const std::string& xmlContent)
+{
+	return LibXml::xmlReadMemory(xmlContent.c_str(), xmlContent.size(), nullptr, nullptr, 0);
 }
 
 void LSG_XML::RemoveChildNodes(LibXml::xmlNode* xmlNode)

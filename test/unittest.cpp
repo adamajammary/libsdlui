@@ -1792,6 +1792,43 @@ namespace LSG_UnitTest
             }
         }
     };
+
+    TEST_CLASS(XML)
+    {
+        TEST_METHOD(OpenXML)
+        {
+            try
+            {
+                auto xmlDocInvalid1 = LSG_XML_OpenXML("");
+
+                Assert::IsNull(xmlDocInvalid1);
+
+                LSG_XML_Close(xmlDocInvalid1);
+
+                auto xmlDocInvalid2 = LSG_XML_OpenXML("<xml>");
+
+                Assert::IsNull(xmlDocInvalid2);
+
+                LSG_XML_Close(xmlDocInvalid2);
+
+                auto xmlDocValid1 = LSG_XML_OpenXML("<xml />");
+
+                Assert::IsNotNull(xmlDocValid1);
+
+                LSG_XML_Close(xmlDocValid1);
+
+                auto xmlDocValid2 = LSG_XML_OpenXML("<xml><item attrib=\"value\" /></xml>");
+
+                Assert::IsNotNull(xmlDocValid2);
+
+                LSG_XML_Close(xmlDocValid2);
+            }
+            catch (const std::exception& e)
+            {
+                Assert::Fail(ToString(e.what()).c_str());
+            }
+        }
+    };
 }
 
 #endif
