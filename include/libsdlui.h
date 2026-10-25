@@ -299,6 +299,12 @@ DLLEXPORT void DLL LSG_FileSystem_CreateDirInPath(const std::string& dir, const 
 DLLEXPORT LSG_File DLL LSG_FileSystem_GetFile(const std::string& filePath);
 
 /**
+ * @returns a list of all files recursively (including sub-directories) in the directory path
+ * @param dirPath The path of the directory
+ */
+DLLEXPORT LSG_Strings DLL LSG_FileSystem_GetFilesFromDir(const std::string& dirPath);
+
+/**
  * @returns an app-specific location where files can be written
  * @param appName The name of your application
  * @throws invalid_argument

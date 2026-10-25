@@ -1346,6 +1346,18 @@ LSG_File LSG_FileSystem_GetFile(const std::string& filePath);
 
 Returns a file structure based on filePath.
 
+### LSG_FileSystem_GetFilesFromDir
+
+```cpp
+LSG_Strings LSG_FileSystem_GetFilesFromDir(const std::string& dirPath);
+```
+
+Returns a list of all files recursively (including sub-directories) in the directory path.
+
+Parameters
+
+- **dirPath** The path of the directory
+
 ### LSG_FileSystem_GetUserDir
 
 ```cpp

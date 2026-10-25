@@ -8,6 +8,7 @@
 #include <cwchar>    // wcslen()
 #include <cwctype>   // iswspace()
 #include <format>
+#include <filesystem>
 #include <fstream>
 #include <latch>
 #include <mutex>
@@ -309,6 +310,7 @@ std::string LSG_GetBasePath();
 #include "LSG_Button.h"
 #include "LSG_Bytes.h"
 #include "LSG_Exif.h"
+#include "LSG_FileSystem.h"
 #include "LSG_Image.h"
 #include "LSG_Line.h"
 #include "LSG_MenuItem.h"
