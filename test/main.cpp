@@ -1,10 +1,6 @@
 #include <cstdio> // snprintf(x)
 #include <format>
 
-#if defined _windows
-	#include <windows.h> // WinMain(x)
-#endif
-
 #include <libsdlui.h>
 
 extern "C" {
