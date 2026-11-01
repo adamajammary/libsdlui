@@ -1324,7 +1324,7 @@ namespace LSG_UnitTest
         }
     };
 
-    TEST_CLASS(LSG_TextUtils)
+    TEST_CLASS(TextUtils)
     {
         TEST_METHOD(GetFormattedBitRate)
         {
@@ -1475,6 +1475,27 @@ namespace LSG_UnitTest
                 Assert::AreEqual("WMA v2", codecName2.c_str());
                 Assert::AreEqual("WMV v3", codecName3.c_str());
                 Assert::AreEqual("WMV v4", codecName4.c_str());
+            }
+            catch (const std::exception& e)
+            {
+                Assert::Fail(ToString(e.what()).c_str());
+            }
+        }
+
+        TEST_METHOD(GetUUID)
+        {
+            try
+            {
+                auto uuid = LSG_TextUtils_GetUUID();
+
+                Assert::IsFalse(uuid.empty());
+
+                Assert::AreEqual(36, (int)uuid.size());
+
+                Assert::AreEqual('-', uuid[8]);
+                Assert::AreEqual('-', uuid[13]);
+                Assert::AreEqual('-', uuid[18]);
+                Assert::AreEqual('-', uuid[23]);
             }
             catch (const std::exception& e)
             {

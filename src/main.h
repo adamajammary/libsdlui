@@ -19,16 +19,19 @@
 #if defined _android
 	#include <android/asset_manager_jni.h> // AAsset*, JNI*, j*
 	#include <sys/stat.h> // mkdir()
+	#include <uuid.h>     // uuid_generate
 #elif defined _ios
-    #include <Photos/Photos.h>     // PHPhotoLibrary
-    #include <StoreKit/StoreKit.h> // SKCloudServiceController
-    #include <UIKit/UIKit.h>       // UIScreen, UIUserInterfaceStyle*
+	#include <Foundation/Foundation.h> // NSUUID
+    #include <Photos/Photos.h>         // PHPhotoLibrary
+    #include <StoreKit/StoreKit.h>     // SKCloudServiceController
+    #include <UIKit/UIKit.h>           // UIScreen, UIUserInterfaceStyle*
     #include <UniformTypeIdentifiers/UniformTypeIdentifiers.h> // UTType
 #elif defined _linux
 	#include <gtk/gtk.h> // gtk_file_*, gtk_init, g_list_*, g_main_*, g_object_*
+	#include <uuid.h>    // uuid_generate
 #elif defined _macosx
 	#include <AppKit/AppKit.h>         // NSApp, NSAppearanceName*, NSOpenPanel
-	#include <Foundation/Foundation.h> // NSString, NSUserDefaults
+	#include <Foundation/Foundation.h> // NSString, NSUserDefaults, NSUUID
 	#include <UniformTypeIdentifiers/UniformTypeIdentifiers.h> // UTType
 #elif defined _windows
 	#include <shobjidl_core.h> // IFileOpenDialog, IFileSaveDialog

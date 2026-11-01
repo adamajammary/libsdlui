@@ -258,6 +258,42 @@ LSG_TableRowCompare LSG_TextUtils::GetTableRowCompare(int column)
 	return rowCompare;
 }
 
+std::string LSG_TextUtils::GetUUID()
+{
+#if defined _windows
+	const size_t UUID_LENGTH = 39;
+
+	GUID guid;
+	
+	if (FAILED(CoCreateGuid(&guid)))
+		return "";
+
+	wchar_t guidWChars[UUID_LENGTH] = {};
+
+	if (StringFromGUID2(guid, guidWChars, UUID_LENGTH) < UUID_LENGTH)
+		return "";
+
+	auto guidWString = std::wstring(guidWChars);
+	auto guidString  = LSG_TextUtils_ToUTF8(guidWString.substr(1, guidWString.size() - 2));
+
+	return guidString;
+#elif defined _ios || defined _macosx
+	auto uuidNSString = [[NSUUID UUID] UUIDString];
+
+	return std::string(uuidNSString.UTF8String);
+#else
+	uuid_t uuid;
+
+	uuid_generate(uuid);
+
+	char uuidChars[UUID_STR_LEN]
+
+	uuid_unparse_lower(uuid, uuidChars);
+
+	return std::string(uuidChars);
+#endif
+}
+
 std::string LSG_TextUtils::Join(const LSG_Strings& strings, const std::string& separator)
 {
 	std::string result = "";

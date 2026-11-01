@@ -1904,6 +1904,11 @@ DLLEXPORT std::string DLL LSG_TextUtils_GetFormattedTimeAgo(time_t timestamp);
 DLLEXPORT std::string DLL LSG_TextUtils_GetMediaCodecName(const std::string& codecName);
 
 /**
+ * @returns a Universally/Globally Unique Identifier (UUID/GUID)
+ */
+DLLEXPORT std::string DLL LSG_TextUtils_GetUUID();
+
+/**
  * @brief Joins text strings together by separator.
  * @param strings   Strings to join
  * @param separator String to use as a separator

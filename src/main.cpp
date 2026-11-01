@@ -2772,6 +2772,11 @@ std::string LSG_TextUtils_GetMediaCodecName(const std::string& codecName)
 	return LSG_TextUtils::GetMediaCodecName(codecName);
 }
 
+std::string LSG_TextUtils_GetUUID()
+{
+	return LSG_TextUtils::GetUUID();
+}
+
 std::string LSG_TextUtils_Join(const LSG_Strings& strings, const std::string& separator)
 {
 	return LSG_TextUtils::Join(strings, separator);

@@ -5276,6 +5276,14 @@ Parameters
 
 - **codecName** The full codec name
 
+### LSG_TextUtils_GetUUID
+
+```cpp
+std::string LSG_TextUtils_GetUUID();
+```
+
+Returns a Universally/Globally Unique Identifier (UUID/GUID).
+
 ### LSG_TextUtils_Join
 
 ```cpp
